@@ -1,0 +1,25 @@
+<html>
+<head>
+<meta charset='utf-8'/>
+<script src='/static/socketio.js'></script>
+<title>mafia client</title>
+</head>
+<body>
+<script>
+
+if(sessionStorage.getItem('mafiaID')!=null){window.location.href='/game'}
+
+const xhr = new XMLHttpRequest();
+xhr.open('POST', '/register');
+xhr.onload = function (e) {
+    if (this.status == 200) {
+        sessionStorage.setItem('mafiaID',this.response);
+        window.location.href='/game';
+        }}
+xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+xhr.send('name='+prompt('name'));
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<html>
+<head>
+<meta charset='utf-8'/>
+<script src='/static/socketio.js'></script>
+<title>mafia client</title>
+</head>
+<body>
+<table>
+{% for player in players %}
+<tr>
+    <td>{{ player }}</td>
+</tr>
+{% endfor %}
+</table>
+<script>
+
+if(sessionStorage.getItem('mafiaID')==null){window.location.href='/';}
+
+function listen(path,execute){
+    xhr = new XMLHttpRequest();
+    xhr.responseType="json"
+    xhr.open('POST', '/antisocketio');
+    xhr.onload = function (e) {
+    if (this.status == 200) {
+        execute(this.response);
+    }}
+    xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+    xhr.send('arg='+path);
+}
+setInterval(function(){
+listen('table', function (msg) {
+    var tableobj = document.getElementsByTagName('table')[0]
+    tableobj.innerHTML ="";
+    for(var cc=0;cc<msg.length;cc++){
+        tableobj.innerHTML += "<tr><td>"+msg[cc]+"</td></tr>".trim();
+    }
+})},1000)
+var startIntervalID=setInterval(function(){
+listen('start', function (msg) {
+    if(msg=="1"){
+        maingame();
+        clearInterval(startIntervalID);
+    }
+})},1000);
+function maingame(){
+    xhr = new XMLHttpRequest();
+    xhr.open('POST', '/getrole');
+    xhr.onload = function (e) {
+    if (this.status == 200) {
+        sessionStorage.setItem('role',this.response);
+    }}
+    xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+    xhr.send('uuid='+sessionStorage.getItem('mafiaID'));
+}
+</script>
+</body>
+</html>
