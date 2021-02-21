@@ -1,10 +1,6 @@
 from flask import Flask, render_template, Response,request,jsonify
 import random,hashlib,mafia,socket,time
 app = Flask(__name__)
-try:
-    hostIP=socket.gethostbyname_ex(socket.gethostname())[2][1]
-except:
-    hostIP=socket.gethostbyname_ex(socket.gethostname())[2][0]
 players=[]
 players2show=[]
 starttrigger=6
@@ -59,13 +55,14 @@ def antisocketio():
             if game.info(request.values['uuid'])['type']=='m':
                 return game.role2names('m')
         elif gamepointer==2:#ГОЛОСОВАЛКА
-            
+            pass
             
         elif gamepointer==3:
             if game.info(request.values['uuid'])['type']=='m':
                 if len(game.role2names('m'))==1:
                     game.mafkill(request.values['data'])
                 else:
+                    pass
                     #?????
         elif gamepointer==4:
             if game.info(request.values['uuid'])['type']=='k':
@@ -94,4 +91,4 @@ def roleget():
 def icon():
     return open('favicon.jpg','rb').read()  
 if __name__ == '__main__':
-   app.run(ssl_context=('d:/PEM/certificate.crt','d:/PEM/private.key'),host=hostIP, debug=True,port=443)
+   app.run(host="0.0.0.0", debug=True,port=80)

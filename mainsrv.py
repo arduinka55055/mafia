@@ -14,4 +14,4 @@ def pather(path):
         return Response(open(path,'rb').read(),mimetype='application/zip')
     else:
         return open(path,'rb').read()
-app.run(ssl_context=('/run/media/denis/01D57B7C59892920/PEM/certificate.crt','/run/media/denis/01D57B7C59892920/PEM/private.key'),host="192.168.0.100", debug=False,port=443)
+app.run(host="0.0.0.0", debug=True,port=80)
