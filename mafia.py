@@ -1,4 +1,50 @@
 ﻿import random
+class PlayerRAW:
+    def __init__(self,name:str):
+        self.name=name
+class Player(PlayerRAW):
+    def __init__(self,raw:PlayerRAW,role):
+        self.name=raw.name
+        self.role=role
+    def __unicode__(self):
+        return "Player:%s, Role:%s" % (self.name,self.role)
+    def __str__(self):
+        return "Player:%s, Role:%s" % (self.name,self.role)
+    def __repr__(self):
+        return "Player:%s, Role:%s" % (self.name,self.role)
+
+class Players:
+    def __init__(self,data):
+        cardlist=[
+        #['m','p','s','k','d','m','g'],#debug only!
+        ['m','p','p','p','p','s'], #6
+        ['m','m','p','p','p','p','s'],
+        ['m','m','p','p','p','p','p','s'],
+        ['m','m','p','p','p','p','p','s','k'],
+        ['m','m','p','p','p','p','p','p','s','k'],#10
+        ['m','m','p','p','p','p','p','p','s','k','d'],
+        ['m','m','m','p','p','p','p','p','p','s','k','d'],
+        ['m','m','m','p','p','p','p','p','p','p','s','k','d'],
+        ['m','m','m','p','p','p','p','p','p','p','p','s','k','d','g'],#14
+        ]
+        self.players=[]
+        choosed=cardlist[len(data)-6]
+        random.shuffle(choosed)
+        for x,y in zip(data,choosed):
+            self.players.append(Player(x,y))
+    def getMafias(self):
+        for player in self.players:
+            if player.role=="m":
+                yield player
+    def getGood(self):
+        for player in self.players:
+            if player.role in ["p","s","d","g"]:
+                yield player
+a=Players([PlayerRAW("a"),PlayerRAW("ba"),PlayerRAW("ca"),PlayerRAW("da"),PlayerRAW("ea"),PlayerRAW("fa"),PlayerRAW("ga")])
+for x in a.getMafias():
+    print(x.name)
+for x in a.getGood():
+    print(x.name)
 class Game:
     def __init__(self,players):#    m мафия p житель s шериф k маньяк d доктор g любовница
         self.players=players
@@ -145,5 +191,4 @@ class Game:
             input('мафия рулид!')
             exit()      
     
-    
-    
+a=Players([PlayerRAW("a"),PlayerRAW("ba"),PlayerRAW("ca"),PlayerRAW("da"),PlayerRAW("ea"),PlayerRAW("fa"),PlayerRAW("ga")])
