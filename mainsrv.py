@@ -9,7 +9,7 @@ def main(): # create main function and connect it with file "main.html"
 @app.route('/<path>',methods=['GET','POST'])
 def pather(path):
     if path=='game':
-        return open("index.html",'rb.read()
+        return open("index.html",'rb.read())
     if path.endswith('zip'):
         return Response(open(path,'rb').read(),mimetype='application/zip')
     else:
