@@ -3,7 +3,7 @@ import socket # for networking interface
 
 app=Flask(__name__)
 @app.route('/')
-def main():
+def main(): # create main function and connect it with file "main.html"
     return open('main.html').read()
 
 @app.route('/<path>',methods=['GET','POST'])
