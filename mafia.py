@@ -6,6 +6,7 @@ class Player(PlayerRAW):
     def __init__(self,raw:PlayerRAW,role):
         self.name=raw.name
         self.role=role
+        self.killed=False
     def __unicode__(self):
         return "Player:%s, Role:%s" % (self.name,self.role)
     def __str__(self):
@@ -40,11 +41,14 @@ class Players:
         for player in self.players:
             if player.role in ["p","s","d","g"]:
                 yield player
+
 a=Players([PlayerRAW("a"),PlayerRAW("ba"),PlayerRAW("ca"),PlayerRAW("da"),PlayerRAW("ea"),PlayerRAW("fa"),PlayerRAW("ga")])
 for x in a.getMafias():
     print(x.name)
 for x in a.getGood():
     print(x.name)
+
+'''0xDEADCODE
 class Game:
     def __init__(self,players):#    m мафия p житель s шериф k маньяк d доктор g любовница
         self.players=players
@@ -191,4 +195,4 @@ class Game:
             input('мафия рулид!')
             exit()      
     
-a=Players([PlayerRAW("a"),PlayerRAW("ba"),PlayerRAW("ca"),PlayerRAW("da"),PlayerRAW("ea"),PlayerRAW("fa"),PlayerRAW("ga")])
+\'''
