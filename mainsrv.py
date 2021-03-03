@@ -14,4 +14,5 @@ def pather(path):
         return Response(open(path,'rb').read(),mimetype='application/zip')
     else:
         return open(path,'rb').read()
+        
 app.run(host="0.0.0.0", debug=True,port=80)
