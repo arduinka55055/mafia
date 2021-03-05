@@ -20,6 +20,7 @@ import urllib
 import asyncio
 import datetime
 import aiomysql
+from wsconnector import WebsocketHandler
 import tornado.ioloop
 import tornado.httpclient
 import tornado.web
@@ -30,42 +31,11 @@ from http.cookies import Morsel
 Morsel._reserved["samesite"] = "SameSite"
 
 
-class Mainframe():
+class Mainframe(WebsocketHandler):
     class index(tornado.web.RequestHandler):
-        
         async def get(self):
-            self.set_header('Strict-Transport-Security',
-                            'max-age=31536000; includeSubDomains')
-            print(self.xsrf_token)
-            authcode = self.get_argument("code", None)
-            if authcode and not self.get_secure_cookie("logintoken"):
-                data = {
-                    'client_id': topsecret.secrets['id'],
-                    'client_secret': topsecret.secrets['secret'],
-                    'grant_type': 'authorization_code',
-                    'code': authcode,
-                    'redirect_uri': 'https://umilitary.ml/',
-                    'scope': 'identify connections'
-                }
-                headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-
-                answer = await tornado.httpclient.AsyncHTTPClient().fetch('https://discord.com/api/v6/oauth2/token', None, body=urllib.parse.urlencode(data), headers=headers, method="POST")
-                print("OAUTH2 got: ", tornado.escape.json_decode(
-                    answer.body).get("access_token"))
-                UUID = tornado.escape.json_decode(
-                    answer.body).get("access_token")
-                if not UUID==None:
-                    self.set_secure_cookie("logintoken", UUID, httponly=True,secure=True)
-                self.redirect("/")
-            else:
-                try:
-                    isUKR = "uk-UA" in self.request.headers['Accept-Language']
-
-                except KeyError:
-                    isUKR = False
-                finally:
-                    self.write(tornado.template.Loader(os.path.dirname(
-                        __file__) + "/../templates/"+("UK" if isUKR else "RU")).load("index.html").generate())
+            self.write(tornado.template.Loader(os.path.dirname(
+                __file__) + "/templates/").load("index.html").generate())
 
     class account(tornado.web.RequestHandler,tornado.auth.GoogleOAuth2Mixin):
         async def get(self):
@@ -79,11 +49,13 @@ class Mainframe():
                     access_token=access["access_token"])
                 self.write(user["id"])
                 self.write("<img src='%s'/>" % user["picture"])
+                self.write("<h3>Your name is:%s </h3>" % user['name'])
+                self.write("<code>%s</code>" % str(user))
             else:
                 self.authorize_redirect(
                     redirect_uri='http://127.0.0.1:8000/account',
-                    client_id="801663922478-sg6opa1be1ur4vi5levltb957414auq1.apps.googleusercontent.com",
-                    scope=['openid'],
+                    client_id=self.settings["google_oauth"]["key"],
+                    scope=['openid','profile'],
                     response_type='code',
                     extra_params={'approval_prompt': 'auto'})
 
@@ -127,7 +99,7 @@ class MyStaticFileHandler(tornado.web.StaticFileHandler):
                         'no-store, no-cache, must-revalidate, max-age=0')
 
 
-def app():
+def app()->tornado.web.Application:
     return tornado.web.Application([
         (r"/", Mainframe.index),
         (r"/css", Mainframe.stylesheet),
@@ -142,6 +114,13 @@ def app():
         hsts=True,debug=True
         # default_handler_class=Mainframe.page_not_found
     )
+<<<<<<< HEAD
 app=app()
 http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
  
+=======
+http_server = tornado.httpserver.HTTPServer(app(), xheaders=True)
+if __name__ == '__main__':
+    http_server.listen(8000)
+    tornado.ioloop.IOLoop.current().start()
+>>>>>>> f60aeb3 (анти говнокод)

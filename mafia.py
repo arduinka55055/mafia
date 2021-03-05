@@ -1,21 +1,45 @@
 ﻿import random
+import uuid
 class PlayerRAW:
-    def __init__(self,name:str):
+    def __init__(self,name:str,gid:str):#на просто id мы обосремося
         self.name=name
+        self.id=gid#ця штука заповнюється даними реєстрації на стороні серверу
 class Player(PlayerRAW):
-    def __init__(self,raw:PlayerRAW,role):
-        self.name=raw.name
-        self.role=role
-        self.killed=False
+    def __init__(self,raw:PlayerRAW,role:str):
+        self.__name=raw.name
+        self.__id=raw.id#ебкое ООП
+        self.__role=role#инкапсуляция в действии
+        self.__killed=False
+        self.__whore=False#путана
+        self.__uuid=uuid.uuid1()
     def __unicode__(self):
-        return "Player:%s, Role:%s" % (self.name,self.role)
+        return "Player:%s, Role:%s" % (self.getName(),self.getRole())
     def __str__(self):
-        return "Player:%s, Role:%s" % (self.name,self.role)
+        return "Player:%s, Role:%s" % (self.getName(),self.getRole())
     def __repr__(self):
-        return "Player:%s, Role:%s" % (self.name,self.role)
+        return "Player:%s, Role:%s" % (self.getName(),self.getRole())
+    def getRole(self)->str:
+        return None if self.__killed else self.__role
+    def getId(self)->str:
+        return self.__id
+    def getName(self)->str:
+        return self.__name
+    def getUUID(self):
+        return self.__uuid
+    def setKilled(self,state:bool):
+        self.__killed=state
+    def setWhore(self,state:bool):
+        self.__whore=state
+    def checkUser(self,id,role)->bool:
+        return True if (self.getId()==id and self.getRole()==role) else False
+    def canDo(self,id,role)->bool:
+        return True if (not self.__whore and self.checkUser(id,role)) else False
 
 class Players:
-    def __init__(self,data):
+    """
+    Player container with sweet methods
+    """
+    def __init__(self,data:list[PlayerRAW]):
         cardlist=[
         #['m','p','s','k','d','m','g'],#debug only!
         ['m','p','p','p','p','s'], #6
@@ -26,7 +50,8 @@ class Players:
         ['m','m','p','p','p','p','p','p','s','k','d'],
         ['m','m','m','p','p','p','p','p','p','s','k','d'],
         ['m','m','m','p','p','p','p','p','p','p','s','k','d'],
-        ['m','m','m','p','p','p','p','p','p','p','p','s','k','d','g'],#14
+        ['m','m','m','p','p','p','p','p','p','p','s','k','d','g'],#14
+        #Mafia Person Doctor Killer Sheriff Girl 
         ]
         self.players=[]
         choosed=cardlist[len(data)-6]
@@ -35,18 +60,80 @@ class Players:
             self.players.append(Player(x,y))
     def getMafias(self):
         for player in self.players:
-            if player.role=="m":
+            if player.getRole()=="m":
                 yield player
+    def getMafiasCount(self)->int:
+        counter=0
+        for _ in self.getMafias():
+            counter+=1
+        return counter
     def getGood(self):
         for player in self.players:
-            if player.role in ["p","s","d","g"]:
+            if player.getRole() in ["p","s","d","g"]:
                 yield player
+    def getGoodCount(self)->int:
+        counter=0
+        for _ in self.getGood():
+            counter+=1
+        return counter
+    def getByUUID(self,UUID:str)->Player:
+        for player in self.players:
+            if player.getUUID()==UUID:
+                return player
+        return None
+    def kill(self,player:Player):
+        player.setKilled(True)
+    def heal(self,player:Player):
+        player.setKilled(False)
+    def whore(self,player:Player):
+        player.setWhore(True)
+class Game(Players):
+    def mafkill(self,targets):
+        #все засыпают, просипается мафия. кого убить /////////////////////////////////////////////////////////////////////////////////////////////////////
+        if self.getMafiasCount()>1:#голосовалка, не соблазнят компанию
+            random.shuffle(targets)#АЛГОРИТМ ГОВНО!!!! магия рандома!!! 
+            self.kill(targets[0])
+            
+        else:    #одного мафиози соблазнят
+            self.kill(self.getByUUID(targets))
+            
+    def sherif(self,target)->str:        
+        #мафия сделала вибор, просипается шериф ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        return self.getByUUID(target).getRole()
+        
+    def killer(self,target):
+        #просипается маньяк
+        self.kill(self.getByUUID(target))
+            
+    def doctor(self,target):
+        self.heal(self.getByUUID(target))
+            
+    def girl(self,target):
+        #а теперь путана
+        self.whore(self.getByUUID(target))
+            
+    def endnight(self,data):
+        #постобработка
+        pass
 
-a=Players([PlayerRAW("a"),PlayerRAW("ba"),PlayerRAW("ca"),PlayerRAW("da"),PlayerRAW("ea"),PlayerRAW("fa"),PlayerRAW("ga")])
+class Connector(Game):
+    def __init__(self):
+        super()
+    def doNight(self):
+        pass
+a=Game([
+    PlayerRAW("a",random.random()),
+    PlayerRAW("ba",random.random()),
+    PlayerRAW("ca",random.random()),
+    PlayerRAW("da",random.random()),
+    PlayerRAW("ea",random.random()),
+    PlayerRAW("fa",random.random()),
+    PlayerRAW("ga",random.random())
+    ])
 for x in a.getMafias():
-    print(x.name)
+    print(x.getName())
 for x in a.getGood():
-    print(x.name)
+    print(x.getName())
 
 '''0xDEADCODE
 class Game:
@@ -195,4 +282,4 @@ class Game:
             input('мафия рулид!')
             exit()      
     
-\'''
+'''
