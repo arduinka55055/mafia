@@ -10,7 +10,7 @@ isstarted=False
 gamepointer=0
 
 #  0 1 2   3 4 5 6 7 8 9
-## INIT    /\--LOOP----{}
+## INIT    /\--LOOP----{} 
 
 ##    0reserved          1          2              3      4     5     6      7        8             9
 #просыпаются мафия, знакомство\день,голосовалка\ мафия\маньяк\шериф\доктор\путана\инфо по килам\голосовалка 
@@ -78,6 +78,7 @@ def antisocketio():
                 game.girl(request.values['data'])
         elif gamepointer==8:
         elif gamepointer==9:
+            pass
         
     return 'Bad Request',400
 @app.route('/game' ,methods=['GET', 'POST'])

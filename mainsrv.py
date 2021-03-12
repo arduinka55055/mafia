@@ -36,7 +36,6 @@ class Mainframe():
         async def get(self):
             self.write(tornado.template.Loader(os.path.dirname(
                 __file__) + "/templates/front-end/").load("registration.html").generate())
-
     class account(tornado.web.RequestHandler,tornado.auth.GoogleOAuth2Mixin):
         async def get(self):
             self.settings["google_oauth"]={"key":"801663922478-sg6opa1be1ur4vi5levltb957414auq1.apps.googleusercontent.com","secret":"KpAmXqKa1tEP2e4V6Yml4TEV"}
@@ -98,7 +97,6 @@ class MyStaticFileHandler(tornado.web.StaticFileHandler):
         self.set_header('Cache-Control',
                         'no-store, no-cache, must-revalidate, max-age=0')
 
-
 def app()->tornado.web.Application:
     return tornado.web.Application([
         (r"/", Mainframe.index),
@@ -106,7 +104,11 @@ def app()->tornado.web.Application:
         (r"/account", Mainframe.account),
         (r"/favicon.ico", Mainframe.favicon),
         (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': os.path.dirname(__file__) +
-                                                          "/static/"})
+                                                          "/static/"}),
+        (r'/img/(.*)', tornado.web.StaticFileHandler, {'path': os.path.dirname(__file__) +
+            "/templates/front-end/img/"}),
+        (r'/(.*)', tornado.web.StaticFileHandler, {'path': os.path.dirname(__file__) +
+            "/templates/front-end/"})
     ],
         cookie_secret=cookie_secret,
         xsrf_cookies=False,
