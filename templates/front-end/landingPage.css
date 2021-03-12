@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
+*
+{
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+     font-family: 'Popins', sans-serif;
+}
+header{
+     position: absolute;
+     top: 0;
+     left: 0;
+     width: 100%;
+     display: flex;
+     justify-content: space-between;
+     align-items: center; 
+     padding: 40px 100px;   
+     z-index: 1000;
+}
+header .logo
+{
+     max-width: 120px;
+
+}
+header .toggle
+{
+     max-width: 60px;
+     cursor: pointer;
+}
+header .logo img,
+header .toggle, img
+{
+     max-width: 100%;
+}
+.banner{
+     position: relative;
+     width: 100%;
+     min-height: 100vh;
+     padding: 0 100px;
+     background: url(img/mafia2.jpg);
+     background-position: center;
+     background-size: cover;
+     display: flex;
+     justify-content: flex-start;
+     align-items: center;
+}
+.banner .rules{
+     max-width: 550px;
+}
+.banner .rules h2{
+
+    text-transform: uppercase;
+     font-weight: 400;
+     font-size: 2.5em;
+     letter-spacing: 0.1em;
+     color: rgb(5, 255, 222)
+}
+.banner .rules h2 span{
+     font-weight: 800;
+}
+.banner .rules p{
+     font-size: 1.2em;
+     font-weight: 300;
+     letter-spacing: 0.02em;
+     line-height: 1.5em;
+     color: #fff;
+     margin: 15px 0 35px               
+}
+.playvideo{
+     position: relative;
+     display: inline-flex;
+     justify-content: flex-start;
+     align-items: center;
+     color: #fff;
+     text-transform: uppercase;
+     font-weight: 500;
+     text-decoration: none;
+     letter-spacing: 2px;
+     font-size: 1.2em;
+}
+.playvideo img{
+     margin-right: 10px;
+     max-width: 50px;   
+}
+.media
+{
+     position: absolute;
+     top: 50%;
+     transform: translateY(-50%);  
+     right: 20px;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     flex-direction: column;
+     max-width: 50px; 
+}
+.media li
+{
+     list-style: none;
+}
+.media li a 
+{
+     text-decoration: none;
+}
+.media li a img
+{
+     transform: scale(0.6);
+}
+.slide
+{
+     position: absolute;
+     bottom: 50px;
+     left: calc(50% - 250px / 2);
+     width: 250px;
+     height: 150px;
+     background: url(img/indexmafia.jpg);
+     background-size: cover;
+     cursor: pointer;
+     animation: animate 25s linear infinite;
+}
+@keyframes animate
+{
+     0%,100%
+     {
+          background-position: top;
+     }
+     45,55%
+     {
+          background-position: bottom;
+     }
+}
+.trailer
+{
+     position: fixed;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%,-50%);
+     z-index: 10000;
+     background: rgba(0,0,0,0.95);
+     width: 100%;
+     height: 100%;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     visibility: hidden;
+     opacity: 0;
+}
+.trailer .active
+{
+     visibility: visible;
+     opacity: 1;
+}
+.trailer video
+{
+     max-width: 900px;
+     outline: none;      
+}
+.trailer .close
+{
+     position: absolute;
+     top: 30px;
+     right: 30px;
+     cursor: pointer;
+     filter: invert(1);
+     max-width: 32px;
+}
+@media (max-width: 990px)
+{
+     header
+     {
+        padding: 20px 50px;
+     };  
+     header
+     {
+        padding: 20px 50px;
+     }; 
+     header .logo
+     {
+        padding: 20px 50px;
+     }; 
+     header .toggle
+     {
+        max-width: 40px;
+     }; 
+     .banner
+     {
+         padding: 100px 50px;
+     }
+     .baner .rules h2
+     {
+          font-weight: 400;
+          font-size: 2em;
+          letter-spacing: 0.05em;
+     }
+     .baner .rules p 
+     {
+          font-size: 1em; /* 1em - 16px */
+     }
+     .slide
+     {
+          position: relative;
+          bottom: initial;
+          left: 0;
+          width: 250px;
+          height: 150px;
+          margin: 20px 0;
+     }
+     .media
+     {
+        position: absolute;  
+     }
+}
+
+
+
