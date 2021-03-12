@@ -20,7 +20,7 @@ import urllib
 import asyncio
 import datetime
 import aiomysql
-from wsconnector import WebsocketHandler
+#from wsconnector import WebsocketHandler
 import tornado.ioloop
 import tornado.httpclient
 import tornado.web
@@ -31,11 +31,11 @@ from http.cookies import Morsel
 Morsel._reserved["samesite"] = "SameSite"
 
 
-class Mainframe(WebsocketHandler):
+class Mainframe():
     class index(tornado.web.RequestHandler):
         async def get(self):
             self.write(tornado.template.Loader(os.path.dirname(
-                __file__) + "/templates/").load("index.html").generate())
+                __file__) + "/templates/front-end/").load("registration.html").generate())
 
     class account(tornado.web.RequestHandler,tornado.auth.GoogleOAuth2Mixin):
         async def get(self):
@@ -114,13 +114,8 @@ def app()->tornado.web.Application:
         hsts=True,debug=True
         # default_handler_class=Mainframe.page_not_found
     )
-<<<<<<< HEAD
-app=app()
-http_server = tornado.httpserver.HTTPServer(app, xheaders=True)
- 
-=======
+
 http_server = tornado.httpserver.HTTPServer(app(), xheaders=True)
 if __name__ == '__main__':
     http_server.listen(8000)
     tornado.ioloop.IOLoop.current().start()
->>>>>>> f60aeb3 (анти говнокод)

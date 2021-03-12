@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ua">
+<head>
+     <meta name="viewport" content="width=width-device, initial-scale=1.0">
+     <meta charset="UTF-8">
+     <title>M.A.F.I.A</title>
+     <link rel="stylesheet" href="landingPage.css">
+</head>
+<body>
+     <header>
+         <a href="#" class="logo"><img src="img/logo.svg"></a>
+         <div class="toggle"><img src="img/toggle.png"></div>
+     </header>    
+     <div class="banner">
+         <div class="rules">
+             <h2>Правила гри <span>Мафії</span></h2>
+             
+             <p>#MAFIA server
+             #Copyright (C) 2021 Vitiaz D., Chernikov M. 
+             #This program is free software: you can redistribute it and/or modify it under
+             #the terms of the GNU General Public License as published by the Free Software.</p>
+             <a href="#" class="playvideo" onclick="toggle();"><img src="img/play.svg">Подивитися як грати в гру</a>
+             <div class="slide"></div>
+             <ul class="media">
+                 <li><a href="#"><img src="img/ds.ico"></a></li>   
+                 <li><a href="#"><img src="img/Google.ico"></a></li>   
+             </ul>  
+         </div>
+     </div>  
+     <div class="trailer">
+         <video src="img/gamerules.mp4" controls="true"></video>  
+         <img src="img/close.svg" class="close" onclick="toggle();">
+     </div>
+     <script type="text/javascript">
+     function toggle(){
+         var trailer = document.querySelector('.trailer');
+         var video = document.querySelector('video');
+         trailer.classList.toggle('active');
+         video.currentTime = 0;
+         video.pause();
+     }
+     </script>          
+</body>
+</html>
+
+
+
