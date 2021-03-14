@@ -6,7 +6,6 @@ import urllib
 import asyncio
 import datetime
 import aiomysql
-from wsconnector import WebsocketHandler
 import tornado.ioloop
 import tornado.httpclient
 import tornado.web
@@ -43,7 +42,7 @@ class ClientPacket:
         data = json.loads(data)
         self.gid = data.get("gid")          # Google ID
         self.nick = data.get("nick")        # Nickname
-        self.param = data.get("param")      # Reserved
+        self.pck = data.get("pck")      # Reserved
         self.target = data.get("uuid")      # Unique ID (not GID) of target
         self.game = data.get("gameuuid")    # Unique ID of game room
         self.newroom = data.get("newroom")  # Are you creating new room?
@@ -54,11 +53,11 @@ class ClientPacket:
     def consumePacket(self):
         if not self.newroom == None:
             roomHandler.rooms.newRoom(self.gid, self.newroom)
-        elif self.param == "startgame":
+        elif self.pck == "startgame":
             room = roomHandler.rooms.fromUUID(self.game)
             room.start(self.gid)
             clients.broadcast({"type":"started","uuid":room.getUUID()})
-        elif self.param == "role":
+        elif self.pck == "role":
             room = roomHandler.rooms.fromUUID(self.game)
             room.performRole(self.gid)
 
@@ -89,5 +88,6 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
         return super().on_ping(data)
 
     def on_close(self):
+        clients.remove(self)
         clients.broadcast("player problems!")
         print("WebSocket closed")

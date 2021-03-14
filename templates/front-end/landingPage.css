@@ -49,7 +49,7 @@ header .toggle, img
 }
 .banner .rules h2{
 
-    text-transform: uppercase;
+     text-transform: uppercase;
      font-weight: 400;
      font-size: 2.5em;
      letter-spacing: 0.1em;
@@ -71,7 +71,7 @@ header .toggle, img
      display: inline-flex;
      justify-content: flex-start;
      align-items: center;
-     color: #fff;
+     color: rgb(0, 124, 240);
      text-transform: uppercase;
      font-weight: 500;
      text-decoration: none;
@@ -87,7 +87,7 @@ header .toggle, img
      position: absolute;
      top: 50%;
      transform: translateY(-50%);  
-     right: 20px;
+     right: 100px;
      display: flex;
      justify-content: center;
      align-items: center;
@@ -124,7 +124,7 @@ header .toggle, img
      {
           background-position: top;
      }
-     45,55%
+     46%
      {
           background-position: bottom;
      }
@@ -221,6 +221,11 @@ header .toggle, img
      {
          list-style: none;
          margin: 0 5px;
+     }
+     .trailer video
+     {
+          max-width: 90%;
+          outline: none;
      }
 }
 

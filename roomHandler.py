@@ -4,7 +4,7 @@ from typing import Union
 
 import mafia
 
-
+Room=type("test")
 class Rooms(set):
     def fromUUID(self, UUID)->Union[Room,None]:
         for room in self:

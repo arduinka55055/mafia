@@ -150,19 +150,6 @@ class GameMainloop(Game):
     async def startMainloop(self):
         pass #TODO
 
-a = Game([
-    PlayerRAW("a", random.random()),
-    PlayerRAW("ba", random.random()),
-    PlayerRAW("ca", random.random()),
-    PlayerRAW("da", random.random()),
-    PlayerRAW("ea", random.random()),
-    PlayerRAW("fa", random.random()),
-    PlayerRAW("ga", random.random())
-])
-for x in a.getMafias():
-    print(x.getName())
-for x in a.getGood():
-    print(x.getName())
 
 '''0xDEADCODE
 class Game:
