@@ -5,16 +5,27 @@
      <meta charset="UTF-8">
      <title>M.A.F.I.A</title>
      <link rel="stylesheet" href="landingPage.css">
+     <script src="/static/vue.min.js"></script>
+     
+     
 </head>
 <body>
      <header>
          <a href="#" class="logo"><img src="img/logo.svg"></a>
          <div class="toggle"><img src="img/toggle.png"></div>
      </header>    
+     
      <div class="banner">
+     <div id="event-handling">
+  <p>{{ message }}</p>
+  <button v-on:click="reverseMessage">Reverse Message</button>
+</div>
+
+<script src="main.js"></script>
+
          <div class="rules">
              <h2>Правила гри <span>Мафії</span></h2>
-             
+
              <p>#MAFIA server
              #Copyright (C) 2021 Vitiaz D., Chernikov M. 
              #This program is free software: you can redistribute it and/or modify it under

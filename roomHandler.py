@@ -1,10 +1,10 @@
 import uuid
 import asyncio
-from typing import Union
+from typing import Any, Union
 
 import mafia
 
-Room=type("test")
+Room=Any
 class Rooms(set):
     def fromUUID(self, UUID)->Union[Room,None]:
         for room in self:
