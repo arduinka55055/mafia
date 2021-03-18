@@ -1,28 +1,34 @@
+
+from __future__ import annotations
 import uuid
 import asyncio
-from typing import Any, Set, Union
-
+from typing import Any, Set
 import mafia
 
-Room=Any
+class RoomNotFoundError(Exception):
+    def __init__(self,UUID):
+        self.uuid=UUID
+        super().__init__("Error! Room with RID:${self.uuid} not found!")
+
+    def __repr__(self):
+        return "Error! Room with RID:${self.uuid} not found!"
+
 class Rooms(set):
-    def fromUUID(self, UUID)->Union[Room,None]:
+    def fromUUID(self, UUID)->Room:
         for room in self:
             return room
-        return None
-    def hasRoom(self,uuid) -> bool:
-        if self.fromUUID(uuid)==None:
-            return False
-        else:
-            return True
+        raise RoomNotFoundError(UUID)
+
     def newRoom(self,*args):
         room=Room(*args)
         self.add(room)
+
     def stat(self:Set[Room]):
         data={"pck":"RoomData","rooms":[]}
         for room in self:
             data["rooms"].append(room.stat())
         return data
+
     def purgeIter(self):
         for x in self:
             if len(x.players)<=0:
@@ -41,34 +47,41 @@ class Room:
         self.__started=False
         self.__game=None
         rooms.add(self)
+
     def __repr__(self):
         return "Room %s,has %s players" % (self.name,len(self.players))
 
     def __del__(self):
         rooms.remove(self)
+
     def purgeIter(self):
         if len(self.players)<=0:
             del self
+
     def isStarted(self):
         return self.__started
+
     def join(self, player: mafia.PlayerRAW):
-        self.players.add(player)
+        if not player in self.players:
+            self.players.add(player)
 
     def leave(self, gid):
+        self.players.remove(self.playerByGid(gid))
         if self.ownergid == gid:
-            del self
-        else:
-            self.players.remove(self.playerByGid(gid))
+            rooms.remove(self)
+            
 
     def playerByGid(self, gid)->mafia.PlayerRAW:
         for player in self.players:
             if player.id == gid:
                 return player
         raise mafia.PlayerNotFoundError(gid)
+
     def getUUID(self):
         return self.__uuid
+
     def stat(self):
-        return {"name":self.name,"players":[[x.name,x.avatar] for x in self.players]}
+        return {"rid":str(self.getUUID()),"name":self.name,"players":[[x.name,x.avatar] for x in self.players]}
         
     def start(self, gid) -> bool:
         if self.ownergid == gid:
@@ -77,6 +90,7 @@ class Room:
                 self.__game=mafia.GameMainloop(self.players)
                 asyncio.ensure_future(self.__game.startMainloop())
         return False
+        
     def performRole(self,gid):
         pass
         #self.game

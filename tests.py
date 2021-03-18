@@ -23,7 +23,7 @@ class TestMafiaLogic(unittest.TestCase):
 class TestRoomConnection(unittest.TestCase):
   #setUp method is overridden from the parent class TestCase
   def setUp(self):
-    self.room=roomHandler.Room("myroom",123",100)
+    self.room=roomHandler.Room("myroom","123",100)
   def testSomething(self):
   #Each test method starts with the keyword test_
     self.assertEqual(self.room.isStarted(),False)

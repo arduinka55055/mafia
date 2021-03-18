@@ -11,8 +11,9 @@ methods to communicate
 |  <----------- Info response| #Number of players, their nicks and avatars
 |                            |
 |         negotiation        |
+|                            |
 |ClientHello ------------>   | #sending PlayerRAW
-|  <------------- ServerHello| #receiving ok status, client in list, start pinging
+|  <------------- ServerHello| #receiving ok status, start pinging
 |(periodical GetInfo)        |
 |                            |
 |          Game start        |
@@ -43,7 +44,7 @@ let packets = {
     //RoomID PlayerID GoogleID
     "GidInject": (meraw) => { return { gid: meraw.gid, nick: meraw.name, avatar: meraw.avatar } },
     "GetInfo": () => { return { pck: "GetInfo" } },
-    "ClientHello": (rid) => { return { pck: "ClientHello", rid: rid, avatar: avatar } },
+    "ClientHello": (rid) => { return { pck: "ClientHello", rid: rid } },
     "MakeRoom": (roomName, count) => { return { pck: "MakeRoom", data: [roomName, count] } },
     "Perform": (rid, pid) => { return { pck: "Perform", rid: rid, pid: pid } },
     "Vote": (rid, pid) => { return { pck: "Vote", rid: rid, pid: pid } }
@@ -57,17 +58,11 @@ class connector {//this class is more like abstract + WS logic
         this.me = meraw;
 
         this.sock.onopen = (e) => {
-            console.log("[open] Соединение установлено");
-            console.log("Отправляем данные на сервер");
             this.sock.send(JSON.stringify(makePacket(this.me)));
         }
-        this.sock.onping = (e) => {
-            console.log(e);
-        }
-        this.sock.onmessage = function (event) {
-            console.log(event.data);
-            this.consume(JSON.parse(event.data));
-            console.log(`[message] Данные получены с сервера: ${event.data}`);
+        this.sock.onmessage = (event) => {
+            this._consume(JSON.parse(event.data));
+            console.log(`Данные получены с сервера: ${event.data}`);
         };
 
         this.sock.onclose = function (event) {
@@ -77,6 +72,7 @@ class connector {//this class is more like abstract + WS logic
                 // например, сервер убил процесс или сеть недоступна
                 // обычно в этом случае event.code 1006
                 alert('[close] Соединение прервано');
+                //TODO:реконнект
             }
         };
 
@@ -84,44 +80,37 @@ class connector {//this class is more like abstract + WS logic
             alert(`[error] ${error.message}`);
         };
     }
-    consume(data) {
+    _consume(data) {
         console.error("NotImplementedConsumePacket!")
     }
     send(data) {
         this.sock.send(JSON.stringify(data));
     }
-    get(data,id) {
-        return new Promise(function () {
-
-            var id =(e)=>{console.log(e);};
-            this.sock.addEventListener("message",id)
-            this.consume(data);
+    async get(pck,epck=null) {
+        var self=this;
+        return new Promise((resolve,reject)=> {
+            console.log(self);
+            self.sock.addEventListener('message', function (e) {
+                var json=JSON.parse(e.data);
+                console.log(json);
+                if(json.pck==pck){
+                    resolve(json);
+                }
+                else if(json.pck=="Error"){
+                    if(!epck || json.msg==epck) reject();
+                }
+            });
         });
     }
 }
-/*
-function connect() {
-    return new Promise(function(resolve, reject) {
-        var server = new WebSocket('ws://mysite:1234');
-        server.onopen = function() {
-            resolve(server);
-        };
-        server.onerror = function(err) {
-            reject(err);
-        };
 
-    });
-}
-*/
 class ReceiverLogic extends connector {
     constructor(sock, meraw) {
         super(sock, meraw);
     }
-    consume(data) {
-        data = JSON.parse(data);
-        console.warn("data");//ackRoomID
-        if (data.pck == "aRID") {
-            return
+    _consume(data) {
+        if (data.pck == "Info") {
+            console.log(data);
         }
         else if (data.pck == "RSV") { }
         else if (data.pck == "RSV") { }
@@ -135,31 +124,25 @@ class logic extends ReceiverLogic {
     }
     async newRoom(name, count) {
         this.send(makePacket(this.me, packets.MakeRoom(name, count)));
-        return await 
+        return await this.get("ack");
     }
-    getInfo(rid) {
+    async connect(rid){
+        this.send(makePacket(this.me, packets.ClientHello(rid)));
+        var result= await this.get("ServerHello","RoomNotFound");
+        console.log(result);
+        return result
+    }
+    async getInfo(rid) {
         this.send(makePacket(this.me, packets.GetInfo(rid)));
+        var result= await this.get("Info");
+        return result
     }
-}
-/*
-class Employee extends Person {
-    constructor(name, salary) {
-        super(name);
-        this.salary = salary;
-    }
-}
 
-const p1 = new Person('Nick');
-// теперь можно сделать следующее:
-console.log(
-    `name: ${p1.name}`,
-    `eyes: ${p1.eyes}`,
-    `mouth: ${p1.mouth}`,
-    p1.sleep()
-);
-*/
+}
 
 var socket = new logic(new WebSocket("ws://localhost:8000/pool"), new MeRAW(1234, "gamer", "http://example.com"))
-var gid = socket.newRoom("foo", 100);
-socket.getInfo();
-socket.connect(gid);
+socket.newRoom("foo", 100).then(e=>{
+    socket.getInfo().then(f=>{
+        socket.connect(f.rooms[0].rid)
+    })
+});

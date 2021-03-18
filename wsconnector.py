@@ -1,8 +1,9 @@
+from __future__ import annotations
 import os
 import io
 import json
 import random
-from typing import Union
+from typing import Any, Union
 import urllib
 import asyncio
 import datetime
@@ -17,6 +18,7 @@ import tornado.websocket
 import user_agents
 
 import roomHandler
+import mafia
 """
 basic connection:
 
@@ -45,7 +47,7 @@ class ClientPacket:
         self.gid = data.get("gid")         # Google ID
         self.nick = data.get("nick")       # Nickname
         self.ava = data.get("avatar")      # Avatar
-        self.pck = data.get("pck")         # Reserved
+        self.pck = data.get("pck")         # Packet type
         self.target = data.get("uuid")     # Unique ID (not GID) of target
         self.game = data.get("gameuuid")   # Unique ID of game room
         self.data = data.get("data")       # Misc data
@@ -53,29 +55,45 @@ class ClientPacket:
     def validate(self) -> bool:
         return False if self.gid == None or self.nick == None else True
 
-    def consumePacket(self) -> Union[bytes, None]:
-        if self.pck == "MakeRoom":
-            roomHandler.rooms.newRoom(self.data[0], self.gid, self.data[1])
+    def consumePacket(self,conn:WebsocketConnector) -> Union[bytes, None]:
+        try:
+            if self.pck == "MakeRoom":
+                roomHandler.rooms.newRoom(self.data[0], self.gid, self.data[1])
 
-        elif self.pck == "GetInfo":
-            return json_encode(roomHandler.rooms.stat()).encode()
+            elif self.pck == "GetInfo":
+                roomreply=roomHandler.rooms.stat()
+                roomreply["pck"]="Info"
+                return json_encode(roomreply).encode()
 
-        elif self.pck == "startgame":
-            room = roomHandler.rooms.fromUUID(self.game)
-            room.start(self.gid)
-            clients.broadcast({"type": "started", "uuid": room.getUUID()})
+            elif self.pck == "ClientHello":
+                session=roomHandler.rooms.fromUUID(self.game)
+                player=mafia.PlayerRAW(self.nick,self.gid,self.ava)
+                session.join(player)
+                conn.gameLink(self.game,self.gid)
+                return '{"pck":"ServerHello"}'.encode()
 
-        elif self.pck == "role":
-            room = roomHandler.rooms.fromUUID(self.game)
-            room.performRole(self.gid)
+            elif self.pck == "startgame":
+                room = roomHandler.rooms.fromUUID(self.game)
+                room.start(self.gid)
+                clients.broadcast({"type": "started", "uuid": room.getUUID()})
+
+            elif self.pck == "role":
+                room = roomHandler.rooms.fromUUID(self.game)
+                room.performRole(self.gid)
+
+        except mafia.PlayerNotFoundError:
+            return ('{"pck":"Error","id":"%s","msg":"PlayerNotFound"}' % self.target).encode()
+
+        except roomHandler.RoomNotFoundError:
+            return ('{"pck":"Error","id":"%s","msg":"RoomNotFound"}' % self.game).encode()
 
 
 class Clients(set):
+
     def broadcast(self, message):
         for client in self:
             message = json.dumps(message)
             client.write_message(message)
-
 
 clients = Clients()
 
@@ -92,7 +110,7 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
         if not data.validate():
             self.close(reason="Invalid data, relogin!")
             return
-        ret = data.consumePacket()
+        ret = data.consumePacket(self)
         if ret:
             self.write_message(ret)
         else:
@@ -103,9 +121,19 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
         return super().on_pong(data)
 
     def on_close(self):
-        clients.remove(self)
+        for client in clients:
+            if client == self:
+                client.destroy()
+                break 
         clients.broadcast("player problems!")
         print("WebSocket closed")
 
     def check_origin(self, origin):
         return True
+
+    def destroy(self):
+        roomHandler.rooms.fromUUID(self.gameuuid).leave(self.gamegid)
+        clients.remove(self)
+    def gameLink(self,UUID,gid):
+        self.gameuuid=UUID
+        self.gamegid=gid

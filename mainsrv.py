@@ -117,7 +117,7 @@ def app()->tornado.web.Application:
         (r"/css", Mainframe.stylesheet,{'path': root_path + "/static/"}),#TODO Макс вставь папку где стили лежат
         (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': root_path + "/static/"}),
         (r'/img/(.*)', tornado.web.StaticFileHandler, {'path': root_path + "/templates/front-end/img/"}),
-        (r'/(.*)', tornado.web.StaticFileHandler, {'path': root_path + "/templates/front-end/"}),
+        (r'/(.*)', tornado.web.StaticFileHandler, {'path': root_path + "/front-end/"}),
     ],
         cookie_secret=cookie_secret,
         xsrf_cookies=False,
