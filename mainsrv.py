@@ -19,6 +19,7 @@ import random
 import urllib
 import asyncio
 import datetime
+from wsconnector import WebsocketConnector
 import aiomysql
 #from wsconnector import WebsocketHandler
 import tornado.ioloop
@@ -30,13 +31,21 @@ import user_agents
 from http.cookies import Morsel
 Morsel._reserved["samesite"] = "SameSite"
 
+'''
+Site navigation plan:
 
+Landing -> oauth2login - | set cookie uuid
+   \\----> email login - |
+                         |
+        lobby selector<--#
+        \\//
+game itself        
+'''
 class Mainframe():
     class index(tornado.web.RequestHandler):
         async def get(self):
             self.write(tornado.template.Loader(os.path.dirname(
                 __file__) + "/templates/front-end/").load("registration.html").generate())
-
     class account(tornado.web.RequestHandler,tornado.auth.GoogleOAuth2Mixin):
         async def get(self):
             self.settings["google_oauth"]={"key":"801663922478-sg6opa1be1ur4vi5levltb957414auq1.apps.googleusercontent.com","secret":"KpAmXqKa1tEP2e4V6Yml4TEV"}
@@ -68,20 +77,21 @@ class Mainframe():
         async def get(self):
             self.redirect("/?started")
 
-    class stylesheet(tornado.web.RequestHandler):
-        def prepare(self):
-            self.set_header("Content-Type", 'text/css; charset="utf-8"')
+    class stylesheet(tornado.web.StaticFileHandler):
+        def initialize(self,path):
+            self.dirname, self.filename = os.path.split(path)
+            self.absolute_path=path
+            self.root=self.dirname
+            super(tornado.web.StaticFileHandler,self).initialize()
 
-        def get(self):
+        async def get(self, path=None, include_body=True):
             print("МОБІЛКА" if user_agents.parse(
                 self.request.headers["User-Agent"]).is_mobile else "комп")
             if user_agents.parse(self.request.headers["User-Agent"]).is_mobile:
-                self.write(open(os.path.dirname(__file__) +
-                                "/static/android.css").read())
-            else:
-                self.write(open(os.path.dirname(__file__) +
-                                "/static/index.css").read())
 
+                await super().get("android.css", include_body)#TODO Макс поменяй названия
+            else:
+                await super().get("computer.css", include_body)#TODO Макс поменяй названия
     class favicon(tornado.web.RequestHandler):
         def prepare(self):
             self.set_header("Content-Type", 'image/ico; charset="utf-8"')
@@ -98,21 +108,24 @@ class MyStaticFileHandler(tornado.web.StaticFileHandler):
         self.set_header('Cache-Control',
                         'no-store, no-cache, must-revalidate, max-age=0')
 
-
 def app()->tornado.web.Application:
+    root_path=os.path.dirname(__file__)
     return tornado.web.Application([
         (r"/", Mainframe.index),
-        (r"/css", Mainframe.stylesheet),
         (r"/account", Mainframe.account),
-        (r"/favicon.ico", Mainframe.favicon),
-        (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': os.path.dirname(__file__) +
-                                                          "/static/"})
+        (r"/pool", WebsocketConnector),
+        (r"/css", Mainframe.stylesheet,{'path': root_path + "/static/"}),#TODO Макс вставь папку где стили лежат
+        (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': root_path + "/static/"}),
+        (r'/img/(.*)', tornado.web.StaticFileHandler, {'path': root_path + "/templates/front-end/img/"}),
+        (r'/(.*)', tornado.web.StaticFileHandler, {'path': root_path + "/templates/front-end/"}),
     ],
         cookie_secret=cookie_secret,
         xsrf_cookies=False,
         xsrf_cookie_kwargs=dict(samesite="Lax"),
-        hsts=True,debug=True
-        # default_handler_class=Mainframe.page_not_found
+        hsts=True,debug=True,
+        websocket_ping_interval=2,
+        websocket_ping_timeout=5
+
     )
 
 http_server = tornado.httpserver.HTTPServer(app(), xheaders=True)
