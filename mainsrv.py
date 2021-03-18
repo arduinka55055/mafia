@@ -123,8 +123,8 @@ def app()->tornado.web.Application:
         xsrf_cookies=False,
         xsrf_cookie_kwargs=dict(samesite="Lax"),
         hsts=True,debug=True,
-        websocket_ping_interval=5,
-        websocket_ping_timeout=2
+        websocket_ping_interval=2,
+        websocket_ping_timeout=5
 
     )
 

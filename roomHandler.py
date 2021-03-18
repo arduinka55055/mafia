@@ -1,6 +1,6 @@
 import uuid
 import asyncio
-from typing import Any, Union
+from typing import Any, Set, Union
 
 import mafia
 
@@ -18,21 +18,37 @@ class Rooms(set):
     def newRoom(self,*args):
         room=Room(*args)
         self.add(room)
-
+    def stat(self:Set[Room]):
+        data={"pck":"RoomData","rooms":[]}
+        for room in self:
+            data["rooms"].append(room.stat())
+        return data
+    def purgeIter(self):
+        for x in self:
+            if len(x.players)<=0:
+                del x
+        
 rooms = Rooms()
 
 class Room:
-    def __init__(self, ownergid, playersLimit):
+    def __init__(self, name,ownergid, playersLimit):
+        rooms.purgeIter()
+        self.name=name
         self.__uuid = uuid.uuid1()
         self.ownergid = ownergid
         self.playersLimit = playersLimit
-        self.players = set()
+        self.players: Set[mafia.PlayerRAW] = set()
         self.__started=False
         self.__game=None
         rooms.add(self)
+    def __repr__(self):
+        return "Room %s,has %s players" % (self.name,len(self.players))
 
     def __del__(self):
         rooms.remove(self)
+    def purgeIter(self):
+        if len(self.players)<=0:
+            del self
     def isStarted(self):
         return self.__started
     def join(self, player: mafia.PlayerRAW):
@@ -44,13 +60,16 @@ class Room:
         else:
             self.players.remove(self.playerByGid(gid))
 
-    def playerByGid(self, gid):
+    def playerByGid(self, gid)->mafia.PlayerRAW:
         for player in self.players:
             if player.id == gid:
                 return player
-        return None
+        raise mafia.PlayerNotFoundError(gid)
     def getUUID(self):
         return self.__uuid
+    def stat(self):
+        return {"name":self.name,"players":[[x.name,x.avatar] for x in self.players]}
+        
     def start(self, gid) -> bool:
         if self.ownergid == gid:
             if len(self.players) > mafia.playersMin:

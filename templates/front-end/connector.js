@@ -41,13 +41,17 @@ class MeRAW {
 }
 let packets = {
     //RoomID PlayerID GoogleID
-    "GetRooms": () => { return { pck: "GetRooms" } },
-    "GetInfo": (rid) => { return { pck: "GetInfo", data: { rid: rid } }; },
-    "ClientHello": (rid, gid, nick, avatar) => { return { pck: "ClientHello", data: { rid: rid, gid: gid, nick: nick, avatar: avatar } }; },
-    "Perform": (rid, gid, pid) => { return { pck: "Perform", data: { rid: rid, gid: gid, pid: pid } }; },
-    "Vote": (rid, gid, pid) => { return { pck: "Vote", data: { rid: rid, gid: gid, pid: pid } }; }
+    "GidInject": (meraw) => { return { gid: meraw.gid, nick: meraw.name, avatar: meraw.avatar } },
+    "GetInfo": () => { return { pck: "GetInfo" } },
+    "ClientHello": (rid) => { return { pck: "ClientHello", rid: rid, avatar: avatar } },
+    "MakeRoom": (roomName, count) => { return { pck: "MakeRoom", data: [roomName, count] } },
+    "Perform": (rid, pid) => { return { pck: "Perform", rid: rid, pid: pid } },
+    "Vote": (rid, pid) => { return { pck: "Vote", rid: rid, pid: pid } }
 }
-class connector {
+function makePacket(meraw, type) {
+    return { ...packets.GidInject(meraw), ...type };
+}
+class connector {//this class is more like abstract + WS logic
     constructor(sock, meraw) {
         this.sock = sock
         this.me = meraw;
@@ -55,11 +59,15 @@ class connector {
         this.sock.onopen = (e) => {
             console.log("[open] Соединение установлено");
             console.log("Отправляем данные на сервер");
-            this.sock.send("Меня зовут Джон");
+            this.sock.send(JSON.stringify(makePacket(this.me)));
         }
-
+        this.sock.onping = (e) => {
+            console.log(e);
+        }
         this.sock.onmessage = function (event) {
-            alert(`[message] Данные получены с сервера: ${event.data}`);
+            console.log(event.data);
+            this.consume(JSON.parse(event.data));
+            console.log(`[message] Данные получены с сервера: ${event.data}`);
         };
 
         this.sock.onclose = function (event) {
@@ -76,8 +84,61 @@ class connector {
             alert(`[error] ${error.message}`);
         };
     }
-    getInfo(rid, callback) {
-        this.sock.send(JSON.stringify(packets.GetInfo(rid)));
+    consume(data) {
+        console.error("NotImplementedConsumePacket!")
+    }
+    send(data) {
+        this.sock.send(JSON.stringify(data));
+    }
+    get(data,id) {
+        return new Promise(function () {
+
+            var id =(e)=>{console.log(e);};
+            this.sock.addEventListener("message",id)
+            this.consume(data);
+        });
+    }
+}
+/*
+function connect() {
+    return new Promise(function(resolve, reject) {
+        var server = new WebSocket('ws://mysite:1234');
+        server.onopen = function() {
+            resolve(server);
+        };
+        server.onerror = function(err) {
+            reject(err);
+        };
+
+    });
+}
+*/
+class ReceiverLogic extends connector {
+    constructor(sock, meraw) {
+        super(sock, meraw);
+    }
+    consume(data) {
+        data = JSON.parse(data);
+        console.warn("data");//ackRoomID
+        if (data.pck == "aRID") {
+            return
+        }
+        else if (data.pck == "RSV") { }
+        else if (data.pck == "RSV") { }
+        else if (data.pck == "RSV") { }
+        else { console.warn("Unknown type packet received!"); }
+    }
+}
+class logic extends ReceiverLogic {
+    constructor(sock, meraw) {
+        super(sock, meraw);
+    }
+    async newRoom(name, count) {
+        this.send(makePacket(this.me, packets.MakeRoom(name, count)));
+        return await 
+    }
+    getInfo(rid) {
+        this.send(makePacket(this.me, packets.GetInfo(rid)));
     }
 }
 /*
@@ -98,5 +159,7 @@ console.log(
 );
 */
 
-let socket = new connector(new WebSocket("ws://localhost:8000/pool"), new MeRAW(1234, "gamer", "http://example.com"))
-
+var socket = new logic(new WebSocket("ws://localhost:8000/pool"), new MeRAW(1234, "gamer", "http://example.com"))
+var gid = socket.newRoom("foo", 100);
+socket.getInfo();
+socket.connect(gid);

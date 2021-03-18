@@ -4,12 +4,18 @@ import uuid
 
 playersMin = 6
 
+class PlayerNotFoundError(Exception):
+    def __init__(self,UUID):
+        self.uuid=UUID
+        super().__init__("Error! Player with UUID:${self.uuid} not found!")
+    def __repr__(self):
+        return "Error! Player with UUID:${self.uuid} not found!"
 
 class PlayerRAW:
-    def __init__(self, name: str, gid: str):  # на просто id мы обосремося
+    def __init__(self, name: str, gid: str, avatar: str=None):  # на просто id мы обосремося
         self.name = name
         self.id = gid  # ця штука заповнюється даними реєстрації на стороні серверу
-
+        self.avatar = avatar #only for other players. doesnt impact logic
 
 class Player(PlayerRAW):
     def __init__(self, raw: PlayerRAW, role: str):
@@ -29,8 +35,8 @@ class Player(PlayerRAW):
     def __repr__(self):
         return "Player:%s, Role:%s" % (self.getName(), self.getRole())
 
-    def getRole(self) -> Union[str, None]:
-        return None if self.__killed else self.__role
+    def getRole(self) -> str:
+        return "x" if self.__killed else self.__role
 
     def getId(self) -> str:
         return self.__id
@@ -73,6 +79,7 @@ class Players:
             ['m', 'm', 'm', 'p', 'p', 'p', 'p', 'p',
                 'p', 'p', 's', 'k', 'd', 'g'],  # 14
             # Mafia Person Doctor Killer Sheriff Girl
+            # x means killed
         ]
         self.players = []
         choosed = cardlist[len(data)-playersMin]
@@ -102,11 +109,11 @@ class Players:
             counter += 1
         return counter
 
-    def getByUUID(self, UUID: str) -> Union[Player, None]:
+    def getByUUID(self, UUID: str) -> Player:
         for player in self.players:
             if player.getUUID() == UUID:
                 return player
-        return None
+        raise PlayerNotFoundError(UUID)
 
     def kill(self, player: Player):
         player.setKilled(True)
