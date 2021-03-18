@@ -11,10 +11,20 @@
              <h2>404</h2>
              <h4>Упс... Сторінка не знайдена</h4>
              <p>Нажаль сторінка на якій ви були зникла із-за технічної проблеми.
-             Приносимо свої вибачення,звертайтесь до нашої тех-підтримки.</p>
-             <a href="#">Головна сторінка</a>
+             Перевірте своє інтернет-підключення,якщо ні,то звертайтесь до нашої тех-підтримки.</p>
+             <a href="landingPage.html">Головна сторінка</a>
         </div>
     </div>
+    <script type="text/javascript">
+    var container = document.getElementById('container');
+    window.onmousemove = function(f){
+        var x  = -f.clientX / 5;
+        var y = -f.clientY / 5;
+        container.style.backgroundPositionX = x + 'px';
+        container.style.backgroundPositionY = y + 'px';
+    }
+    
+    </script>
 </body>
 </html>
              
