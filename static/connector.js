@@ -102,7 +102,7 @@ class connector {//this class is more like abstract + WS logic
                     this.removeEventListener('message',shit,false);
                 }
                 else if(json.pck=="Error"){
-                    if(!epck || json.msg==epck) reject();this.removeEventListener('message',shit,false);
+                    if(!epck || json.msg==epck) reject(json);this.removeEventListener('message',shit,false);
                 }
             });
         });
@@ -148,12 +148,18 @@ class logic extends ReceiverLogic {
 }
 var socket = new logic(new WebSocket("ws://localhost:8000/pool"), new MeRAW(1234, "gamer", "http://example.com"))
 socket.onload=()=>{
+    console.log("Загрузилися!");
     socket.newRoom("foo", 100).then(e=>{
+        console.log("Створили кімнату!",e);
         socket.getInfo().then(f=>{
+            console.log("Отримали інфу!",f);
             socket.connect(f.rooms[0].rid).then(g=>{
-                console.log("STARTING!");
-                socket.start(f.rooms[0].rid);
-                console.log(g);
+                console.log("Зайшли в кімнату!", g);
+                socket.start(f.rooms[0].rid).then((h)=>{
+                    console.log("Отримали",h);
+                }).catch((h)=>{
+                    console.log("Сука, їбана помилка",h);
+                });
             });
         });
     });

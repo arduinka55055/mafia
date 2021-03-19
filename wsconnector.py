@@ -88,10 +88,10 @@ class ClientPacket:
             return ('{"pck":"Error","id":"%s","msg":"RoomNotFound"}' % self.game).encode()
 
         except roomHandler.NoEnoughPlayersError:
-            return '{"pck":"Error","msg":"NoEnoughPlayers"}'.encode()
+            return '{"pck":"Error","msg":"GameStartError","spec":"NoEnoughPlayers"}'.encode()
 
         except roomHandler.PermissionDeniedError:
-            return '{"pck":"Error","msg":"PermissionDenied"}'.encode()
+            return '{"pck":"Error","msg":"GameStartError","spec":"PermissionDenied"}'.encode()
 
 class Clients(set):
 
