@@ -75,7 +75,7 @@ class ClientPacket:
             elif self.pck == "StartGame":
                 room = roomHandler.rooms.fromUUID(self.game)
                 room.start(self.gid)
-                clients.broadcast({"pck": "GameStarted", "rid": room.getUUID()})
+                clients.broadcast({"pck": "GameStarted", "rid": str(room.getUUID())})
 
             elif self.pck == "role":
                 room = roomHandler.rooms.fromUUID(self.game)

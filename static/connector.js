@@ -48,7 +48,7 @@ let packets = {
     "GetInfo": () => { return { pck: "GetInfo" } },
     "ClientHello": (rid) => { return { pck: "ClientHello", rid: rid } },
     "MakeRoom": (roomName, count) => { return { pck: "MakeRoom", data: [roomName, count] } },
-    "StartGame": (rid) => {return { pck:"StartGame",rid:rid }} ,
+    "StartGame": (rid) => { return { pck: "StartGame", rid: rid } },
     "Perform": (rid, pid) => { return { pck: "Perform", rid: rid, pid: pid } },
     "Vote": (rid, pid) => { return { pck: "Vote", rid: rid, pid: pid } }
 }
@@ -86,23 +86,23 @@ class connector {//this class is more like abstract + WS logic
     _consume(data) {
         console.error("NotImplementedConsumePacket!")
     }
-    onload(){
+    onload() {
         console.error("NotImplementedOnload!")
     }
     send(data) {
         this.sock.send(JSON.stringify(data));
     }
-    async get(pck,epck=null) {
-        var self=this;
-        return new Promise((resolve,reject)=> {
+    async get(pck, epck = null) {
+        var self = this;
+        return new Promise((resolve, reject) => {
             self.sock.addEventListener('message', function shit(e) {
-                var json=JSON.parse(e.data);
-                if(json.pck==pck){
+                var json = JSON.parse(e.data);
+                if (json.pck == pck) {
                     resolve(json);
-                    this.removeEventListener('message',shit,false);
+                    this.removeEventListener('message', shit, false);
                 }
-                else if(json.pck=="Error"){
-                    if(!epck || json.msg==epck) reject(json);this.removeEventListener('message',shit,false);
+                else if (json.pck == "Error") {
+                    if (!epck || json.msg == epck) reject(json); this.removeEventListener('message', shit, false);
                 }
             });
         });
@@ -114,8 +114,8 @@ class ReceiverLogic extends connector {
         super(sock, meraw);
     }
     _consume(data) {
-        if (data.pck == "GameStart") {
-            console.log("Почалася нова гра за айді:"+data);
+        if (data.pck == "GameStarted") {
+            console.log("Почалася нова гра за айді:" + data);
         }
         else if (data.pck == "RSV") { }
         else if (data.pck == "RSV") { }
@@ -130,37 +130,42 @@ class logic extends ReceiverLogic {
         this.send(makePacket(this.me, packets.MakeRoom(name, count)));
         return await this.get("ack");
     }
-    async connect(rid){
+    async connect(rid) {
         this.send(makePacket(this.me, packets.ClientHello(rid)));
-        var result= await this.get("ServerHello","RoomNotFound");
+        var result = await this.get("ServerHello", "RoomNotFound");
         return result
     }
     async getInfo(rid) {
         this.send(makePacket(this.me, packets.GetInfo(rid)));
-        var result= await this.get("Info");
+        var result = await this.get("Info");
         return result
     }
     async start(rid) {
         this.send(makePacket(this.me, packets.StartGame(rid)));
-        var result= await this.get("GameStarted","GameStartError");//too few players or denied
+        var result = await this.get("GameStarted", "GameStartError");//too few players or denied
         return result
     }
 }
-var socket = new logic(new WebSocket("ws://localhost:8000/pool"), new MeRAW(1234, "gamer", "http://example.com"))
-socket.onload=()=>{
+async function unittest() {
     console.log("Загрузилися!");
-    socket.newRoom("foo", 100).then(e=>{
-        console.log("Створили кімнату!",e);
-        socket.getInfo().then(f=>{
-            console.log("Отримали інфу!",f);
-            socket.connect(f.rooms[0].rid).then(g=>{
-                console.log("Зайшли в кімнату!", g);
-                socket.start(f.rooms[0].rid).then((h)=>{
-                    console.log("Отримали",h);
-                }).catch((h)=>{
-                    console.log("Сука, їбана помилка",h);
-                });
-            });
-        });
+    d = await socket.getInfo()
+    if (d.rooms.length == 0){
+    e = await socket.newRoom("foo", 100)
+    console.log("Створили кімнату!", e);
+    }
+    f = await socket.getInfo()
+    console.log("Отримали інфу!", f);
+
+    g = await socket.connect(f.rooms[0].rid)
+    console.log("Зайшли в кімнату!", g);
+
+    socket.start(f.rooms[0].rid).then((h) => {
+        console.log("Отримали", h);
+    }).catch((h) => {
+        console.log("Сука, їбана помилка", h);
     });
+}
+var socket = new logic(new WebSocket("ws://localhost:8000/pool"), new MeRAW(Math.random(), "gamer", "http://example.com"))
+socket.onload = () => {
+    unittest();
 }

@@ -104,7 +104,7 @@ class Room:
         
     def start(self, gid):
         if self.ownergid == gid:
-            if len(self.players) > mafia.playersMin:
+            if len(self.players) >= mafia.playersMin:
                 self.__started=True
                 self.__game=mafia.GameMainloop(self.players)
                 asyncio.ensure_future(self.__game.startMainloop())
