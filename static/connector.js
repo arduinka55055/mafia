@@ -17,6 +17,8 @@ methods to communicate
 |(periodical GetInfo)        |
 |                            |
 |          Game start        |
+|                            |
+|StartGame master request--> |
 |  <--------------- StartGame| #receiving targets UUID's, nicks, avatars, my role, creating me class
 |Reply to check connection-> |
 |           .....            |
@@ -46,6 +48,7 @@ let packets = {
     "GetInfo": () => { return { pck: "GetInfo" } },
     "ClientHello": (rid) => { return { pck: "ClientHello", rid: rid } },
     "MakeRoom": (roomName, count) => { return { pck: "MakeRoom", data: [roomName, count] } },
+    "StartGame": (rid) => {return { pck:"StartGame",rid:rid }} ,
     "Perform": (rid, pid) => { return { pck: "Perform", rid: rid, pid: pid } },
     "Vote": (rid, pid) => { return { pck: "Vote", rid: rid, pid: pid } }
 }
@@ -59,10 +62,10 @@ class connector {//this class is more like abstract + WS logic
 
         this.sock.onopen = (e) => {
             this.sock.send(JSON.stringify(makePacket(this.me)));
+            this.onload();
         }
         this.sock.onmessage = (event) => {
             this._consume(JSON.parse(event.data));
-            console.log(`Данные получены с сервера: ${event.data}`);
         };
 
         this.sock.onclose = function (event) {
@@ -83,21 +86,23 @@ class connector {//this class is more like abstract + WS logic
     _consume(data) {
         console.error("NotImplementedConsumePacket!")
     }
+    onload(){
+        console.error("NotImplementedOnload!")
+    }
     send(data) {
         this.sock.send(JSON.stringify(data));
     }
     async get(pck,epck=null) {
         var self=this;
         return new Promise((resolve,reject)=> {
-            console.log(self);
-            self.sock.addEventListener('message', function (e) {
+            self.sock.addEventListener('message', function shit(e) {
                 var json=JSON.parse(e.data);
-                console.log(json);
                 if(json.pck==pck){
                     resolve(json);
+                    this.removeEventListener('message',shit,false);
                 }
                 else if(json.pck=="Error"){
-                    if(!epck || json.msg==epck) reject();
+                    if(!epck || json.msg==epck) reject();this.removeEventListener('message',shit,false);
                 }
             });
         });
@@ -109,13 +114,12 @@ class ReceiverLogic extends connector {
         super(sock, meraw);
     }
     _consume(data) {
-        if (data.pck == "Info") {
-            console.log(data);
+        if (data.pck == "GameStart") {
+            console.log("Почалася нова гра за айді:"+data);
         }
         else if (data.pck == "RSV") { }
         else if (data.pck == "RSV") { }
         else if (data.pck == "RSV") { }
-        else { console.warn("Unknown type packet received!"); }
     }
 }
 class logic extends ReceiverLogic {
@@ -129,7 +133,6 @@ class logic extends ReceiverLogic {
     async connect(rid){
         this.send(makePacket(this.me, packets.ClientHello(rid)));
         var result= await this.get("ServerHello","RoomNotFound");
-        console.log(result);
         return result
     }
     async getInfo(rid) {
@@ -137,12 +140,21 @@ class logic extends ReceiverLogic {
         var result= await this.get("Info");
         return result
     }
-
+    async start(rid) {
+        this.send(makePacket(this.me, packets.StartGame(rid)));
+        var result= await this.get("GameStarted","GameStartError");//too few players or denied
+        return result
+    }
 }
-
 var socket = new logic(new WebSocket("ws://localhost:8000/pool"), new MeRAW(1234, "gamer", "http://example.com"))
-socket.newRoom("foo", 100).then(e=>{
-    socket.getInfo().then(f=>{
-        socket.connect(f.rooms[0].rid)
-    })
-});
+socket.onload=()=>{
+    socket.newRoom("foo", 100).then(e=>{
+        socket.getInfo().then(f=>{
+            socket.connect(f.rooms[0].rid).then(g=>{
+                console.log("STARTING!");
+                socket.start(f.rooms[0].rid);
+                console.log(g);
+            });
+        });
+    });
+}

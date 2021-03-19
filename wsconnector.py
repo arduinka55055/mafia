@@ -72,10 +72,10 @@ class ClientPacket:
                 conn.gameLink(self.game,self.gid)
                 return '{"pck":"ServerHello"}'.encode()
 
-            elif self.pck == "startgame":
+            elif self.pck == "StartGame":
                 room = roomHandler.rooms.fromUUID(self.game)
                 room.start(self.gid)
-                clients.broadcast({"type": "started", "uuid": room.getUUID()})
+                clients.broadcast({"pck": "GameStarted", "rid": room.getUUID()})
 
             elif self.pck == "role":
                 room = roomHandler.rooms.fromUUID(self.game)
@@ -87,6 +87,11 @@ class ClientPacket:
         except roomHandler.RoomNotFoundError:
             return ('{"pck":"Error","id":"%s","msg":"RoomNotFound"}' % self.game).encode()
 
+        except roomHandler.NoEnoughPlayersError:
+            return '{"pck":"Error","msg":"NoEnoughPlayers"}'.encode()
+
+        except roomHandler.PermissionDeniedError:
+            return '{"pck":"Error","msg":"PermissionDenied"}'.encode()
 
 class Clients(set):
 
@@ -134,6 +139,7 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
     def destroy(self):
         roomHandler.rooms.fromUUID(self.gameuuid).leave(self.gamegid)
         clients.remove(self)
+
     def gameLink(self,UUID,gid):
         self.gameuuid=UUID
         self.gamegid=gid

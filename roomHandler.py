@@ -13,6 +13,25 @@ class RoomNotFoundError(Exception):
     def __repr__(self):
         return "Error! Room with RID:${self.uuid} not found!"
 
+class PermissionDeniedError(Exception):
+    def __init__(self,UUID,role=None):
+        self.uuid=UUID
+        self.role=role
+        super().__init__("Error! Player ${self.uuid} can't do that!")
+
+    def __repr__(self):
+        return "Error! Player ${self.uuid} can't do that!"
+
+class NoEnoughPlayersError(Exception):
+    def __init__(self,UUID,count):
+        self.uuid=UUID
+        self.count=count
+        super().__init__("Error! No enough players in ${self.uuid} (${self.count}) to start!")
+
+    def __repr__(self):
+        return "Error! No enough players in ${self.uuid} (${self.count}) to start!"
+
+
 class Rooms(set):
     def fromUUID(self, UUID)->Room:
         for room in self:
@@ -83,13 +102,17 @@ class Room:
     def stat(self):
         return {"rid":str(self.getUUID()),"name":self.name,"players":[[x.name,x.avatar] for x in self.players]}
         
-    def start(self, gid) -> bool:
+    def start(self, gid):
         if self.ownergid == gid:
             if len(self.players) > mafia.playersMin:
                 self.__started=True
                 self.__game=mafia.GameMainloop(self.players)
                 asyncio.ensure_future(self.__game.startMainloop())
-        return False
+                return
+            else:
+                raise NoEnoughPlayersError(self.getUUID(),len(self.players))    
+        raise PermissionDeniedError(self.getUUID())
+
         
     def performRole(self,gid):
         pass
