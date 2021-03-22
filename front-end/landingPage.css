@@ -93,7 +93,7 @@ header .toggle, img
      justify-content: center;
      align-items: center;
      flex-direction: column;
-     max-width: 50px; 
+     max-width: 100px; 
 }
 .media li
 {
@@ -105,13 +105,13 @@ header .toggle, img
 }
 .media li a img
 {
-     transform: scale(0.6);
+      transform: scale(0.7);
 }
 .slide
 {
      position: absolute;
      bottom: 50px;
-     left: calc(50% - 250px / 2);
+     left: calc(50% - 250px / 2);  
      width: 250px;
      height: 150px;
      background: url(img/indexmafia.jpg);
@@ -125,7 +125,7 @@ header .toggle, img
      {
           background-position: top;
      }
-     46%
+     45%,55%
      {
           background-position: bottom;
      }
@@ -162,7 +162,7 @@ header .toggle, img
      top: 30px;
      right: 30px;
      cursor: pointer;
-     filter: invert(1);
+     /* filter: invert(1);*/
      max-width: 32px;
 }
 @media (max-width: 990px)
