@@ -34,6 +34,9 @@ methods to communicate
 |  <---------------VoteResult| #killed player
 |                            |
 |#############################
+
+TODO: Add to docs
+GetTargets
 */
 class MeRAW {
     constructor(gid, name, avatar) {
@@ -46,6 +49,7 @@ let packets = {
     //RoomID PlayerID GoogleID
     "GidInject": (meraw) => { return { gid: meraw.gid, nick: meraw.name, avatar: meraw.avatar } },
     "GetInfo": () => { return { pck: "GetInfo" } },
+    "GetTargets": (rid) => { return { pck: "GetTargets", rid:rid } },
     "ClientHello": (rid) => { return { pck: "ClientHello", rid: rid } },
     "MakeRoom": (roomName, count) => { return { pck: "MakeRoom", data: [roomName, count] } },
     "StartGame": (rid) => { return { pck: "StartGame", rid: rid } },
@@ -75,7 +79,7 @@ class connector {//this class is more like abstract + WS logic
                 // например, сервер убил процесс или сеть недоступна
                 // обычно в этом случае event.code 1006
                 alert('[close] Соединение прервано');
-                //TODO:реконнект
+                //TODO:реконнект 
             }
         };
 
@@ -115,9 +119,11 @@ class ReceiverLogic extends connector {
     }
     _consume(data) {
         if (data.pck == "GameStarted") {
-            console.log("Почалася нова гра за айді:" + data);
+            console.log("Почалася нова гра за айді:", data.rid);
         }
-        else if (data.pck == "RSV") { }
+        else if (data.pck == "DoPerform") { 
+            console.log("Треба ходити!");
+        }
         else if (data.pck == "RSV") { }
         else if (data.pck == "RSV") { }
     }
@@ -140,9 +146,19 @@ class logic extends ReceiverLogic {
         var result = await this.get("Info");
         return result
     }
+    async getTargetInfo(rid) {
+        this.send(makePacket(this.me, packets.GetTargets(rid)));
+        var result = await this.get("InfoT");
+        return result
+    }
     async start(rid) {
         this.send(makePacket(this.me, packets.StartGame(rid)));
         var result = await this.get("GameStarted", "GameStartError");//too few players or denied
+        return result
+    }
+    async perform(rid,pid) {
+        this.send(makePacket(this.me, packets.Perform(rid,pid)));
+        var result = await this.get("PerformACK", "PerformError");//too few players or denied
         return result
     }
 }
@@ -164,6 +180,9 @@ async function unittest() {
     }).catch((h) => {
         console.log("Сука, їбана помилка", h);
     });
+    /*
+    socket.perform()
+    */
 }
 var socket = new logic(new WebSocket("ws://localhost:8000/pool"), new MeRAW(Math.random(), "gamer", "http://example.com"))
 socket.onload = () => {

@@ -55,7 +55,7 @@ class ClientPacket:
     def validate(self) -> bool:
         return False if self.gid == None or self.nick == None else True
 
-    def consumePacket(self,conn:WebsocketConnector) -> Union[bytes, None]:
+    async def consumePacket(self,conn:WebsocketConnector) -> Union[bytes, None]:
         try:
             if self.pck == "MakeRoom":
                 roomHandler.rooms.newRoom(self.data[0], self.gid, self.data[1])
@@ -63,6 +63,11 @@ class ClientPacket:
             elif self.pck == "GetInfo":
                 roomreply=roomHandler.rooms.stat()
                 roomreply["pck"]="Info"
+                return json_encode(roomreply).encode()
+
+            elif self.pck == "GetTargets":
+                roomreply={"pck":"InfoT","data":[]}
+                roomreply["data"]=list(roomHandler.rooms.fromUUID(self.game).game.jsonable)
                 return json_encode(roomreply).encode()
 
             elif self.pck == "ClientHello":
@@ -74,12 +79,11 @@ class ClientPacket:
 
             elif self.pck == "StartGame":
                 room = roomHandler.rooms.fromUUID(self.game)
-                room.start(self.gid)
-                clients.broadcast({"pck": "GameStarted", "rid": str(room.getUUID())})
+                await room.start(self.gid)
 
             elif self.pck == "role":
                 room = roomHandler.rooms.fromUUID(self.game)
-                room.performRole(self.gid)
+                room.performRole(self.gid,self.target)
 
         except mafia.PlayerNotFoundError:
             return ('{"pck":"Error","id":"%s","msg":"PlayerNotFound"}' % self.target).encode()
@@ -93,12 +97,27 @@ class ClientPacket:
         except roomHandler.PermissionDeniedError:
             return '{"pck":"Error","msg":"GameStartError","spec":"PermissionDenied"}'.encode()
 
+        except:
+            return '{"pck":"Error","msg":"ServerPizdecError","spec":"Пизда Серву!"}'.encode()
+
 class Clients(set):
 
-    def broadcast(self, message):
+    async def broadcast(self, message:Union[dict,str]):
         for client in self:
-            message = json.dumps(message)
-            client.write_message(message)
+            client.write_message(json.dumps(message))
+
+    async def multicast(self, message:Union[dict,str], rid:mafia.ROOMID):
+        for client in self:
+            if client.gameuuid == rid:
+                client.write_message(json.dumps(message))
+
+    async def anycast(self, message:Union[dict,str],gid:mafia.PLAYERID):
+        for client in self:
+            if client.gamegid == gid:
+                client.write_message(json.dumps(message))
+                return        
+        raise mafia.PlayerNotFoundError(gid)
+    
 
 clients = Clients()
 
@@ -108,21 +127,21 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
         clients.add(self)
         print("WebSocket opened")
 
-    def on_message(self, message):
+    async def on_message(self, message):
         self.write_message('{"pck":"conn_succ"}')
         print(message)
         data = ClientPacket(message)
         if not data.validate():
             self.close(reason="Invalid data, relogin!")
             return
-        ret = data.consumePacket(self)
+        ret = await data.consumePacket(self)
         if ret:
             self.write_message(ret)
         else:
             self.write_message('{"pck":"ack"}')
 
     def on_pong(self, data: bytes) -> None:
-        print("PING!")
+        #print("PING!")
         return super().on_pong(data)
 
     def on_close(self):
@@ -130,7 +149,6 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
             if client == self:
                 client.destroy()
                 break 
-        clients.broadcast("player problems!")
         print("WebSocket closed")
 
     def check_origin(self, origin):
@@ -140,6 +158,6 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
         roomHandler.rooms.fromUUID(self.gameuuid).leave(self.gamegid)
         clients.remove(self)
 
-    def gameLink(self,UUID,gid):
-        self.gameuuid=UUID
+    def gameLink(self,gameUUID:mafia.ROOMID,gid:mafia.PLAYERID):
+        self.gameuuid=gameUUID
         self.gamegid=gid

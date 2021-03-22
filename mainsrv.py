@@ -27,10 +27,11 @@ import tornado.httpclient
 import tornado.web
 import tornado.auth
 import tornado.template
+import tornado.httpserver
 import user_agents
 from http.cookies import Morsel
 Morsel._reserved["samesite"] = "SameSite"
-
+print(os.getcwd())
 '''
 Site navigation plan:
 
@@ -44,8 +45,7 @@ game itself
 class Mainframe():
     class index(tornado.web.RequestHandler):
         async def get(self):
-            self.write(tornado.template.Loader(os.path.dirname(
-                __file__) + "/templates/front-end/").load("registration.html").generate())
+            self.write(tornado.template.Loader(os.getcwd() + "/templates/front-end/").load("registration.html").generate())
     class account(tornado.web.RequestHandler,tornado.auth.GoogleOAuth2Mixin):
         async def get(self):
             self.settings["google_oauth"]={"key":"801663922478-sg6opa1be1ur4vi5levltb957414auq1.apps.googleusercontent.com","secret":"KpAmXqKa1tEP2e4V6Yml4TEV"}
@@ -109,7 +109,7 @@ class MyStaticFileHandler(tornado.web.StaticFileHandler):
                         'no-store, no-cache, must-revalidate, max-age=0')
 
 def app()->tornado.web.Application:
-    root_path=os.path.dirname(__file__)
+    root_path=os.getcwd()
     return tornado.web.Application([
         (r"/", Mainframe.index),
         (r"/account", Mainframe.account),

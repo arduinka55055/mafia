@@ -8,7 +8,7 @@ import roomHandler
 def genPlayers(count:int=6)->Set[mafia.PlayerRAW]:
   returning=set()
   for n in range(1,count+1):
-    returning.add(mafia.PlayerRAW("Player_%s" % n,uuid.uuid1()))
+    returning.add(mafia.PlayerRAW("Player_%s" % n,str(uuid.uuid1())))
   return returning
 class TestMafiaLogic(unittest.TestCase):
   #setUp method is overridden from the parent class TestCase
@@ -18,7 +18,7 @@ class TestMafiaLogic(unittest.TestCase):
   #Each test method starts with the keyword test_
   def test_rolecheck(self):
     for x in self.game.getMafias():
-      self.assertTrue(x.checkUser(x.getId(),"m"))
+      self.assertTrue(x.checkUser(x.id,"m"))
 
 class TestRoomConnection(unittest.TestCase):
   #setUp method is overridden from the parent class TestCase
@@ -26,7 +26,7 @@ class TestRoomConnection(unittest.TestCase):
     self.room=roomHandler.Room("myroom","123",100)
   def testSomething(self):
   #Each test method starts with the keyword test_
-    self.assertEqual(self.room.isStarted(),False)
+    self.assertEqual(self.room.isStarted,False)
 # Executing the tests in the above test case class
 if __name__ == "__main__":
   unittest.main()
