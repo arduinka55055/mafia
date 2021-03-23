@@ -52,10 +52,10 @@ class Mainframe():
             if self.get_argument('code', False):
                 access = await self.get_authenticated_user(
                     redirect_uri='http://127.0.0.1:8000/account',
-                    code=self.get_argument('code'))
+                    code=self.geerinfo",
+                    access_token=access["access_token"])t_argument('code'))
                 user = await self.oauth2_request(
-                    "https://www.googleapis.com/oauth2/v1/userinfo",
-                    access_token=access["access_token"])
+                    "https://www.googleapis.com/oauth2/v1/us
                 self.write(user["id"])
                 self.write("<img src='%s'/>" % user["picture"])
                 self.write("<h3>Your name is:%s </h3>" % user['name'])
