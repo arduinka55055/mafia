@@ -6,51 +6,60 @@
      <title>M.A.F.I.A</title>
      <link rel="stylesheet" href="landingPage.css">
      <script src="vue.min.js"></script>
-     
-     
+   
 </head>
 <body>
-     <header>
-         <a href="#" class="logo"><img src="img/logo.svg"></a>
-         <div class="toggle"><img src="img/toggle.png"></div>
-     </header>    
-     <div class="banner">
-     <div id="event-handling">
-   <p>{{ message }}</p> <button v-on:click="reverseMessage">Reverse Message</button>
-</div>
-
-<script src="main.js"></script>
-
-         <div class="rules">
-             <h2>Правила гри <span>Мафії</span></h2>
-
+      <section class="banner" id="sec">
+          <header>
+            <a href="#" class="logo"><img src="img/logo.svg"></a>
+            <div id="toggle" onclick="toggle()"></div>
+          </header>
+          <div class="rules">
+            <h2>ПРАВИЛА ГРИ<br><span>МАФІЇ</span></h2>
              <p>#MAFIA server
-             #Copyright (C) 2021 Vitiaz D., Chernikov M. 
+             #Copyright (C) 2021 Vitiaz D., Chernikov M.
              #This program is free software: you can redistribute it and/or modify it under
              #the terms of the GNU General Public License as published by the Free Software.</p>
-             <a href="img/gamerules.mp4" class="playvideo" onclick="toggle();"><img src="img/play.svg">Подивитися як грати в гру</a>
-             <div class="slide"></div>
-             <ul class="media">
-                 <li><a href="#"><img src="img/ds.ico"></a></li>   
-                 <li><a href="#"><img src="img/Google.ico"></a></li>   
-             </ul>  
+             <a href="#"><span></span>Грати</a>
+            <!-- <a href="img/gamerules.mp4" class="playvideo" onclick="toggle();"><img src="img/play.svg">Подивитися як-->
          </div>
+          <ul class="media">
+             <li><a href="#"><img src="img/ds.png"></a></li>
+             <li><a href="#"><img src="img/Google.png"></a></li>
+          </ul>   
+      </section>
+      <div id="navigation">
+         <ul>
+            <li><a href="#">Технічні проблеми</a></li>
+            <li><a href="#">Розробники</a></li>
+            <li><a href="#">Правила гри</a></li>
+        </ul> 
      </div>  
-     <div class="trailer">
-         <video src="img/gamerules.mp4" controls="true"></video>  
-         <img src="img/close.svg" class="close" onclick="toggle();">
-     </div>
+      
      <script type="text/javascript">
-     function toggle(){
-         var trailer = document.querySelector('.trailer');
-         var video = document.querySelector('video');
-         trailer.classList.toggle('active');
-         video.currentTime = 0;
-         video.pause();
-     }
-     </script>          
+       function toggle(){
+          var sec = document.getElementById('sec');
+          var nav = document.getElementById('navigation');
+          sec.classList.toggle('active');
+          nav.classList.toggle('active');
+        }
+     </script>
+     <script src="main.js"></script>
+     <script src="404.css"></script>
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+     <script>
+       $(document).ready(function(f){
+          $('.media').on('mouseenter', function(f){
+             x = f.pageX - $(this).offset().left;
+             y = f.pageY - $(this).offset().top;
+             $(this).find('span').css({top:y, left:x})
+          })
+          $('.media').on('mouseenter', function(f){
+             x = f.pageX - $(this).offset().left;
+             y = f.pageY - $(this).offset().top;
+             $(this).find('span').css({top:y, left:x})
+          })
+       })
+     </script>
 </body>
 </html>
-
-
-
