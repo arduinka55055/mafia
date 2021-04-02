@@ -82,7 +82,7 @@ class Player(PlayerRAW):
         self.__whore = state
 
     def checkUser(self, id, role) -> bool:
-        return True if (self.id == id and self.id == role) else False
+        return True if (self.id == id and self.role == role) else False
 
     def canDo(self, id, role) -> bool:
         return True if (not self.__whore and self.checkUser(id, role)) else False
@@ -117,7 +117,7 @@ class Players(object):
     @property
     def jsonable(self)->List[Dict]:
         return [x.jsonable for x in self.players]
-        
+
     def getMafias(self)->Generator[Player,None,None]:
         for player in self.players:
             if player.role == "m":
