@@ -49,7 +49,7 @@ let packets = {
     //RoomID PlayerID GoogleID
     "GidInject": (meraw) => { return { gid: meraw.gid, nick: meraw.name, avatar: meraw.avatar } },
     "GetInfo": () => { return { pck: "GetInfo" } },
-    "GetTargets": (rid) => { return { pck: "GetTargets", rid:rid } },
+    "GetTargets": (rid) => { return { pck: "GetTargets", rid: rid } },
     "ClientHello": (rid) => { return { pck: "ClientHello", rid: rid } },
     "MakeRoom": (roomName, count) => { return { pck: "MakeRoom", data: [roomName, count] } },
     "StartGame": (rid) => { return { pck: "StartGame", rid: rid } },
@@ -88,10 +88,10 @@ class connector {//this class is more like abstract + WS logic
         };
     }
     _consume(data) {
-        console.error("NotImplementedConsumePacket!")
+        console.error("NotImplementedConsumePacket!");
     }
     onload() {
-        console.error("NotImplementedOnload!")
+        console.error("NotImplementedOnload!");
     }
     send(data) {
         this.sock.send(JSON.stringify(data));
@@ -121,7 +121,7 @@ class ReceiverLogic extends connector {
         if (data.pck == "GameStarted") {
             console.log("Почалася нова гра за айді:", data.rid);
         }
-        else if (data.pck == "DoPerform") { 
+        else if (data.pck == "DoPerform") {
             console.log("Треба ходити!");
         }
         else if (data.pck == "RSV") { }
@@ -156,8 +156,8 @@ class logic extends ReceiverLogic {
         var result = await this.get("GameStarted", "GameStartError");//too few players or denied
         return result
     }
-    async perform(rid,pid) {
-        this.send(makePacket(this.me, packets.Perform(rid,pid)));
+    async perform(rid, pid) {
+        this.send(makePacket(this.me, packets.Perform(rid, pid)));
         var result = await this.get("PerformACK", "PerformError");//too few players or denied
         return result
     }
@@ -165,9 +165,9 @@ class logic extends ReceiverLogic {
 async function unittest() {
     console.log("Загрузилися!");
     d = await socket.getInfo()
-    if (d.rooms.length == 0){
-    e = await socket.newRoom("foo", 100)
-    console.log("Створили кімнату!", e);
+    if (d.rooms.length == 0) {
+        e = await socket.newRoom("foo", 100)
+        console.log("Створили кімнату!", e);
     }
     f = await socket.getInfo()
     console.log("Отримали інфу!", f);
