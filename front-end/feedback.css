@@ -25,7 +25,7 @@ section::before
      height: 100%;
      background: #a72920;
 }
-section .repository
+.repository
 {
      position: relative;
      min-width: 1100px;
@@ -33,32 +33,32 @@ section .repository
      display: flex;
      z-index: 1000;
 }
-section .repository .contacti
+.repository .contacti
 {
      position: absolute;
      top: 40px;
      width: 350px;
      height: calc(100% - 80px);
-     background: #1f6b36;
+     background: #1f6b36; 
      z-index: 1;
      padding: 40px;
      display: flex;
      flex-direction: column;
      justify-content: space-between;
-     box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2);
+     box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2);
 }
-section .repository .contacti h2
+.repository .contacti h2
 {
      color: #fff;
      font-size: 24px;
      font-weight: 500;
 }
-section .repository .contacti .information
+.repository .contacti .information
 {
      position: relative;
      margin:  20px 0;
 }
-section .repository .contacti .information li
+.repository .contacti .information li
 {
      position: relative;
      list-style: none;
@@ -67,30 +67,30 @@ section .repository .contacti .information li
      cursor: pointer;
      align-items: flex-start;
 }
-section .repository .contacti .information li span:nth-child(1)
+.repository .contacti .information li span:nth-child(1)
 {
      width: 30px;
      min-height: 30px;
 }
-section .repository .contacti .information li span:nth-child(1) img
+.repository .contacti .information li span:nth-child(1) img
 {
     max-width: 100%;
     filter: invert(1);    
     opacity: 0.5;
 }
-section .repository .contacti .information li span:nth-child(2)
+ .repository .contacti .information li span:nth-child(2)
 {
      color: #fff;
      margin-left: 10px;
      font-weight: 300;
      opacity: 0.5;
 }
-section .repository .contacti .information li:hover span:nth-child(1) img,
-section .repository .contacti .information li:hover span:nth-child(2)
+ .repository .contacti .information li:hover span:nth-child(1) img,
+ .repository .contacti .information li:hover span:nth-child(2)
 {
      opacity: 1;
 }
- .repository .contacti .media     
+.repository .contacti .media     
 {
      position: relative;
      display: flex;
@@ -98,18 +98,18 @@ section .repository .contacti .information li:hover span:nth-child(2)
 .repository .contacti ul.media  li
 {
     list-style: none;
-    margin-top: 15px;
+    margin-right: 15px;
 }
- .repository .contacti ul.media  li a
+.repository .contacti ul.media  li a
 {
     text-decoration: none;
 }
- .repository .contacti .media  li a img
+ .repository .contacti ul.media  li a img
 {
     filter: invert(1);
     opacity: 0.5;
 }
- .repository .contacti ul.media  li:hover a img
+.repository .contacti ul.media  li:hover a img
 {
      opacity: 1;
 }
@@ -124,13 +124,13 @@ section .repository .contacti .information li:hover span:nth-child(2)
      height: 100%;
      box-shadow: 0 50px 50px rgba(0, 0, 0, 0.123);
 }
-section .repository .contactus h2
+.repository .contactus h2
 {
      color: #0f3959;
      font-size: 24px;
      font-weight: 500;
 }
-section .repository .contactus .formBox
+.repository .contactus .formBox
 {
      position: relative;
      display: flex;
@@ -138,21 +138,21 @@ section .repository .contactus .formBox
      flex-wrap: wrap;
      padding-top: 30px;
 }
-section .repository .contactus .formBox .inputBox
+.repository .contactus .formBox .inputBox
 {
      position: relative;
      margin: 0 0 35px 0;
 }
-section .repository .contactus .formBox .inputBox.w50
+ .repository .contactus .formBox .inputBox.w50
 {
-     width: 47%;
+     width: 46%;
 }
-section .repository .contactus .formBox .inputBox.w100
+ .repository .contactus .formBox .inputBox.w100
 {
      width: 100%;
 }
-section .repository .contactus .formBox .inputBox input,
-section .repository .contactus .formBox .inputBox textarea
+.repository .contactus .formBox .inputBox input,
+.repository .contactus .formBox .inputBox textarea
 {
      width: 100% !important;
      padding: 5px 0;
@@ -164,11 +164,11 @@ section .repository .contactus .formBox .inputBox textarea
      border-bottom: 1px solid #777;
      outline: none;
 }
-section .repository .contactus .formBox .inputBox textarea
+.repository .contactus .formBox .inputBox textarea
 {
      min-height: 120px;
 }
-section .repository .contactus .formBox .inputBox span
+ .repository .contactus .formBox .inputBox span
 {
      position: absolute;
      left: 0;
@@ -180,19 +180,19 @@ section .repository .contactus .formBox .inputBox span
      transition: 0.3s;
      pointer-events: none;
 }
-section .repository .contactus .formBox .inputBox input:focus ~ span,
-section .repository .contactus .formBox .inputBox textarea:valid ~ span
-section .repository .contactus .formBox .inputBox input:focus ~ span,
-section .repository .contactus .formBox .inputBox textarea:valid ~ span
+.repository .contactus .formBox .inputBox input:focus ~ span,
+.repository .contactus .formBox .inputBox textarea:valid ~ span,
+.repository .contactus .formBox .inputBox input:focus ~ span,
+.repository .contactus .formBox .inputBox textarea:valid ~ span
 {
-      transform: translateY(-20px);
-      font-size: 12px;
-      font-weight: 400;
-      letter-spacing: 1px;
-      color: #a72920;
-      font-weight: 500;
+     transform: translateY(-20px);
+     font-size: 12px;
+     font-weight: 400;
+     letter-spacing: 1px;
+     color: #a72920;
+     font-weight: 500;
 }
-section .repository .contactus .formBox .inputBox input[type="submit"]
+.repository .contactus .formBox .inputBox input[type="submit"]
 {
      position: relative;
      cursor: pointer;
@@ -202,21 +202,21 @@ section .repository .contactus .formBox .inputBox input[type="submit"]
      max-width: 150px;
      padding: 12px;     
 }
-section .repository .contactus .formBox .inputBox input[type="submit"]:hover
+.repository .contactus .formBox .inputBox input[type="submit"]:hover
 {
      background: #a72920;
 }
 
 @media (max-width: 1200px)
 {
-     .repository .contacti
+     .repository 
      {
           width: 90%;
           min-width: auto;
           margin: 20px;
           box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
      }
-     .contacti
+     .repository .contacti
      {
           top: 0;
           height: 550px;
@@ -234,7 +234,6 @@ section .repository .contactus .formBox .inputBox input[type="submit"]:hover
           box-shadow: none;
      }
 }
-
 @media (max-width: 991px)
 {
      section
