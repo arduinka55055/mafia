@@ -1,6 +1,7 @@
 from __future__ import annotations
 import os
 import io
+import sys
 import json
 import random
 from typing import Any, Union
@@ -16,6 +17,7 @@ import tornado.auth
 import tornado.template
 import tornado.websocket
 import user_agents
+from traceback import format_exception
 
 import roomHandler
 import mafia
@@ -49,11 +51,14 @@ class ClientPacket:
         self.ava = data.get("avatar")      # Avatar
         self.pck = data.get("pck")         # Packet type
         self.target = data.get("uuid")     # Unique ID (not GID) of target
-        self.game = data.get("gameuuid")   # Unique ID of game room
+        self.game = data.get("rid")   # Unique ID of game room
         self.data = data.get("data")       # Misc data
 
     def validate(self) -> bool:
         return False if self.gid == None or self.nick == None else True
+        
+    def getRoom(self)->roomHandler.Room:
+        return roomHandler.rooms.fromUUID(self.game)
 
     async def consumePacket(self,conn:WebsocketConnector) -> Union[bytes, None]:
         try:
@@ -67,23 +72,33 @@ class ClientPacket:
 
             elif self.pck == "GetTargets":
                 roomreply={"pck":"InfoT","data":[]}
-                roomreply["data"]=list(roomHandler.rooms.fromUUID(self.game).game.jsonable)
+                roomreply["data"]=list(self.getRoom().game.jsonable)
                 return json_encode(roomreply).encode()
 
+            elif self.pck == "Me":
+                session=self.getRoom()
+                if session.isStarted:
+                    roomreply=session.game.getByGID(self.gid).jsonableP
+                    roomreply['pck']="You"
+                    return json_encode(roomreply).encode()
+                else:
+                    raise roomHandler.GameNotStartedError(self.game)
+
             elif self.pck == "ClientHello":
-                session=roomHandler.rooms.fromUUID(self.game)
+                session=self.getRoom()
                 player=mafia.PlayerRAW(self.nick,self.gid,self.ava)
                 session.join(player)
-                conn.gameLink(self.game,self.gid)
+                conn.gameLink(session.UUID,self.gid)
                 return '{"pck":"ServerHello"}'.encode()
 
             elif self.pck == "StartGame":
-                room = roomHandler.rooms.fromUUID(self.game)
+                room = self.getRoom()
                 await room.start(self.gid)
+                return '{"pck":"GameStartSuccess"}'.encode()
 
-            elif self.pck == "role":
-                room = roomHandler.rooms.fromUUID(self.game)
-                room.performRole(self.gid,self.target)
+            elif self.pck == "Perform":
+                room = self.getRoom()
+                await room.performRole(self.gid,self.target)
 
         except mafia.PlayerNotFoundError:
             return ('{"pck":"Error","id":"%s","msg":"PlayerNotFound"}' % self.target).encode()
@@ -93,12 +108,17 @@ class ClientPacket:
 
         except roomHandler.NoEnoughPlayersError:
             return '{"pck":"Error","msg":"GameStartError","spec":"NoEnoughPlayers"}'.encode()
+        
+        except roomHandler.GameNotStartedError:
+            return '{"pck":"Error","msg":"GameNotStarted","spec":"GameNotStarted"}'.encode()
 
         except roomHandler.PermissionDeniedError:
             return '{"pck":"Error","msg":"GameStartError","spec":"PermissionDenied"}'.encode()
 
         except:
-            return '{"pck":"Error","msg":"ServerPizdecError","spec":"Пизда Серву!"}'.encode()
+            err=sys.exc_info()
+            shit=''.join(format_exception(*err))
+            return ('{"pck":"Error","msg":"ServerPizdecError","spec":"Пизда Серву!%s"}' % shit).encode()
 
 class Clients(set):
 
@@ -155,9 +175,20 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
         return True
 
     def destroy(self):
-        roomHandler.rooms.fromUUID(self.gameuuid).leave(self.gamegid)
+        if self.gameuuid and self.gamegid:
+            roomHandler.rooms.fromUUID(self.gameuuid).leave(self.gamegid)
         clients.remove(self)
 
+    @property
+    def gameuuid(self)->Union[mafia.ROOMID,None]:
+        if hasattr(self,"_gameuuid"):
+            return self._gameuuid
+        return None
+    @property
+    def gamegid(self)->Union[mafia.PLAYERID,None]:
+        if hasattr(self,"_gamegid"):
+            return self._gamegid
+        return None    
     def gameLink(self,gameUUID:mafia.ROOMID,gid:mafia.PLAYERID):
-        self.gameuuid=gameUUID
-        self.gamegid=gid
+        self._gameuuid=gameUUID
+        self._gamegid=gid

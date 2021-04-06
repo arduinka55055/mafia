@@ -1,4 +1,13 @@
 /*
+___           ___         ____    ____ ____ ____ ___  ____ ___ ____ ____      |
+|__] |__ |   |___ |  |  | |___    |  | |  | |___ |__  |___  |  |___ |    |__  |
+|__] |__]|   |___ |__|__| |___    |  | |__| |___ |__] |___  |  |___ |___ |__] .
+                        \/                                                    
+     ____   __  
+\_|  |__|  |__| |__| | /| 
+ _| |    | |  |    | |/ |                       
+
+
 methods to communicate
 
 ..... means blocking request(awaiting users input)
@@ -50,6 +59,7 @@ let packets = {
     "GidInject": (meraw) => { return { gid: meraw.gid, nick: meraw.name, avatar: meraw.avatar } },
     "GetInfo": () => { return { pck: "GetInfo" } },
     "GetTargets": (rid) => { return { pck: "GetTargets", rid: rid } },
+    "Getme": (rid) => { return { pck: "Me", rid: rid } },
     "ClientHello": (rid) => { return { pck: "ClientHello", rid: rid } },
     "MakeRoom": (roomName, count) => { return { pck: "MakeRoom", data: [roomName, count] } },
     "StartGame": (rid) => { return { pck: "StartGame", rid: rid } },
@@ -118,14 +128,18 @@ class ReceiverLogic extends connector {
         super(sock, meraw);
     }
     _consume(data) {
+        console.log(data);
         if (data.pck == "GameStarted") {
             console.log("Почалася нова гра за айді:", data.rid);
         }
-        else if (data.pck == "DoPerform") {
-            console.log("Треба ходити!");
+        else if (data.pck == "shit") {
+            console.log("shit!");
         }
-        else if (data.pck == "RSV") { }
-        else if (data.pck == "RSV") { }
+        else if (data.pck == "GameCast") {
+            if(data.type=="DoPerform"){
+                console.log("Треба ходити!");
+            }
+        }
     }
 }
 class logic extends ReceiverLogic {
@@ -141,8 +155,8 @@ class logic extends ReceiverLogic {
         var result = await this.get("ServerHello", "RoomNotFound");
         return result
     }
-    async getInfo(rid) {
-        this.send(makePacket(this.me, packets.GetInfo(rid)));
+    async getInfo() {
+        this.send(makePacket(this.me, packets.GetInfo()));
         var result = await this.get("Info");
         return result
     }
@@ -151,38 +165,61 @@ class logic extends ReceiverLogic {
         var result = await this.get("InfoT");
         return result
     }
+    async getme(rid) {
+        this.send(makePacket(this.me, packets.Getme(rid)));
+        var result = await this.get("You");
+        return result
+    }
     async start(rid) {
         this.send(makePacket(this.me, packets.StartGame(rid)));
-        var result = await this.get("GameStarted", "GameStartError");//too few players or denied
+        var result = await this.get("GameStartSuccess", "GameStartError");//too few players or denied
         return result
     }
     async perform(rid, pid) {
         this.send(makePacket(this.me, packets.Perform(rid, pid)));
-        var result = await this.get("PerformACK", "PerformError");//too few players or denied
+        var result = await this.get("PerformACK", "PerformError");//wrong role or player is dead
         return result
     }
 }
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 async function unittest() {
     console.log("Загрузилися!");
-    d = await socket.getInfo()
+    var d = await socket.getInfo()
     if (d.rooms.length == 0) {
-        e = await socket.newRoom("foo", 100)
+        var e = await socket.newRoom("foo", 100)
         console.log("Створили кімнату!", e);
     }
-    f = await socket.getInfo()
+    var f = await socket.getInfo()
     console.log("Отримали інфу!", f);
 
-    g = await socket.connect(f.rooms[0].rid)
+    var g = await socket.connect(f.rooms[0].rid)
     console.log("Зайшли в кімнату!", g);
+    while(d.rooms.length==0){
+        var ff=await socket.getInfo()
+        var a=ff.rooms.length!=0 && ff.rooms[0].players.length>=6
+        if(a){
+            break;
+        }
+        await new Promise(r => setTimeout(r, 2000));
+        console.log("waiting...")
+    }
+    console.log("выхід з циклу");
+    if(d.rooms.length==0){
+        var h=await socket.start(f.rooms[0].rid);
+        console.log("Отримали", h)
+    }
+    var me=await socket.getme(f.rooms[0].rid);
+    console.warn(me);
 
-    socket.start(f.rooms[0].rid).then((h) => {
-        console.log("Отримали", h);
+    var i=await socket.getTargetInfo(f.rooms[0].rid);
+    console.log(i);
+    socket.perform(f.rooms[0].rid,i.data[0].id).then((k) => {
+        console.log("тип походилось",k)
     }).catch((h) => {
-        console.log("Сука, їбана помилка", h);
+        console.log("Сука, їбана помилка", k);
     });
-    /*
-    socket.perform()
-    */
 }
 var socket = new logic(new WebSocket("ws://localhost:8000/pool"), new MeRAW(Math.random(), "gamer", "http://example.com"))
 socket.onload = () => {

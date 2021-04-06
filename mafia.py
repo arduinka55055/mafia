@@ -7,13 +7,22 @@ import uuid
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from roomHandler import Room
+
 PLAYERID=str
 ROOMID=uuid.UUID
 TARGETID=uuid.UUID
+ROLES={
+    "m":"Мафия",
+    "p":"Гражданин",
+    "d":"Доктор",
+    "k":"Маньяк",
+    "s":"Шериф",
+    "g":"Путана"
+}
 playersMin = 6
 
 class PlayerNotFoundError(Exception):
-    def __init__(self,UUID:PLAYERID):
+    def __init__(self,UUID):
         self.uuid=UUID
         super().__init__("Error! Player with UUID:${self.uuid} not found!")
     def __repr__(self):
@@ -26,6 +35,7 @@ class PlayerRAW:
         self.avatar = avatar #only for other players. doesnt impact logic
 
 class Player(PlayerRAW):
+    #TODO: добавить комнату в которой игрок сидит
     def __init__(self, raw: PlayerRAW, role: str):
         self.__name = raw.name
         self.avatar = raw.avatar
@@ -33,7 +43,7 @@ class Player(PlayerRAW):
         self.__role = role  # инкапсуляция в действии
         self.__killed = False
         self.__whore = False  # путана
-        self.__uuid = uuid.uuid1()
+        self.__uuid = uuid.uuid4()
 
     def __unicode__(self):
         return "Player:%s, Role:%s" % (self.name, self.role)
@@ -47,6 +57,13 @@ class Player(PlayerRAW):
     @property
     def role(self) -> str:
         return "x" if self.__killed else self.__role
+    @property
+    def roleNameFull(self) -> str:
+        """
+        Returns:
+            str: [description of role in Russian]
+        """
+        return ROLES[self.__role]
 
     @property
     def id(self) -> PLAYERID:
@@ -75,6 +92,25 @@ class Player(PlayerRAW):
             "id":str(self.UUID),
             "isKilled":self.isKilled
         }
+    @property
+    def jsonableP(self) -> dict:
+        """It is reply to getme
+        Returns:
+            dict: id, role,desc(role name), isKilled
+        """
+        return {
+            "id":str(self.UUID),
+            "role":self.__role,
+            "desc":self.roleNameFull,
+            "isKilled":self.isKilled
+        }
+    @property
+    def isPerformable(self) -> bool:
+        """
+        Returns True if gamer can perform (if gamer is not regular person)
+        """
+        return False if self.__role == 'p' else True
+
     def setKilled(self, state: bool):
         self.__killed = state
 
@@ -86,7 +122,7 @@ class Player(PlayerRAW):
 
     def canDo(self, id, role) -> bool:
         return True if (not self.__whore and self.checkUser(id, role)) else False
-
+    
 
 class Players(object):
     """
@@ -148,12 +184,16 @@ class Players(object):
         for _ in self.getPerformable():
             counter += 1
         return counter
-    def getByUUID(self, UUID: str) -> Player:
+    def getByRID(self, UUID: TARGETID) -> Player:
         for player in self.players:
             if player.UUID == UUID:
                 return player
         raise PlayerNotFoundError(UUID)
-
+    def getByGID(self, UUID: PLAYERID) -> Player:
+        for player in self.players:
+            if player.id == UUID:
+                return player
+        raise PlayerNotFoundError(UUID)
     def kill(self, player: Player):
         player.setKilled(True)
 
@@ -172,22 +212,22 @@ class Game(Players):
             self.kill(targets[0])
 
         else:  # одного мафиози соблазнят
-            self.kill(self.getByUUID(targets))
+            self.kill(self.getByRID(targets))
 
     def sherif(self, target) -> str:
         # мафия сделала вибор, просипается шериф ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        return self.getByUUID(target).role
+        return self.getByRID(target).role
 
     def killer(self, target):
         # просипается маньяк
-        self.kill(self.getByUUID(target))
+        self.kill(self.getByRID(target))
 
     def doctor(self, target):
-        self.heal(self.getByUUID(target))
+        self.heal(self.getByRID(target))
 
     def girl(self, target):
         # а теперь путана
-        self.whore(self.getByUUID(target))
+        self.whore(self.getByRID(target))
 
     def endnight(self, data):
         # постобработка
@@ -198,7 +238,7 @@ class PerformOne:
     targetid: TARGETID
 
 class PerformResult(dict):
-    def __init__(self):
+    def __init__(self):#List потомушо вонючая мафия может выбрать ≥1 игрока
         self.__data:Dict[str,List]=dict()
     @property
     def data(self):
@@ -214,12 +254,13 @@ class PerformResult(dict):
 
 class GameMainloop(Game):
     def performData(self,gid:PLAYERID,pid:TARGETID):
-        self.data=PerformOne(self.getByUUID(gid),pid)
+        self.result.data=PerformOne(self.getByGID(gid),pid)
 
     async def getPerformData(self):
-        self.result=PerformResult()
-        while len(self.result.data)<self.getPerformableCount():
-            await asyncio.sleep(1)#TODO зафигачить таймер
+        self.result=PerformResult()#FIXME: чот эта штуковина багает и не сейвает пакеты
+        pc=self.getPerformableCount()
+        while len(self.result.data)<pc:
+            await asyncio.sleep(1)#TODO: зафигачить таймер
         return self.result.data   
 
     async def startMainloop(self,room:Room):
@@ -228,7 +269,7 @@ class GameMainloop(Game):
         #room.checkConnectivity()
         super(Game,self).__init__(self.__room.players)
         #room.познакомитьИгроков()
-        await room.send({"type":"Perform"})
+        await room.send({"type":"DoPerform"})
         result = await self.getPerformData()
 
 

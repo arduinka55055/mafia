@@ -29,8 +29,6 @@ import tornado.auth
 import tornado.template
 import tornado.httpserver
 import user_agents
-from http.cookies import Morsel
-Morsel._reserved["samesite"] = "SameSite"
 print(os.getcwd())
 '''
 Site navigation plan:
