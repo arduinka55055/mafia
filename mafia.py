@@ -175,7 +175,7 @@ class Players(object):
         for _ in self.getGood():
             counter += 1
         return counter
-    def getPerformable(self)->Generator:
+    def getPerformable(self)->Generator[Player,None,None]:
         for player in self.players:
             if player.role in ['m','s','k','d','g']:
                 yield player
@@ -184,14 +184,14 @@ class Players(object):
         for _ in self.getPerformable():
             counter += 1
         return counter
-    def getByRID(self, UUID: TARGETID) -> Player:
+    def getByTID(self, UUID: TARGETID) -> Player:
         for player in self.players:
-            if player.UUID == UUID:
+            if str(player.UUID) == str(UUID):
                 return player
         raise PlayerNotFoundError(UUID)
     def getByGID(self, UUID: PLAYERID) -> Player:
         for player in self.players:
-            if player.id == UUID:
+            if str(player.id) == str(UUID):
                 return player
         raise PlayerNotFoundError(UUID)
     def kill(self, player: Player):
@@ -204,64 +204,76 @@ class Players(object):
         player.setWhore(True)
 
 
-class Game(Players):
-    def mafkill(self, targets):
+class Doings(Players):
+    def mafkill(self, targets:List[TARGETID]):
         # все засыпают, просипается мафия. кого убить /////////////////////////////////////////////////////////////////////////////////////////////////////
         if self.getMafiasCount() > 1:  # голосовалка, не соблазнят компанию
             random.shuffle(targets)  # FIXME:АЛГОРИТМ ГОВНО!!!! магия рандома!!!
-            self.kill(targets[0])
+        self.kill(self.getByTID(targets[0]))
 
-        else:  # одного мафиози соблазнят
-            self.kill(self.getByRID(targets))
-
-    def sherif(self, target) -> str:
+    def sherif(self, target:TARGETID) -> str:
         # мафия сделала вибор, просипается шериф ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        return self.getByRID(target).role
+        return self.getByTID(target).role
 
-    def killer(self, target):
+    def killer(self, target:TARGETID):
         # просипается маньяк
-        self.kill(self.getByRID(target))
+        self.kill(self.getByTID(target))
 
-    def doctor(self, target):
-        self.heal(self.getByRID(target))
+    def doctor(self, target:TARGETID):
+        self.heal(self.getByTID(target))
 
-    def girl(self, target):
-        # а теперь путана
-        self.whore(self.getByRID(target))
+    def girl(self, target:TARGETID):
+        # а теперь путана, она действует всегда
+        self.whore(self.getByTID(target))
 
-    def endnight(self, data):
-        # постобработка
-        pass
 @dataclass
 class PerformOne:
     player: Player
     targetid: TARGETID
 
-class PerformResult(dict):
+class PerformResult:
     def __init__(self):#List потомушо вонючая мафия может выбрать ≥1 игрока
-        self.__data:Dict[str,List]=dict()
-    @property
-    def data(self):
-        return self.__data
-    @data.setter
-    def data(self,value:PerformOne):
-        self.__data[value.player.role].append(value.targetid)
+        self.__data:Dict[str,Union[List[TARGETID], None] ]={}
 
-    def getByRole(self,role)->Union[List[str], None]:
-        return self.get(role)
+    def set(self,value:PerformOne):
+        if value.player.role in self.__data:
+            self.__data[value.player.role].append(value.targetid)
+        else:
+            self.__data[value.player.role]=[value.targetid]
+    def __getitem__(self, role:str) -> Union[List[TARGETID], None]:
+        return self.__data.get(role)
+    def __len__(self) -> int:
+        return len(self.__data)
             
 
 
-class GameMainloop(Game):
+class Game(Doings):
     def performData(self,gid:PLAYERID,pid:TARGETID):
-        self.result.data=PerformOne(self.getByGID(gid),pid)
+        self.result.set(PerformOne(self.getByGID(gid),pid))
 
     async def getPerformData(self):
         self.result=PerformResult()#FIXME: чот эта штуковина багает и не сейвает пакеты
         pc=self.getPerformableCount()
-        while len(self.result.data)<pc:
+        while len(self.result)<pc:
             await asyncio.sleep(1)#TODO: зафигачить таймер
-        return self.result.data   
+        return self.result   
+
+    def parsePerform(self):
+        data:PerformResult=self.result
+        if data["g"]:
+            self.girl(data["g"][0])
+        if data["k"]:
+            self.killer(data["k"][0])
+
+        if data["s"]:#TODO:Settings
+            ret=self.sherif(data['s'][0])
+            #TODO
+        mafias=data["m"]
+        if mafias != None:#TODO:Settings
+            self.mafkill(mafias)
+        
+        if data["d"]:
+            self.doctor(data["d"][0])
 
     async def startMainloop(self,room:Room):
         self.__room=room
@@ -271,7 +283,8 @@ class GameMainloop(Game):
         #room.познакомитьИгроков()
         await room.send({"type":"DoPerform"})
         result = await self.getPerformData()
-
+        print(result)
+        self.parsePerform()
 
 '''0xDEADCODE
 class Game:

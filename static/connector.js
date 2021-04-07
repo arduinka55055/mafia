@@ -205,11 +205,12 @@ async function unittest() {
         await new Promise(r => setTimeout(r, 2000));
         console.log("waiting...")
     }
-    console.log("выхід з циклу");
+    console.log("вихід з циклу");
     if(d.rooms.length==0){
         var h=await socket.start(f.rooms[0].rid);
         console.log("Отримали", h)
     }
+    await socket.get("GameCast")
     var me=await socket.getme(f.rooms[0].rid);
     console.warn(me);
 

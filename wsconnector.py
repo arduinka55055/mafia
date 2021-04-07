@@ -50,7 +50,7 @@ class ClientPacket:
         self.nick = data.get("nick")       # Nickname
         self.ava = data.get("avatar")      # Avatar
         self.pck = data.get("pck")         # Packet type
-        self.target = data.get("uuid")     # Unique ID (not GID) of target
+        self.target = data.get("pid")     # Unique ID (not GID) of target
         self.game = data.get("rid")   # Unique ID of game room
         self.data = data.get("data")       # Misc data
 
@@ -152,7 +152,7 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
         print(message)
         data = ClientPacket(message)
         if not data.validate():
-            self.close(reason="Invalid data, relogin!")
+            self.close(reason="['Invalid data, relogin!']")
             return
         ret = await data.consumePacket(self)
         if ret:

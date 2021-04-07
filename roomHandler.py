@@ -78,7 +78,7 @@ class Room:
     def players(self)->set[mafia.PlayerRAW]:
         return self.__players
     @property
-    def game(self)->mafia.GameMainloop:
+    def game(self)->mafia.Game:
         if self.__game==None:
             raise GameNotStartedError(self.UUID)
         return self.__game
@@ -137,7 +137,7 @@ class Room:
         if self.ownergid == gid:
             if len(self.players) >= mafia.playersMin:
                 self.__started=True
-                self.__game=mafia.GameMainloop(self.players)
+                self.__game=mafia.Game(self.players)
                 asyncio.ensure_future(self.__game.startMainloop(self))
                 await wsconnector.clients.broadcast({"pck": "GameStarted", "rid": str(self.UUID)})
                 return
@@ -155,7 +155,15 @@ class Room:
 
     async def performRole(self,gid:mafia.PLAYERID,pid:mafia.TARGETID):
         if self.game.getByGID(gid).isPerformable:
-            self.game.performData(gid,pid)
+            if not self.game.getByGID(gid).isKilled:
+                if not self.game.getByTID(pid).isKilled:
+                    self.game.performData(gid,pid)
+                else:
+                    data={"pck":"GameCast","msg":"Error","spec":"Пж не насилуйте труп!"}
+                    await wsconnector.clients.anycast(data,gid)
+            else:
+                data={"pck":"GameCast","msg":"Error","spec":"You're dead!"}
+                await wsconnector.clients.anycast(data,gid)
         else:
             data={"pck":"GameCast","msg":"Error","spec":"PermissionDenied"}
             await wsconnector.clients.anycast(data,gid)
