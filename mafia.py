@@ -1,6 +1,6 @@
 ﻿from __future__ import annotations
 import asyncio
-from typing import Dict, Generator, Iterable, List, Union
+from typing import Dict, Generator, Iterable, List, Literal, Union
 from dataclasses import dataclass
 import random
 import uuid
@@ -35,7 +35,6 @@ class PlayerRAW:
         self.avatar = avatar #only for other players. doesnt impact logic
 
 class Player(PlayerRAW):
-    #TODO: добавить комнату в которой игрок сидит
     def __init__(self, raw: PlayerRAW, role: str):
         self.__name = raw.name
         self.avatar = raw.avatar
@@ -120,7 +119,7 @@ class Player(PlayerRAW):
     def checkUser(self, id, role) -> bool:
         return True if (self.id == id and self.role == role) else False
 
-    def canDo(self, id, role) -> bool:
+    def canDo(self, id, role) -> bool:#TODO:обрезание
         return True if (not self.__whore and self.checkUser(id, role)) else False
     
 
@@ -194,6 +193,10 @@ class Players(object):
             if str(player.id) == str(UUID):
                 return player
         raise PlayerNotFoundError(UUID)
+    def getByRole(self, role:str) -> Union[Player,None]:
+        for player in self.getPerformable():
+            if player.role==role:
+                return player
     def kill(self, player: Player):
         player.setKilled(True)
 
@@ -205,27 +208,44 @@ class Players(object):
 
 
 class Doings(Players):
-    def mafkill(self, targets:List[TARGETID]):
+    def do_mafkill(self, targets:List[TARGETID]):
         # все засыпают, просипается мафия. кого убить /////////////////////////////////////////////////////////////////////////////////////////////////////
         if self.getMafiasCount() > 1:  # голосовалка, не соблазнят компанию
-            random.shuffle(targets)  # FIXME:АЛГОРИТМ ГОВНО!!!! магия рандома!!!
+            random.shuffle(targets)
+        elif next(self.getMafias()).isFucked:
+            return
         self.kill(self.getByTID(targets[0]))
 
-    def sherif(self, target:TARGETID) -> str:
+    def do_sherif(self, target:TARGETID) -> str:
         # мафия сделала вибор, просипается шериф ////////////////////////////////////////////////////////////////////////////////////////////////////////////
         return self.getByTID(target).role
 
-    def killer(self, target:TARGETID):
+    def do_killer(self, target:TARGETID):
         # просипается маньяк
+        if self.getByRole("k").isFucked:
+            return
         self.kill(self.getByTID(target))
 
-    def doctor(self, target:TARGETID):
+    def do_doctor(self, target:TARGETID):
+        if self.getByRole("d").isFucked:
+            return
         self.heal(self.getByTID(target))
 
-    def girl(self, target:TARGETID):
+    def do_girl(self, target:TARGETID):
         # а теперь путана, она действует всегда
         self.whore(self.getByTID(target))
-
+    @property
+    def isFinished(self)->Union[bool,None]:
+        """
+        Returns:
+            False if mafia won, True if players won, None if game is still available
+        """
+        if self.getMafiasCount()==0:
+            return True
+        elif self.getGoodCount()==0:
+            return False
+        else:
+            return None
 @dataclass
 class PerformOne:
     player: Player
@@ -252,7 +272,7 @@ class Game(Doings):
         self.result.set(PerformOne(self.getByGID(gid),pid))
 
     async def getPerformData(self):
-        self.result=PerformResult()#FIXME: чот эта штуковина багает и не сейвает пакеты
+        self.result=PerformResult()
         pc=self.getPerformableCount()
         while len(self.result)<pc:
             await asyncio.sleep(1)#TODO: зафигачить таймер
@@ -261,19 +281,20 @@ class Game(Doings):
     def parsePerform(self):
         data:PerformResult=self.result
         if data["g"]:
-            self.girl(data["g"][0])
+            self.do_girl(data["g"][0])
         if data["k"]:
-            self.killer(data["k"][0])
+            self.do_killer(data["k"][0])
 
         if data["s"]:#TODO:Settings
-            ret=self.sherif(data['s'][0])
+            ret=self.do_sherif(data['s'][0])
             #TODO
         mafias=data["m"]
         if mafias != None:#TODO:Settings
-            self.mafkill(mafias)
-        
+            self.do_mafkill(mafias)
         if data["d"]:
-            self.doctor(data["d"][0])
+            self.do_doctor(data["d"][0])
+        #processing data
+        #TODO:Организация отсылки данных назад клиентам
 
     async def startMainloop(self,room:Room):
         self.__room=room
@@ -281,11 +302,15 @@ class Game(Doings):
         #room.checkConnectivity()
         super(Game,self).__init__(self.__room.players)
         #room.познакомитьИгроков()
-        await room.send({"type":"DoPerform"})
-        result = await self.getPerformData()
-        print(result)
-        self.parsePerform()
-
+        while self.isFinished==None:
+            await room.send({"type":"DoPerform"})
+            result = await self.getPerformData()
+            print(result)
+            self.parsePerform()
+            await room.send({"type":"DoVote"})
+            result = await self.getPerformData()
+            print(result)
+            self.parseVote()
 '''0xDEADCODE
 class Game:
     def __init__(self,players):#    m мафия p житель s шериф k маньяк d доктор g любовница
