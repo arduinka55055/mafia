@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ua">
+  <head>
+    <meta name="viewport" content="width=width-device, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>Гра Мафія</title>
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../static/css/chat.css" rel="stylesheet" />
+</head>
+  
+  <body class="text-center">
+   
+    <div class="chatwindow">
+      <h2 >МАФІЯ</h2>
+      <h2>Кімната : {{session['room']}}</h2><br>
+      <textarea id="chat" cols="70" rows="10" placeholder="Ще нема повідомлень. Почати.."></textarea><br /><br />
+      <input type="text" id="text" size="60" placeholder="Введіть своє повідмлення тут" />
+      <button type="button" id="send" class="btn btn-success">Відправити</button><br /><br />
+      <center><button type="button" class="btn btn-danger" onclick=leave_room()>Покинути ГРУ</button></center>
+    </div>
+  </body>
+</html>   
