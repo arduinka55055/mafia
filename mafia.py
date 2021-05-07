@@ -1,19 +1,28 @@
 ﻿from __future__ import annotations
 import asyncio
-from typing import Dict, Generator, Iterable, List, Union
+from typing import Dict, Generator, Iterable, List, Literal, Union
 from dataclasses import dataclass
 import random
 import uuid
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from roomHandler import Room
+
 PLAYERID=str
 ROOMID=uuid.UUID
 TARGETID=uuid.UUID
+ROLES={
+    "m":"Мафия",
+    "p":"Гражданин",
+    "d":"Доктор",
+    "k":"Маньяк",
+    "s":"Шериф",
+    "g":"Путана"
+}
 playersMin = 6
 
 class PlayerNotFoundError(Exception):
-    def __init__(self,UUID:PLAYERID):
+    def __init__(self,UUID):
         self.uuid=UUID
         super().__init__("Error! Player with UUID:${self.uuid} not found!")
     def __repr__(self):
@@ -33,7 +42,7 @@ class Player(PlayerRAW):
         self.__role = role  # инкапсуляция в действии
         self.__killed = False
         self.__whore = False  # путана
-        self.__uuid = uuid.uuid1()
+        self.__uuid = uuid.uuid4()
 
     def __unicode__(self):
         return "Player:%s, Role:%s" % (self.name, self.role)
@@ -47,6 +56,13 @@ class Player(PlayerRAW):
     @property
     def role(self) -> str:
         return "x" if self.__killed else self.__role
+    @property
+    def roleNameFull(self) -> str:
+        """
+        Returns:
+            str: [description of role in Russian]
+        """
+        return ROLES[self.__role]
 
     @property
     def id(self) -> PLAYERID:
@@ -75,6 +91,25 @@ class Player(PlayerRAW):
             "id":str(self.UUID),
             "isKilled":self.isKilled
         }
+    @property
+    def jsonableP(self) -> dict:
+        """It is reply to getme
+        Returns:
+            dict: id, role,desc(role name), isKilled
+        """
+        return {
+            "id":str(self.UUID),
+            "role":self.__role,
+            "desc":self.roleNameFull,
+            "isKilled":self.isKilled
+        }
+    @property
+    def isPerformable(self) -> bool:
+        """
+        Returns True if gamer can perform (if gamer is not regular person)
+        """
+        return False if self.__role == 'p' else True
+
     def setKilled(self, state: bool):
         self.__killed = state
 
@@ -82,11 +117,11 @@ class Player(PlayerRAW):
         self.__whore = state
 
     def checkUser(self, id, role) -> bool:
-        return True if (self.id == id and self.id == role) else False
+        return True if (self.id == id and self.role == role) else False
 
-    def canDo(self, id, role) -> bool:
+    def canDo(self, id, role) -> bool:#TODO:обрезание
         return True if (not self.__whore and self.checkUser(id, role)) else False
-
+    
 
 class Players(object):
     """
@@ -117,7 +152,7 @@ class Players(object):
     @property
     def jsonable(self)->List[Dict]:
         return [x.jsonable for x in self.players]
-        
+
     def getMafias(self)->Generator[Player,None,None]:
         for player in self.players:
             if player.role == "m":
@@ -139,7 +174,7 @@ class Players(object):
         for _ in self.getGood():
             counter += 1
         return counter
-    def getPerformable(self)->Generator:
+    def getPerformable(self)->Generator[Player,None,None]:
         for player in self.players:
             if player.role in ['m','s','k','d','g']:
                 yield player
@@ -148,12 +183,20 @@ class Players(object):
         for _ in self.getPerformable():
             counter += 1
         return counter
-    def getByUUID(self, UUID: str) -> Player:
+    def getByTID(self, UUID: TARGETID) -> Player:
         for player in self.players:
-            if player.UUID == UUID:
+            if str(player.UUID) == str(UUID):
                 return player
         raise PlayerNotFoundError(UUID)
-
+    def getByGID(self, UUID: PLAYERID) -> Player:
+        for player in self.players:
+            if str(player.id) == str(UUID):
+                return player
+        raise PlayerNotFoundError(UUID)
+    def getByRole(self, role:str) -> Union[Player,None]:
+        for player in self.getPerformable():
+            if player.role==role:
+                return player
     def kill(self, player: Player):
         player.setKilled(True)
 
@@ -164,63 +207,94 @@ class Players(object):
         player.setWhore(True)
 
 
-class Game(Players):
-    def mafkill(self, targets):
+class Doings(Players):
+    def do_mafkill(self, targets:List[TARGETID]):
         # все засыпают, просипается мафия. кого убить /////////////////////////////////////////////////////////////////////////////////////////////////////
         if self.getMafiasCount() > 1:  # голосовалка, не соблазнят компанию
-            random.shuffle(targets)  # АЛГОРИТМ ГОВНО!!!! магия рандома!!!
-            self.kill(targets[0])
+            random.shuffle(targets)
+        elif next(self.getMafias()).isFucked:
+            return
+        self.kill(self.getByTID(targets[0]))
 
-        else:  # одного мафиози соблазнят
-            self.kill(self.getByUUID(targets))
-
-    def sherif(self, target) -> str:
+    def do_sherif(self, target:TARGETID) -> str:
         # мафия сделала вибор, просипается шериф ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        return self.getByUUID(target).role
+        return self.getByTID(target).role
 
-    def killer(self, target):
+    def do_killer(self, target:TARGETID):
         # просипается маньяк
-        self.kill(self.getByUUID(target))
+        if self.getByRole("k").isFucked:
+            return
+        self.kill(self.getByTID(target))
 
-    def doctor(self, target):
-        self.heal(self.getByUUID(target))
+    def do_doctor(self, target:TARGETID):
+        if self.getByRole("d").isFucked:
+            return
+        self.heal(self.getByTID(target))
 
-    def girl(self, target):
-        # а теперь путана
-        self.whore(self.getByUUID(target))
-
-    def endnight(self, data):
-        # постобработка
-        pass
+    def do_girl(self, target:TARGETID):
+        # а теперь путана, она действует всегда
+        self.whore(self.getByTID(target))
+    @property
+    def isFinished(self)->Union[bool,None]:
+        """
+        Returns:
+            False if mafia won, True if players won, None if game is still available
+        """
+        if self.getMafiasCount()==0:
+            return True
+        elif self.getGoodCount()==0:
+            return False
+        else:
+            return None
 @dataclass
 class PerformOne:
     player: Player
     targetid: TARGETID
 
-class PerformResult(dict):
-    def __init__(self):
-        self.__data:Dict[str,List]=dict()
-    @property
-    def data(self):
-        return self.__data
-    @data.setter
-    def data(self,value:PerformOne):
-        self.__data[value.player.role].append(value.targetid)
+class PerformResult:
+    def __init__(self):#List потомушо вонючая мафия может выбрать ≥1 игрока
+        self.__data:Dict[str,Union[List[TARGETID], None] ]={}
 
-    def getByRole(self,role)->Union[List[str], None]:
-        return self.get(role)
+    def set(self,value:PerformOne):
+        if value.player.role in self.__data:
+            self.__data[value.player.role].append(value.targetid)
+        else:
+            self.__data[value.player.role]=[value.targetid]
+    def __getitem__(self, role:str) -> Union[List[TARGETID], None]:
+        return self.__data.get(role)
+    def __len__(self) -> int:
+        return len(self.__data)
             
 
 
-class GameMainloop(Game):
+class Game(Doings):
     def performData(self,gid:PLAYERID,pid:TARGETID):
-        self.data=PerformOne(self.getByUUID(gid),pid)
+        self.result.set(PerformOne(self.getByGID(gid),pid))
 
     async def getPerformData(self):
         self.result=PerformResult()
-        while len(self.result.data)<self.getPerformableCount():
-            await asyncio.sleep(1)#TODO зафигачить таймер
-        return self.result.data   
+        pc=self.getPerformableCount()
+        while len(self.result)<pc:
+            await asyncio.sleep(1)#TODO: зафигачить таймер
+        return self.result   
+
+    def parsePerform(self):
+        data:PerformResult=self.result
+        if data["g"]:
+            self.do_girl(data["g"][0])
+        if data["k"]:
+            self.do_killer(data["k"][0])
+
+        if data["s"]:#TODO:Settings
+            ret=self.do_sherif(data['s'][0])
+            #TODO
+        mafias=data["m"]
+        if mafias != None:#TODO:Settings
+            self.do_mafkill(mafias)
+        if data["d"]:
+            self.do_doctor(data["d"][0])
+        #processing data
+        #TODO:Организация отсылки данных назад клиентам
 
     async def startMainloop(self,room:Room):
         self.__room=room
@@ -228,10 +302,15 @@ class GameMainloop(Game):
         #room.checkConnectivity()
         super(Game,self).__init__(self.__room.players)
         #room.познакомитьИгроков()
-        await room.send({"type":"Perform"})
-        result = await self.getPerformData()
-
-
+        while self.isFinished==None:
+            await room.send({"type":"DoPerform"})
+            result = await self.getPerformData()
+            print(result)
+            self.parsePerform()
+            await room.send({"type":"DoVote"})
+            result = await self.getPerformData()
+            print(result)
+            self.parseVote()
 '''0xDEADCODE
 class Game:
     def __init__(self,players):#    m мафия p житель s шериф k маньяк d доктор g любовница
