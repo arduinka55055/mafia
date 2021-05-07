@@ -47,7 +47,7 @@ class Mainframe():
     class account(tornado.web.RequestHandler,tornado.auth.GoogleOAuth2Mixin):
         async def get(self):
             self.settings["google_oauth"]={"key":"801663922478-sg6opa1be1ur4vi5levltb957414auq1.apps.googleusercontent.com","secret":"KpAmXqKa1tEP2e4V6Yml4TEV"}
-            if self.get_argument('code', False):
+            if self.get_argument('code', False)!=False:
                 access = await self.get_authenticated_user(
                     redirect_uri='http://127.0.0.1:8000/account',
                     code=self.geerinfo",
