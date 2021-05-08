@@ -32,3 +32,87 @@ body
     left: 0;
     width: 100%;
 }
+.navigationBar ul li
+{
+    position: relative;
+    width: 100%;
+    list-style: none;
+}
+.navigationBar ul li:hover
+{
+    background: rgb(180, 35, 35);
+}
+.navigationBar ul li:nth-child(1) 
+{
+    margin-bottom: 20px;
+}
+.navigationBar ul li:nth-child(1):hover /*:nth-child — это псевдокласс, который позволяет выбирать элементы по их порядковому номеру. Например, можно выбрать пятый абзац и применить к нему нужные стили, или выбрать все четные строки в таблице и сделать её полосатой. */
+{
+    background: transparent;
+
+}
+.navigationBar ul li a
+{
+    position: relative;
+    display: block;
+    width: 100%;
+    display: flex;
+    text-decoration: none;
+    color: #fff;
+}
+.navigationBar ul li a .icon
+{
+    position: relative;
+    display: block;
+    min-width: 60px;
+    line-height: 60px;
+    text-align: center;
+}
+.navigationBar ul li a .icon .svg
+{
+    color: #fff;
+    font-size: 25px;
+}
+.navigationBar ul li a .title
+{
+    position: relative;
+    display: block;
+    padding: 0 10px;
+    height: 60px;
+    line-height: 60px;
+    white-space: nowrap; /*Свойство white-space устанавливает, как отображать пробелы между словами. В обычных условиях любое количество пробелов в коде HTML показывается на веб-странице как один. Исключением является тег <pre>, помещенный в этот контейнер текст выводится со всеми пробелами, как он был отформатирован пользователем. */
+}
+.index
+{
+    position: absolute;
+    width: calc(100% - 300px);
+    left: 300px;
+    min-height: 100vh;
+    background: rgba(49, 88, 36, 0.795);
+    transition: 0.5s;
+}
+.index .topbar
+{
+    width: 100%;
+    background: #fff;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.toggle
+{
+    position: relative;
+    width: 60px;
+    height: 60px;
+    background: #f00;
+    cursor: pointer;
+}
+.toggle::before
+{
+    content: '\f0c9';
+    font-family: fontAwesome;
+}
+
+
+
