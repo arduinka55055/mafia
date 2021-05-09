@@ -25,6 +25,10 @@ body
     transition: 0.5s;
     overflow: hidden;
 }
+.navigationBar.active
+{
+    width: 60px;
+}
 .navigationBar ul
 {
     position: absolute;
@@ -88,8 +92,13 @@ body
     width: calc(100% - 300px);
     left: 300px;
     min-height: 100vh;
-    background: rgba(49, 88, 36, 0.795);
+    background: #fff;
     transition: 0.5s;
+}
+.index.active
+{
+    width: calc(100% - 60px);
+    left: 60px;
 }
 .index .topbar
 {
@@ -105,13 +114,46 @@ body
     position: relative;
     width: 60px;
     height: 60px;
-    background: #f00;
     cursor: pointer;
 }
 .toggle::before
 {
-    content: '\f0c9';
+    content: '';
     font-family: fontAwesome;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    line-height: 60px;
+    font-size: 24px;
+    text-align: center;
+    color: #111;
+}
+.find
+{
+    position: relative;
+    width: 400px;
+    margin: 0 10px;
+}
+.find label
+{
+    position: relative;
+    width: 100%;
+}
+.find label input
+{
+    width: 100%;
+    height: 40px;
+    border-radius: 40px;
+    padding: 5px 20px;
+    padding-left: 35px;
+    outline: none;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.find label input .svg
+{
+    position: absolute;
+    left: 15px;
+    top: 4px
 }
 
 

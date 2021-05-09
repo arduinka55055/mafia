@@ -65,18 +65,36 @@
 
          <div class="index">
              <div class="topbar">
-                <div class="toggle"></div>
-                <div class="searchRoom">
+                <div class="toggle" onclick="toggleBar();">
+                   <svg xmlns="http://www.w3.org/2000/svg"  line-height: "50px" position: "absolute" width="60%"  height: "70%" fill="#111" text-align: "center" class="bi bi-list" viewBox="0 0 15 20">
+                        <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+                   </svg>
+                 </div>
+                <div class="find">
                   <lable>
-                     <input type="text" placeholder="Пошук кімнати">
+                      <input type="text" placeholder="Пошук кімнати">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                     </svg>
                   </lable>
                </div>
                <div class="users">
                       <img src="img/putin.png"> <!--Рандомное лицо просто как будет отоброжаться лицо юзеров-->  
-                  </div>
-         </div>
-      </div>   
-
+                </div>
+            </div>
+         </div>   
+ 
+       <script>
+       function toggleBar(){
+         let toggle = document.querySelector('.toggle');
+         let navigationBar = document.querySelector('.navigationBar');
+         let index = document.querySelector('.index');
+         toggle.classList.toggle('active'); 
+         navigationBar.classList.toggle('active'); 
+         index.classList.toggle('active'); 
+       }
+       
+       </script>
 
 </body>
 </html>
