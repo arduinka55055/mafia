@@ -66,35 +66,88 @@
          <div class="index">
              <div class="topbar">
                 <div class="toggle" onclick="toggleBar();">
-                   <svg xmlns="http://www.w3.org/2000/svg"  line-height: "50px" position: "absolute" width="60%"  height: "70%" fill="#111" text-align: "center" class="bi bi-list" viewBox="0 0 15 20">
+                   <svg xmlns="http://www.w3.org/2000/svg"  width="60%"  height: "70%" fill="#111" class="bi bi-list" viewBox="0 0 15 20">
                         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                    </svg>
                  </div>
-                <div class="find">
-                  <lable>
+                 <div class="search_Room">
+                  <label>
                       <input type="text" placeholder="Пошук кімнати">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                     </svg>
-                  </lable>
+                           <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                           </svg>
+                      </label>
                </div>
                <div class="users">
-                      <img src="img/putin.png"> <!--Рандомное лицо просто как будет отоброжаться лицо юзеров-->  
+                  <img src="img/putin.png"> <!--Рандомное лицо просто как будет отоброжаться лицо юзеров-->  
                 </div>
             </div>
-         </div>   
+          
+          <div class="cardsLobby">
+               <div class="card">
+                   <div>
+                      <div class="numbers">11</div> <!--Денис!!!!Ты тут будешь мне прасить склолько игроков вообще в сети-->
+                      <div class="card_name">В мережі</div>
+                   </div>  
+                   <div class="iconBox">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="50" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+                           <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
+                           <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
+                         </svg>
+                   </div> 
+               </div>
+                <div class="card">
+                   <div>
+                      <div class="numbers">11</div>
+                      <div class="card_name">Кількість кімнат</div> <!--Тут ты запарсишь сколько комнат создано,я для єтого создам отдельную html страничку создание комнаты которая сразу будет кидать сколько игроков создало комнатки-->
+                   </div>  
+                   <div class="iconBox">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="50" fill="currentColor" class="bi bi-door-closed-fill" viewBox="0 0 16 16">
+                              <path d="M12 1a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2a1 1 0 0 1 1-1h8zm-2 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                              </svg>
+                   </div> 
+               </div>
+               <div class="card">
+                   <div>
+                      <div class="numbers">Україна</div>
+                      <div class="card_name">Регіон</div>
+                   </div>  
+                   <div class="iconBox">
+                         <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="50" fill="currentColor" class="bi bi-flag-fill" viewBox="0 0 16 16">
+                              <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12.435 12.435 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A19.626 19.626 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a19.587 19.587 0 0 0 1.349-.476l.019-.007.004-.002h.001"/>
+                              </svg>
+                   </div> 
+               </div>
+               <div class="card">
+                   <div>
+                      <div class="numbers">Добре</div>
+                      <div class="card_name">З'єднання</div>
+                   </div>  
+                   <div class="iconBox">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="50" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
+                           <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2z"/>
+                           </svg>
+                   </div> 
+               </div>
+         </div>
+
+
+
+    </div>    
+
+    </div>   
  
-       <script>
-       function toggleBar(){
-         let toggle = document.querySelector('.toggle');
-         let navigationBar = document.querySelector('.navigationBar');
-         let index = document.querySelector('.index');
-         toggle.classList.toggle('active'); 
-         navigationBar.classList.toggle('active'); 
-         index.classList.toggle('active'); 
-       }
+   <script>
+   function toggleBar(){
+      let toggle = document.querySelector('.toggle');
+      let navigationBar = document.querySelector('.navigationBar');
+      let index = document.querySelector('.index');
+      toggle.classList.toggle('active'); 
+      navigationBar.classList.toggle('active'); 
+      index.classList.toggle('active'); 
+   }
        
-       </script>
+   </script>
 
 </body>
 </html>
