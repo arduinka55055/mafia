@@ -87,9 +87,9 @@ class Mainframe():
                 self.request.headers["User-Agent"]).is_mobile else "комп")
             if user_agents.parse(self.request.headers["User-Agent"]).is_mobile:
 
-                await super().get("android.css", include_body)#TODO Макс поменяй названия
+                await super().get("Lobby.css", include_body)#TODO Макс поменяй названия
             else:
-                await super().get("computer.css", include_body)#TODO Макс поменяй названия
+                await super().get("feedback.css", include_body)#TODO Макс поменяй названия
     class favicon(tornado.web.RequestHandler):
         def prepare(self):
             self.set_header("Content-Type", 'image/ico; charset="utf-8"')

@@ -71,6 +71,7 @@ body
     min-width: 60px;
     line-height: 60px;
     text-align: center;
+    left: 6px;
 }
 .navigationBar ul li a .icon .svg
 {
@@ -178,7 +179,7 @@ body
 .cardsLobby
 {
     position: relative;
-    width: 100%;
+    width: 98%;
     padding: 20px;
     display: grid;
     grid-template-columns: repeat(4,1fr);  /*fr эдиница длини  */
@@ -216,6 +217,7 @@ body
     padding: 20px;
     padding-top: 0;
     display: grid;
+    grid-gap: 20px;
     grid-template-columns: 2fr 1fr; 
     color: #000;
 }
@@ -245,7 +247,7 @@ body
     color: #fff;
     text-decoration: none;
     border-radius: 6px;
-    left: 437px;
+    left: 425px;
 }
 .room_panel table
 {
@@ -261,6 +263,70 @@ body
 {
     border-bottom: 1px solid rgb(0, 0, 0, 0.1);
 }
+.room_panel .ListOfRooms table tbody tr:last-child    /* CSS псевдокласс :last-child находит любой элемент, являющийся последним в его родителе.*/
+{
+    border-bottom: none;
+}        
+.room_panel .ListOfRooms table tbody tr:hover
+{
+    background: rgb(17, 182, 141);
+    color: #fff;
+}
+.room_panel .ListOfRooms table tr td
+{
+    padding: 9px 5px;
+}
+.room_panel .ListOfRooms table thead tr td:last-child,
+.room_panel .ListOfRooms table tbody tr td:last-child
+{
+    text-align: right;
+}
+.room_panel .ListOfRooms table thead tr td:nth-child(3),
+.room_panel .ListOfRooms table tbody tr td:nth-child(3)
+{
+    text-align: right;
+    padding-right: 180px;
+}
+.room_panel .ListOfRooms table thead tr td:nth-child(4),
+.room_panel .ListOfRooms table tbody tr td:nth-child(4)
+{
+    text-align: center;
+}   
+.status
+{
+    position: relative;
+    padding: 2px 4px;
+    background: rgba(250, 5, 5, 0.801);
+    color: #fff;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+.inviting
+{
+    background: rgb(57, 112, 194);
+}
+.opened
+{
+    background: rgb(13, 180, 22);
+}
+.closed
+{
+    background: rgba(250, 5, 5, 0.801);
+}
+.room_panel .players_online
+{
+    position: relative;
+    display: grid;
+    min-height: 530px;
+    background: #fff;
+    padding: 20px;
+    
+}
+
+
+
 
 
 
