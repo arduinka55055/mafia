@@ -246,7 +246,7 @@ body
     color: #fff;
     text-decoration: none;
     border-radius: 6px;
-    left: 420px;
+    left: 410px;
 }
 .room_panel table
 {
@@ -280,14 +280,14 @@ body
 {
     text-align: right;
 }
-.room_panel .ListOfRooms table thead tr td:nth-child(3),
-.room_panel .ListOfRooms table tbody tr td:nth-child(3)
+.room_panel .ListOfRooms table thead tr td:nth-child(2),
+.room_panel .ListOfRooms table tbody tr td:nth-child(2)
 {
     text-align: right;
     padding-right: 180px;
 }
-.room_panel .ListOfRooms table thead tr td:nth-child(4),
-.room_panel .ListOfRooms table tbody tr td:nth-child(4)
+.room_panel .ListOfRooms table thead tr td:nth-child(3),
+.room_panel .ListOfRooms table tbody tr td:nth-child(3)
 {
     text-align: center;
 }   
@@ -361,13 +361,13 @@ body
     line-height: 1.2em;
 }
 
-@media (max-width: 992px)
+@media (max-width: 992px) /* для планшетов */
 {
     .navigationBar
     {
         left: -300px;
     }
-    .navigationBar       .active
+    .navigationBar.active
     {
         left: 0;
         width: 300px;
@@ -382,7 +382,71 @@ body
         width: calc(100% - 300px);
         left: 300px;
     }
+    .cardsLobby
+    {
+        grid-template-columns: repeat(2,1fr);
+    }
+    .btn
+    {
+        left: 120px;
+    }
 }
+@media (max-width: 767px)  /* для телефонов */
+{
+    .room_panel
+    {
+        grid-template-columns: repeat(1,1fr);
+    }
+    .cardHeader
+    {
+        font-weight: 600;
+        font-size: 18px;
+    }
+}
+@media (max-width: 480px)  /* для маленьких телефонов*/
+{
+    .cardsLobby
+    {
+        grid-template-columns: repeat(1,1fr);
+    }
+    .room_panel .ListOfRooms 
+    {
+        overflow-x: auto;
+    }
+    .room_panel .ListOfRooms table
+    { 
+        width: 600px;
+    }
+    .navigationBar
+    {
+        width: 100%;
+        left: -100%;  
+        z-index: 1000;
+    }
+    .navigationBar.active
+    {
+        width: 100%;
+        left: 0; 
+    }
+    .toggle.active
+    { 
+        position: fixed;
+        z-index: 10000;
+        right: 0;
+        left: initial;
+    }
+    .toggle.active::before
+    {
+        width: 60%;
+        height: 70%;
+        color: rgb(250, 250, 250);
+    }
+    .btn
+    {
+        left: 20px;
+    }
+}
+
     
 
 
