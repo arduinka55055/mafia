@@ -5,6 +5,7 @@ import sys
 import json
 import random
 from typing import Any, Union
+import datetime
 import urllib
 import asyncio
 import datetime
@@ -63,12 +64,12 @@ class ClientPacket:
     async def consumePacket(self,conn:WebsocketConnector) -> Union[bytes, None]:
         try:
             if self.pck == "MakeRoom":
-                roomHandler.rooms.newRoom(self.data[0], self.gid, self.data[1])
+                roomHandler.rooms.newRoom(self.data[0], mafia.PlayerRAW(self.nick,self.gid,self.ava), self.data[1])
 
             elif self.pck == "GetInfo":
                 roomreply=roomHandler.rooms.stat()
                 roomreply["pck"]="Info"
-                return json_encode(roomreply).encode()
+                return json_encode(roomreply).encode(encoding="utf-8")
 
             elif self.pck == "GetTargets":
                 roomreply={"pck":"InfoT","data":[]}
@@ -118,6 +119,7 @@ class ClientPacket:
         except:
             err=sys.exc_info()
             shit=''.join(format_exception(*err))
+            shit=shit.replace('"','\"').replace("'","\'")
             return ('{"pck":"Error","msg":"ServerPizdecError","spec":"Пизда Серву!%s"}' % shit).encode()
 
 class Clients(set):
@@ -155,13 +157,20 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
             self.close(reason="['Invalid data, relogin!']")
             return
         ret = await data.consumePacket(self)
+        print(ret)
         if ret:
             self.write_message(ret)
         else:
             self.write_message('{"pck":"ack"}')
 
     def on_pong(self, data: bytes) -> None:
-        #print("PING!")
+        ret={
+            "pck":"Ping",
+            "timestamp":datetime.datetime.timestamp(datetime.datetime.now()),
+            "players":len(clients),
+            "rooms":len(roomHandler.rooms)
+        }
+        self.write_message(json.dumps(ret))
         return super().on_pong(data)
 
     def on_close(self):

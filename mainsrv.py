@@ -1,3 +1,4 @@
+#!/usr/bin/env python3   
 #MAFIA server
 #Copyright (C) 2021 Vitiaz D., Chernikov M. 
 
@@ -54,10 +55,8 @@ class Mainframe():
                 user = await self.oauth2_request(
                     "https://www.googleapis.com/oauth2/v1/userinfo",
                     access_token=access["access_token"])
-                self.write(user["id"])
-                self.write("<img src='%s'/>" % user["picture"])
-                self.write("<h3>Your name is:%s </h3>" % user['name'])
-                self.write("<code>%s</code>" % str(user))
+                user=json.dumps(user)
+                self.write('''<script>localStorage.setItem('google',`%s`);</script>%s''' % (user,user))#костылиус
             else:
                 self.authorize_redirect(
                     redirect_uri='http://127.0.0.1:8000/account',
