@@ -25,7 +25,7 @@ a
     text-decoration: none;
     text-transform: uppercase;
     overflow: hidden;
-    transition: 0.5s;
+    transition: 0.4s;
     letter-spacing: 4px;
 }
 a:hover

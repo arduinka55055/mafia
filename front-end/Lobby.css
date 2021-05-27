@@ -240,13 +240,13 @@ body
 }
 .btn
 {
-    position: relative;
+    position: absolute;
     padding: 5px 10px;
     background: #22bba1;
     color: #fff;
     text-decoration: none;
     border-radius: 6px;
-    left: 410px;
+    right: 9px;
 }
 .room_panel table
 {
@@ -388,7 +388,7 @@ body
     }
     .btn
     {
-        left: 120px;
+        right: 9px;
     }
 }
 @media (max-width: 767px)  /* для телефонов */
@@ -437,9 +437,9 @@ body
     }
     .toggle.active::before
     {
-        width: 60%;
-        height: 70%;
-        color: rgb(250, 250, 250);
+        width: 86%;
+        height: 87%;
+       /*  color: rgb(250, 250, 250); */
     }
     .btn
     {
