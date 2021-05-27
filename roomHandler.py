@@ -64,9 +64,25 @@ class Rooms(set):
         return data
 
     def purgeIter(self):
+        removed=[]
         for x in self:
             if len(x.players)<=0:
-                del x
+                removed.append(x)
+        for x in removed:
+            self.remove(x)
+    def kick(self:Set[Room],id:mafia.PLAYERID):
+        player=None
+        room=None
+        for x in self:
+            for p in x.players:
+                if p.id==id:
+                    player=p
+                    room=x
+                    break
+        if player!=None:
+            room.players.remove(player)
+
+                    
         
 rooms = Rooms()
 
@@ -83,16 +99,22 @@ class Room:
             raise GameNotStartedError(self.UUID)
         return self.__game
     @property
-    def gamers(self)->set[mafia.Player]:
-        return self.__game.players
-
-    def __init__(self, name,ownergid:mafia.PLAYERID, playersLimit):
+    def gamers(self)->Union[set[mafia.Player],None]:
+        if self.__game != None:
+            return self.__game.players
+        else:
+            return None
+    def __init__(self, name,owner:mafia.PlayerRAW, playersLimit):
+        rooms.kick(owner.id)
         rooms.purgeIter()
         self.name=name
         self.__uuid = uuid.uuid4()
-        self.ownergid = ownergid
+        self.ownergid = owner.id
         self.playersLimit = playersLimit
+        if playersLimit<mafia.playersMin:
+            raise NoEnoughPlayersError(self.__uuid,playersLimit)
         self.__players: Set[mafia.PlayerRAW] = set()
+        self.__players.add(owner)
         self.__started=False
         self.__game=None
         rooms.add(self)
@@ -103,15 +125,22 @@ class Room:
     def __del__(self):
         rooms.remove(self)
 
-    def purgeIter(self):
-        if len(self.players)<=0:
-            del self
+    def hasPlayer(self,id:mafia.PLAYERID):
+        for x in self.players:
+            if x.id==id:
+                return True
+        if self.__started:
+            for x in self.gamers:
+                if x.id==id:
+                    return True
+        return False
+
     @property
     def isStarted(self):
         return self.__started
 
     def join(self, player: mafia.PlayerRAW):
-        if not player in self.players:
+        if not self.hasPlayer(player.id):
             self.players.add(player)
 
     def leave(self, gid:mafia.PLAYERID):
@@ -131,6 +160,7 @@ class Room:
             "rid":str(self.UUID),
             "name":self.name,
             "isStarted":self.isStarted,
+            "maxplayers":self.playersLimit,
             "players":[[x.name,x.avatar] for x in self.players]}
         
     async def start(self, gid:mafia.PLAYERID):

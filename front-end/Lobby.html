@@ -1,137 +1,154 @@
 <!DOCTYPE html>
 <html lang="ua">
+
 <head>
-     <meta name="viewport" content="width=width-device, initial-scale=1.0">
-     <meta charset="UTF-8">
-     <title>M.A.F.I.A</title>
-     
-     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css" integrity="sha384-wESLQ85D6gbsF459vf1CiZ2+rr+CsxRY0RpiF1tLlQpDnAgg6rwdsUF1+Ics2bni" crossorigin="anonymous">
-     <link rel="stylesheet" type="text/css" href="Lobby.css">
-     <script src="vue.min.js"></script>
-   
+    <meta name="viewport" content="width=width-device, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>M.A.F.I.A</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css" integrity="sha384-wESLQ85D6gbsF459vf1CiZ2+rr+CsxRY0RpiF1tLlQpDnAgg6rwdsUF1+Ics2bni" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="Lobby.css">
+    <script src="vue.min.js"></script>
+    <script src='/connector.js'></script>
+    <script src="GodObject.js"></script>
+
 </head>
-     <body>
-       <div class="repository"> 
-         <div class="navigationBar">
+
+<body>
+    <div class="repository">
+        <div class="navigationBar">
             <ul>
-               <li>
-                 <a href="#">
-                 <span class="icon"><svg width="190" height="71" viewBox="0 0 273 71" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <li>
+                    <a href="#">
+                        <span class="icon"><svg width="190" height="71" viewBox="0 0 273 71" fill="none" xmlns="http://www.w3.org/2000/svg">
                    <path d="M69.784 7.216L69.304 23.056C69.304 31.76 69.56 39.568 70.072 46.48C70.584 53.328 71.736 60.784 73.528 68.848C72.12 70 69.88 70.576 66.808 70.576C60.856 70.576 57.88 67.984 57.88 62.8C57.88 58.512 58.072 51.952 58.456 43.12C58.904 34.288 59.128 27.376 59.128 22.384C55.672 27.376 52.024 33.552 48.184 40.912C44.408 48.208 42.52 52.688 42.52 54.352C42.52 56.016 42.68 57.296 43 58.192C41.592 59.088 39.704 59.536 37.336 59.536C35.032 59.536 33.08 58.896 31.48 57.616C29.944 56.336 28.632 54.576 27.544 52.336C26.52 50.096 24.664 45.712 21.976 39.184C19.352 32.592 16.952 26.928 14.776 22.192C13.112 32.496 12.28 41.616 12.28 49.552C12.28 57.488 12.536 63.92 13.048 68.848C11 69.616 8.952 70 6.904 70C2.808 70 0.76 67.952 0.76 63.856C0.76 60.72 1.464 54.48 2.872 45.136C4.344 35.728 5.08 27.792 5.08 21.328C5.08 14.864 4.728 8.816 4.024 3.184C7.48 2.288 10.168 1.84 12.088 1.84C15.608 1.84 17.976 3.088 19.192 5.584C21.112 9.616 23.928 16.048 27.64 24.88C31.416 33.648 34.488 40.4 36.856 45.136C37.496 43.792 38.968 40.912 41.272 36.496C43.64 32.016 45.592 28.208 47.128 25.072C48.728 21.872 50.328 18.096 51.928 13.744C53.592 9.328 54.648 5.488 55.096 2.224C57.4 1.584 59.64 1.264 61.816 1.264C64.056 1.264 65.944 1.744 67.48 2.704C69.016 3.664 69.784 5.168 69.784 7.216ZM99.2853 2.608C101.973 1.712 104.405 1.264 106.581 1.264C109.909 1.264 112.501 2.448 114.357 4.816C116.213 7.12 117.653 10.416 118.677 14.704C118.997 15.984 119.637 18.8 120.597 23.152C121.621 27.504 122.453 31.024 123.093 33.712C125.077 42.096 126.869 48.592 128.469 53.2C130.133 57.808 132.757 61.488 136.341 64.24C135.573 66.16 134.293 67.696 132.501 68.848C130.773 70 128.885 70.576 126.837 70.576C122.165 70.576 118.741 67.056 116.565 60.016C115.541 56.752 114.613 53.552 113.781 50.416C111.541 51.184 108.757 51.568 105.429 51.568C102.165 51.568 98.1333 51.216 93.3333 50.512C91.3493 58.256 90.3573 64.08 90.3573 67.984C90.3573 68.816 90.3893 69.424 90.4532 69.808C89.6213 69.936 88.2133 70 86.2293 70C84.2453 70 82.4853 69.392 80.9492 68.176C79.4773 66.896 78.7413 65.104 78.7413 62.8C78.7413 59.6 81.8133 50.224 87.9573 34.672C94.1013 19.12 97.8773 8.432 99.2853 2.608ZM95.5413 42.448C98.1013 42.768 100.693 42.928 103.317 42.928C106.005 42.928 108.853 42.64 111.861 42.064C111.285 39.44 109.333 29.392 106.005 11.92C102.037 22.224 98.5493 32.4 95.5413 42.448ZM155.756 39.28C155.756 51.632 156.428 61.488 157.772 68.848C155.724 69.616 153.548 70 151.244 70C148.94 70 146.924 69.264 145.196 67.792C143.532 66.32 142.7 64.304 142.7 61.744C142.7 59.12 143.02 54.192 143.66 46.96C144.3 39.728 144.62 34.128 144.62 30.16C144.62 20.368 143.948 10.928 142.604 1.84C147.34 2.224 153.708 2.41599 161.708 2.41599C169.708 2.41599 177.356 1.83999 184.652 0.687994C185.42 2.09599 185.804 3.792 185.804 5.776C185.804 7.696 185.036 9.424 183.5 10.96C182.028 12.432 180.172 13.168 177.932 13.168C175.756 13.168 172.236 12.848 167.372 12.208C162.572 11.568 159.02 11.248 156.716 11.248C156.204 18.224 155.884 24.624 155.756 30.448C159.468 30.832 163.564 31.024 168.044 31.024C172.588 31.024 176.524 30.352 179.852 29.008C180.62 30.416 181.004 32.112 181.004 34.096C181.004 36.016 180.236 37.776 178.7 39.376C177.228 40.912 175.468 41.68 173.42 41.68C171.372 41.68 168.428 41.296 164.588 40.528C160.748 39.696 157.804 39.28 155.756 39.28ZM208.209 68.848C206.161 69.616 203.985 70 201.681 70C199.377 70 197.361 69.264 195.633 67.792C193.969 66.32 193.137 64.304 193.137 61.744C193.137 59.184 193.457 54.288 194.097 47.056C194.737 39.76 195.057 33.936 195.057 29.584C195.057 18.384 194.385 9.52 193.041 2.992C195.089 2.224 197.265 1.84 199.569 1.84C201.873 1.84 203.857 2.576 205.521 4.048C207.249 5.52 208.113 7.536 208.113 10.096C208.113 12.656 207.793 17.584 207.153 24.88C206.513 32.112 206.193 37.904 206.193 42.256C206.193 53.456 206.865 62.32 208.209 68.848ZM235.504 2.608C238.192 1.712 240.624 1.264 242.8 1.264C246.128 1.264 248.72 2.448 250.576 4.816C252.432 7.12 253.872 10.416 254.896 14.704C255.216 15.984 255.856 18.8 256.816 23.152C257.84 27.504 258.672 31.024 259.312 33.712C261.296 42.096 263.088 48.592 264.688 53.2C266.352 57.808 268.976 61.488 272.56 64.24C271.792 66.16 270.512 67.696 268.72 68.848C266.992 70 265.104 70.576 263.056 70.576C258.384 70.576 254.96 67.056 252.784 60.016C251.76 56.752 250.832 53.552 250 50.416C247.76 51.184 244.976 51.568 241.648 51.568C238.384 51.568 234.352 51.216 229.552 50.512C227.568 58.256 226.576 64.08 226.576 67.984C226.576 68.816 226.608 69.424 226.672 69.808C225.84 69.936 224.432 70 222.448 70C220.464 70 218.704 69.392 217.168 68.176C215.696 66.896 214.96 65.104 214.96 62.8C214.96 59.6 218.032 50.224 224.176 34.672C230.32 19.12 234.096 8.432 235.504 2.608ZM231.76 42.448C234.32 42.768 236.912 42.928 239.536 42.928C242.224 42.928 245.072 42.64 248.08 42.064C247.504 39.44 245.552 29.392 242.224 11.92C238.256 22.224 234.768 32.4 231.76 42.448Z" fill="#FC0909"/>
                    </svg>
-                </span>  
-               </a> 
-               </li>
-               <li>
-                  <a href="#">
-                     <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
+                </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-people-fill" viewBox="0 0 16 16">
                            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                            <path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/>
                            <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
-                           </svg></span>  
-                     <span class="title"><h2>Розробники гри</h2></span>
-                  </a>
-               </li>
-               <li>
-                  <a href="#">
-                     <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                           </svg></span>
+                        <span class="title"><h2>Розробники гри</h2></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
                      <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
-                     </svg></span> 
-                           
-                     <span class="title"><h2>Додому</h2></span>
-                  </a>   
-               </li>
-               <li>
-                  <a href="#">
-                     <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-diamond-fill" viewBox="0 0 16 16">
+                     </svg></span>
+
+                        <span class="title"><h2>Додому</h2></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-diamond-fill" viewBox="0 0 16 16">
                         <path d="M9.05.435c-.58-.58-1.52-.58-2.1 0L.436 6.95c-.58.58-.58 1.519 0 2.098l6.516 6.516c.58.58 1.519.58 2.098 0l6.516-6.516c.58-.58.58-1.519 0-2.098L9.05.435zM5.495 6.033a.237.237 0 0 1-.24-.247C5.35 4.091 6.737 3.5 8.005 3.5c1.396 0 2.672.73 2.672 2.24 0 1.08-.635 1.594-1.244 2.057-.737.559-1.01.768-1.01 1.486v.105a.25.25 0 0 1-.25.25h-.81a.25.25 0 0 1-.25-.246l-.004-.217c-.038-.927.495-1.498 1.168-1.987.59-.444.965-.736.965-1.371 0-.825-.628-1.168-1.314-1.168-.803 0-1.253.478-1.342 1.134-.018.137-.128.25-.266.25h-.825zm2.325 6.443c-.584 0-1.009-.394-1.009-.927 0-.552.425-.94 1.01-.94.609 0 1.028.388 1.028.94 0 .533-.42.927-1.029.927z"/>
                         </svg></span>
-      
-                     <span class="title"><h2>Технічні проблеми</h2></span>
-                  </a>   
-               </li>
-               <li>
-               <a href="#"> 
-                  <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+
+                        <span class="title"><h2>Технічні проблеми</h2></span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
                      <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
                      <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
                      </svg></span>
-      
-                  <span class="title"><h2>Покинути гру</h2></span>
-               </a>   
-               </li>
-               </ul>
-         </div>
 
-         <div class="index">
-             <div class="topbar">
+                        <span class="title"><h2>Покинути гру</h2></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="index">
+            <div class="topbar">
                 <div class="toggle" onclick="toggleBar();">
+<<<<<<< HEAD
                    <svg xmlns="http://www.w3.org/2000/svg"  width="85%"  height: "85%" fill="#111" class="bi bi-list" viewBox="0 0 15 20">
+=======
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60%" height: "70%" fill="#111" class="bi bi-list" viewBox="0 0 15 20">
+>>>>>>> 9fac8e8ab3c3f9b8e8bfbe6f84e2b0d087a4fb8e
                         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                    </svg>
-                 </div>
-                 <div class="search_Room">
-                  <label>
+                </div>
+                <div class="search_Room">
+                    <label>
                       <input type="text" placeholder="Пошук кімнати">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                            </svg>
                       </label>
-               </div>
-               <div class="users">
-                  <img src="img/putin.png"> <!--Рандомное лицо просто как будет отоброжаться лицо юзеров-->  
+                </div>
+                <div class="G_nick"></div>
+                <div class="users">
+
+                    <img src="img/putin.png" class="G_ava">
+                    <!--Рандомное лицо просто как будет отоброжаться лицо юзеров-->
                 </div>
             </div>
-          
-          <div class="cardsLobby">
-               <div class="card">
-                   <div>
-                      <div class="numbers">11</div> <!--Денис!!!!Ты тут будешь мне парсить склолько игроков вообще в сети-->
-                      <div class="card_name">В мережі</div>
-                   </div>  
-                   <div class="iconBox">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="50" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
+
+            <div class="cardsLobby">
+                <div class="card">
+                    <div>
+                        <div class="numbers G_players">11</div>
+                        <!--Денис!!!!Ты тут будешь мне парсить склолько игроков вообще в сети-->
+                        <div class="card_name">В мережі</div>
+                        <!--ок, сделаю итератор. только не дзюби пж-->
+                    </div>
+                    <div class="iconBox">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="50" fill="currentColor" class="bi bi-eye-fill" viewBox="0 0 16 16">
                            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z"/>
                            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8 5.5S0 8 0 8zm8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z"/>
                          </svg>
-                   </div> 
-               </div>
+                    </div>
+                </div>
                 <div class="card">
-                   <div>
-                      <div class="numbers">11</div>
-                      <div class="card_name">Кількість кімнат</div> <!--Тут ты запарсишь сколько комнат создано,я для єтого создам отдельную html страничку создание комнаты которая сразу будет кидать сколько игроков создало комнатки-->
-                   </div>  
-                   <div class="iconBox">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="50" fill="currentColor" class="bi bi-door-closed-fill" viewBox="0 0 16 16">
+                    <div>
+                        <div class="numbers G_rooms">11</div>
+                        <div class="card_name">Кількість кімнат</div>
+                        <!--Тут ты запарсишь сколько комнат создано,я для єтого создам отдельную html страничку создание комнаты которая сразу будет кидать сколько игроков создало комнатки-->
+                    </div>
+                    <!--НЕТ! это будет одной частью приложения. можно сделать тебе отдельно UI но страница будет одна-->
+                    <div class="iconBox">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="50" fill="currentColor" class="bi bi-door-closed-fill" viewBox="0 0 16 16">
                               <path d="M12 1a1 1 0 0 1 1 1v13h1.5a.5.5 0 0 1 0 1h-13a.5.5 0 0 1 0-1H3V2a1 1 0 0 1 1-1h8zm-2 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
                               </svg>
-                   </div> 
-               </div>
-               <div class="card">
-                   <div>
-                      <div class="numbers">Україна</div>
-                      <div class="card_name">Регіон</div>
-                   </div>  
-                   <div class="iconBox">
-                         <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="50" fill="currentColor" class="bi bi-flag-fill" viewBox="0 0 16 16">
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="numbers G_geo">Україна</div>
+                        <div class="card_name">Регіон</div>
+                    </div>
+                    <div class="iconBox">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="50" fill="currentColor" class="bi bi-flag-fill" viewBox="0 0 16 16">
                               <path d="M14.778.085A.5.5 0 0 1 15 .5V8a.5.5 0 0 1-.314.464L14.5 8l.186.464-.003.001-.006.003-.023.009a12.435 12.435 0 0 1-.397.15c-.264.095-.631.223-1.047.35-.816.252-1.879.523-2.71.523-.847 0-1.548-.28-2.158-.525l-.028-.01C7.68 8.71 7.14 8.5 6.5 8.5c-.7 0-1.638.23-2.437.477A19.626 19.626 0 0 0 3 9.342V15.5a.5.5 0 0 1-1 0V.5a.5.5 0 0 1 1 0v.282c.226-.079.496-.17.79-.26C4.606.272 5.67 0 6.5 0c.84 0 1.524.277 2.121.519l.043.018C9.286.788 9.828 1 10.5 1c.7 0 1.638-.23 2.437-.477a19.587 19.587 0 0 0 1.349-.476l.019-.007.004-.002h.001"/>
                               </svg>
-                   </div> 
-               </div>
-               <div class="card">
-                   <div>
-                      <div class="numbers">Добре</div>
-                      <div class="card_name">З'єднання</div>
-                   </div>  
-                   <div class="iconBox">
+                    </div>
+                </div>
+                <div class="card">
+                    <div>
+                        <div class="numbers">Добре</div>
+                        <div class="card_name">З'єднання</div>
+                        <div class="card_name G_ping">- ms</div>
+                    </div>
+                    <div class="iconBox">
                         <svg xmlns="http://www.w3.org/2000/svg" width="2.5em" height="50" fill="currentColor" class="bi bi-bar-chart-line-fill" viewBox="0 0 16 16">
                            <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2z"/>
                            </svg>
-                   </div> 
-               </div>
-         </div>
+                    </div>
+                </div>
+            </div>
 
 
+<<<<<<< HEAD
          <div class="room_panel">
              <div class="ListOfRooms">
                 <div class="cardHeader">
@@ -194,6 +211,84 @@
                          <tr>
                            <td width="60px"><div class="imgBx"><img src="img/putin.png"></div></td>
                            <td><h4>Путин<br><span>Афган</h4></td>  
+=======
+            <div class="room_panel">
+                <div class="ListOfRooms">
+                    <div class="cardHeader">
+                        <h2>Всі кімнати</h2>
+                        <a href="#" class="btn">Подивитися всі кімнати</a>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Назва</td>
+                                <td>Кількість граців</td>
+                                <td>Статус</td>
+                            </tr>
+                        </thead>
+                        <tbody class="G_roomlist">
+                            <tr>
+                                <td>ДЗЮбики</td>
+                                <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
+                                <td>8/10</td>
+                                <td><span class="status closed">Закрито</span></td>
+                            </tr>
+                            <tr>
+                                <td>Прогери</td>
+                                <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
+                                <td>2/10</td>
+                                <td><span class="status inviting">Йде набір</span></td>
+                                <!--Здесь я Денис думаю что место замочка добавить кнопочки типо: зеленая - открыти, жёлтая - идёт набор или крсная - закрыто-->
+                            </tr>
+                            <!--Так даже лучше!-->
+                            <tr>
+                                <td>Дизайнери</td>
+                                <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
+                                <td>5/10</td>
+                                <td><span class="status opened">Відкрито</span></td>
+                            </tr>
+                            <tr>
+                                <td>ДЗЮбики</td>
+                                <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
+                                <td>8/10</td>
+                                <td><span class="status closed">Закрито</span></td>
+                            </tr>
+                            <tr>
+                                <td>Прогери</td>
+                                <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
+                                <td>2/10</td>
+                                <td><span class="status inviting">Йде набір</span></td>
+                                <!--Здесь я Денис думаю что место замочка добавить кнопочки типо: зеленая - открыти, жёлтая - идёт набор или крсная - закрыто-->
+                            </tr>
+                            <tr>
+                                <td>Дизайнери</td>
+                                <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
+                                <td>5/10</td>
+                                <td><span class="status opened">Відкрито</span></td>
+                            </tr>
+                            <tr>
+                                <td>Геймери</td>
+                                <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
+                                <td>0/10</td>
+                                <td><span class="status inviting">Йде набір</span></td>
+                            </tr>
+                        </tbody>
+                        <!--Элемент <tbody> предназначен для хранения одной или нескольких строк таблицы. -->
+                    </table>
+                </div>
+                <div class="players_online">
+                    <div class="cardHeader">
+                        <h2>Гравці онлайн</h2>
+                    </div>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td width="60px">
+                                    <div class="imgBx"><img src="img/putin.png"></div>
+                                </td>
+                                <td>
+                                    <h4>Путин<br><span>Афган</h4></td>  
+>>>>>>> 9fac8e8ab3c3f9b8e8bfbe6f84e2b0d087a4fb8e
                          </tr> 
                          <tr>
                            <td width="60px"><div class="imgBx"><img src="img/putin.png"></div></td>
