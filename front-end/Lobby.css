@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
-* {
+*
+{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -240,24 +241,14 @@ body {
 .cardHeader h2 {
     font-weight: 600;
 }
-<<<<<<< HEAD
-.btn
-{
-=======
-
 .btn {
->>>>>>> 9fac8e8ab3c3f9b8e8bfbe6f84e2b0d087a4fb8e
     position: absolute;
     padding: 5px 10px;
     background: #22bba1;
     color: #fff;
     text-decoration: none;
     border-radius: 6px;
-<<<<<<< HEAD
     right: 9px;
-=======
-    right: 8px;
->>>>>>> 9fac8e8ab3c3f9b8e8bfbe6f84e2b0d087a4fb8e
 }
 
 .room_panel table {
@@ -398,16 +389,12 @@ body {
     .cardsLobby {
         grid-template-columns: repeat(2, 1fr);
     }
-<<<<<<< HEAD
+
     .btn
     {
         right: 9px;
-=======
-    .btn {
-        left: 120px;
->>>>>>> 9fac8e8ab3c3f9b8e8bfbe6f84e2b0d087a4fb8e
     }
-}
+     
 
 @media (max-width: 767px)
 /* для телефонов */
@@ -450,20 +437,21 @@ body {
         right: 0;
         left: initial;
     }
-<<<<<<< HEAD
+
     .toggle.active::before
     {
         width: 86%;
         height: 87%;
        /*  color: rgb(250, 250, 250); */
-=======
+    }
     .toggle.active::before {
         width: 60%;
         height: 70%;
         color: rgb(250, 250, 250);
->>>>>>> 9fac8e8ab3c3f9b8e8bfbe6f84e2b0d087a4fb8e
+
     }
     .btn {
         left: 20px;
     }
+}
 }
