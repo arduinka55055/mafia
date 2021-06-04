@@ -70,11 +70,7 @@
         <div class="index">
             <div class="topbar">
                 <div class="toggle" onclick="toggleBar();">
-<<<<<<< HEAD
-                   <svg xmlns="http://www.w3.org/2000/svg"  width="85%"  height: "85%" fill="#111" class="bi bi-list" viewBox="0 0 15 20">
-=======
                     <svg xmlns="http://www.w3.org/2000/svg" width="60%" height: "70%" fill="#111" class="bi bi-list" viewBox="0 0 15 20">
->>>>>>> 9fac8e8ab3c3f9b8e8bfbe6f84e2b0d087a4fb8e
                         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                    </svg>
                 </div>
@@ -148,70 +144,6 @@
             </div>
 
 
-<<<<<<< HEAD
-         <div class="room_panel">
-             <div class="ListOfRooms">
-                <div class="cardHeader">
-                   <h2>Всі кімнати</h2>
-                   <a href="#" class="btn">Подивитися всі кімнати</a>
-               </div>
-               <table>
-                  <thead>
-                      <tr>
-                         <td>Назва</td>
-                         <td>Кількість граців</td>
-                         <td>Статус</td>
-                      </tr>
-                  </thead>
-                  <tbody>
-                        <tr>
-                           <td>ДЗЮбики</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>8/10</td>   
-          
-                        </tr>
-                        <tr>
-                           <td>Прогери</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>2/10</td>   
-                           <td><span class="status inviting">Йде набір</span></td>    <!--Здесь я Денис думаю что место замочка добавить кнопочки типо: зеленая - открыти, жёлтая - идёт набор или крсная - закрыто-->
-                        </tr>
-                          <tr>
-                           <td>Дизайнери</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>5/10</td>   
-                           <td><span class="status opened">Відкрито</span></td>    
-                        </tr>
-                          <tr>
-                           <td>ДЗЮбики</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>8/10</td>   
-                           <td><span class="status closed">Закрито</span></td>    
-                        </tr>
-                        <tr>
-                           <td>Прогери</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>2/10</td>   
-                           <td><span class="status inviting">Йде набір</span></td>    <!--Здесь я Денис думаю что место замочка добавить кнопочки типо: зеленая - открыти, жёлтая - идёт набор или крсная - закрыто-->
-                        </tr>
-                          <tr>
-                           <td>Дизайнери</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>5/10</td>   
-                           <td><span class="status opened">Відкрито</span></td>    
-                        </tr>
-                        <tr>
-                           <td>Геймери</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>0/10</td>   
-                           <td><span class="status inviting">Йде набір</span></td>    
-                        </tr>
-                      </tbody>                                     <!--Элемент <tbody> предназначен для хранения одной или нескольких строк таблицы. -->
-                   </table>
-               </div>
-               <div class="players_online">
-                  <div class="cardHeader">
-                      <h2>Гравці онлайн</h2>
-                  </div>
-                  <table>
-                      <tbody>
-                         <tr>
-                           <td width="60px"><div class="imgBx"><img src="img/putin.png"></div></td>
-                           <td><h4>Путин<br><span>Афган</h4></td>  
-=======
             <div class="room_panel">
                 <div class="ListOfRooms">
                     <div class="cardHeader">
@@ -275,20 +207,23 @@
                         </tbody>
                         <!--Элемент <tbody> предназначен для хранения одной или нескольких строк таблицы. -->
                     </table>
+                    <div class="btn G_addroom" style="position: absolute; bottom:5px;" onclick="window.socket.newRoom(prompt(),6)">
+                        +
+                    </div>
                 </div>
                 <div class="players_online">
                     <div class="cardHeader">
                         <h2>Гравці онлайн</h2>
                     </div>
                     <table>
-                        <tbody>
+                        <tbody class="G_playerlist">
                             <tr>
                                 <td width="60px">
                                     <div class="imgBx"><img src="img/putin.png"></div>
                                 </td>
                                 <td>
-                                    <h4>Путин<br><span>Афган</h4></td>  
->>>>>>> 9fac8e8ab3c3f9b8e8bfbe6f84e2b0d087a4fb8e
+                                    <h4>Путин<br><span>Афган</h4>
+                                </td>  
                          </tr> 
                          <tr>
                            <td width="60px"><div class="imgBx"><img src="img/putin.png"></div></td>
