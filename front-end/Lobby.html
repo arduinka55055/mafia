@@ -70,11 +70,15 @@
         <div class="index">
             <div class="topbar">
                 <div class="toggle" onclick="toggleBar();">
+<<<<<<< HEAD
 
                    <svg xmlns="http://www.w3.org/2000/svg"  width="85%"  height: "85%" fill="#111" class="bi bi-list" viewBox="0 0 15 20">
 
                     <svg xmlns="http://www.w3.org/2000/svg" width="60%" height: "70%" fill="#111" class="bi bi-list" viewBox="0 0 15 20">
 
+=======
+                    <svg xmlns="http://www.w3.org/2000/svg" width="60%" height: "70%" fill="#111" class="bi bi-list" viewBox="0 0 15 20">
+>>>>>>> 95139cef5268c6143faa700213a4260c0ffffc44
                         <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                    </svg>
                 </div>
@@ -148,6 +152,7 @@
             </div>
 
 
+<<<<<<< HEAD
          <div class="room_panel">
              <div class="ListOfRooms">
                 <div class="cardHeader">
@@ -211,6 +216,8 @@
                            <td width="60px"><div class="imgBx"><img src="img/putin.png"></div></td>
                            <td><h4>Путин<br><span>Афган</h4></td>  
 
+=======
+>>>>>>> 95139cef5268c6143faa700213a4260c0ffffc44
             <div class="room_panel">
                 <div class="ListOfRooms">
                     <div class="cardHeader">
@@ -274,19 +281,28 @@
                         </tbody>
                         <!--Элемент <tbody> предназначен для хранения одной или нескольких строк таблицы. -->
                     </table>
+                    <div class="btn G_addroom" style="position: absolute; bottom:5px;" onclick="window.socket.newRoom(prompt(),6).then(data=>{
+                        window.socket.connect(data.id); window.currentRoom = data.id;})">
+                        +
+                    </div>
                 </div>
                 <div class="players_online">
                     <div class="cardHeader">
                         <h2>Гравці онлайн</h2>
                     </div>
                     <table>
-                        <tbody>
+                        <tbody class="G_playerlist">
                             <tr>
                                 <td width="60px">
                                     <div class="imgBx"><img src="img/putin.png"></div>
                                 </td>
                                 <td>
+<<<<<<< HEAD
 
+=======
+                                    <h4>Путин<br><span>Афган</h4>
+                                </td>  
+>>>>>>> 95139cef5268c6143faa700213a4260c0ffffc44
                          </tr> 
                          <tr>
                            <td width="60px"><div class="imgBx"><img src="img/putin.png"></div></td>

@@ -1,15 +1,10 @@
 from __future__ import annotations
-import os
-import io
 import sys
 import json
-import random
-from typing import Any, Union
+from typing import Any, Dict, Set, Union
 import datetime
-import urllib
 import asyncio
 import datetime
-import aiomysql
 from tornado.escape import json_encode
 import tornado.ioloop
 import tornado.httpclient
@@ -17,11 +12,27 @@ import tornado.web
 import tornado.auth
 import tornado.template
 import tornado.websocket
-import user_agents
 from traceback import format_exception
 
 import roomHandler
 import mafia
+
+
+from starlette.websockets import WebSocket
+from starlette.applications import Starlette
+from starlette.requests import Request
+from starlette.responses import JSONResponse, Response
+from starlette.routing import Route
+from starlette.endpoints import WebSocketEndpoint
+from starlette.middleware.sessions import SessionMiddleware
+from starlette.config import Config
+
+import fastapi
+from fastapi import FastAPI
+from fastapi import responses
+from fastapi.params import Cookie
+from fastapi.encoders import jsonable_encoder
+
 """
 basic connection:
 
@@ -46,7 +57,6 @@ basic connection:
 
 class ClientPacket:
     def __init__(self, data):
-        data = json.loads(data)
         self.gid = data.get("gid")        # Google ID
         self.nick = data.get("nick")      # Nickname
         self.ava = data.get("avatar")     # Avatar
@@ -64,11 +74,8 @@ class ClientPacket:
     async def consumePacket(self,conn:WebsocketConnector) -> Union[bytes, None]:
         try:
             if self.pck == "MakeRoom":
-                # id:12345
-                roomreply = {}
-                roomreply["id"]=roomHandler.rooms.newRoom(self.data[0], mafia.PlayerRAW(self.nick,self.gid,self.ava), self.data[1])
-                roomreply["pck"]="MadeRoom"
-                return json_encode(roomreply).encode(encoding="utf-8")
+                roomHandler.rooms.newRoom(self.data[0], mafia.PlayerRAW(self.nick,self.gid,self.ava), self.data[1])
+
             elif self.pck == "GetInfo":
                 roomreply=roomHandler.rooms.stat()
                 roomreply["pck"]="Info"
@@ -127,20 +134,23 @@ class ClientPacket:
             return ('{"pck":"Error","msg":"ServerPizdecError","spec":"Пизда Серву!%s"}' % shit).encode()
 
 class Clients(set):
-
-    async def broadcast(self, message:Union[dict,str]):
+    async def broadcast(self:Set[WebSocket], message:Union[dict,str]):
+        input_coroutines=[]
         for client in self:
-            client.write_message(json.dumps(message))
+            input_coroutines+=client.send_json(message)
+        await asyncio.gather(*input_coroutines, return_exceptions=True)
 
     async def multicast(self, message:Union[dict,str], rid:mafia.ROOMID):
+        input_coroutines=[]
         for client in self:
-            if client.gameuuid == rid:
-                client.write_message(json.dumps(message))
+            if client.gameuuid == rid:#from GameLink
+                input_coroutines+=client.send_json(message)
+        await asyncio.gather(*input_coroutines, return_exceptions=True)
 
     async def anycast(self, message:Union[dict,str],gid:mafia.PLAYERID):
         for client in self:
-            if client.gamegid == gid:
-                client.write_message(json.dumps(message))
+            if client.gamegid == gid:#from GameLink
+                await client.send_json(json.dumps(message))
                 return        
         raise mafia.PlayerNotFoundError(gid)
     
@@ -148,24 +158,25 @@ class Clients(set):
 clients = Clients()
 
 
-class WebsocketConnector(tornado.websocket.WebSocketHandler):
-    def open(self):
+class WebsocketConnector(WebSocketEndpoint):
+    async def on_connect(self):
         clients.add(self)
         print("WebSocket opened")
 
-    async def on_message(self, message):
-        self.write_message('{"pck":"conn_succ"}')
+    async def on_receive(self, client:WebSocket,message:Dict):
+        #client.
+        await client.send_json({"pck":"conn_succ"})
         print(message)
         data = ClientPacket(message)
         if not data.validate():
-            self.close(reason="['Invalid data, relogin!']")
+            await client.close()#wrong data, go away spammer
             return
         ret = await data.consumePacket(self)
         print(ret)
         if ret:
-            self.write_message(ret)
+            await client.send_json(ret)
         else:
-            self.write_message('{"pck":"ack"}')
+            await client.send_json({"pck":"ack"})
 
     def on_pong(self, data: bytes) -> None:
         ret={
@@ -175,7 +186,6 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
             "rooms":len(roomHandler.rooms)
         }
         self.write_message(json.dumps(ret))
-        self.ping()
         return super().on_pong(data)
 
     def on_close(self):

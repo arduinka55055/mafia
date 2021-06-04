@@ -44,7 +44,7 @@ function updateRooms() {
         var newrooms = "";
         data.rooms.forEach(room => {
             var htmltext = `
-            <tr>
+            <tr onclick="window.socket.connect('${room.rid}'); window.currentRoom = '${room.rid}';">
             <td>${room.name}</td>
             <td>${room.players.length}/${room.maxplayers}</td>
             <td><span class="status ${room.isStarted ? 'closed' : 'inviting'}">${room.isStarted ? 'Закрито' : 'Йде набір'}</span></td>
@@ -54,6 +54,27 @@ function updateRooms() {
         });
         console.log(newrooms);
         document.querySelector(".G_roomlist").innerHTML = newrooms;
+
+        var newplayers = "";
+        if (window.currentRoom) {
+            data.rooms.forEach(room => {
+
+                if (room.rid + "" == window.currentRoom + "") {
+                    room.players.forEach(player => {
+                        var htmltext = `
+                        <tr>
+                        <td width="60px"><div class="imgBx"><img src="${player[1]}"></div></td>
+                        <td><h4>${player[0]}</h4></td>  
+                        </tr> 
+                        `;
+                        newplayers += htmltext;
+                    })
+
+                }
+            });
+        }
+
+        document.querySelector(".G_playerlist").innerHTML = newplayers;
     });
 }
 
@@ -65,7 +86,7 @@ function loadEssentials() {
     document.querySelector(".G_nick").innerHTML = getGoogle().name;
     //http://ip-api.com/json
     getGeoIP().then(region => { document.querySelector(".G_geo").innerHTML = region; });
-    window.socket = new logic(new WebSocket("ws://localhost:8000/pool"), new MeRAW(getGoogle().id, getGoogle().name, getGoogle().picture));
+    window.socket = new logic(new WebSocket("ws://" + location.host + "/pool"), new MeRAW(getGoogle().id, getGoogle().name, getGoogle().picture));
     window.socket.onping = OnPingFunc;
 
     setInterval(updateRooms, 3000);

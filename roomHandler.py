@@ -56,6 +56,7 @@ class Rooms(set):
     def newRoom(self,*args):
         room=Room(*args)
         self.add(room)
+        return str(room.UUID)
 
     def stat(self:Set[Room]):
         data={"pck":"RoomData","rooms":[]}

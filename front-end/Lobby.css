@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
 *
 {
@@ -371,24 +372,198 @@ body {
 /* для планшетов */
 
 {
-    .navigationBar {
-        left: -300px;
+=======
+    @import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
     }
-    .navigationBar.active {
-        left: 0;
-        width: 300px;
+    
+    body {
+        overflow-x: hidden;
     }
-    .index {
+    
+    .repository {
+        position: relative;
         width: 100%;
-        left: 0;
     }
-    .index.active {
+    
+>>>>>>> 95139cef5268c6143faa700213a4260c0ffffc44
+    .navigationBar {
+        position: fixed;
+        width: 300px;
+        height: 100%;
+        background: #284912ec;
+        transition: 0.5s;
+        overflow: hidden;
+    }
+    
+    .navigationBar.active {
+        width: 60px;
+    }
+    
+    .navigationBar ul {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+    
+    .navigationBar ul li {
+        position: relative;
+        width: 100%;
+        list-style: none;
+    }
+    
+    .navigationBar ul li:hover {
+        background: rgb(180, 35, 35);
+    }
+    
+    .navigationBar ul li:nth-child(1) {
+        margin-bottom: 20px;
+    }
+    
+    .navigationBar ul li:nth-child(1):hover
+    /*:nth-child — это псевдокласс, который позволяет выбирать элементы по их порядковому номеру. Например, можно выбрать пятый абзац и применить к нему нужные стили, или выбрать все четные строки в таблице и сделать её полосатой. */
+    
+    {
+        background: transparent;
+    }
+    
+    .navigationBar ul li a {
+        position: relative;
+        display: block;
+        width: 100%;
+        display: flex;
+        text-decoration: none;
+        color: #fff;
+    }
+    
+    .navigationBar ul li a .icon {
+        position: relative;
+        display: block;
+        min-width: 60px;
+        line-height: 60px;
+        text-align: center;
+        left: 6px;
+    }
+    
+    .navigationBar ul li a .icon .svg {
+        color: #fff;
+        font-size: 25px;
+    }
+    
+    .navigationBar ul li a .title {
+        position: relative;
+        display: block;
+        padding: 0 10px;
+        height: 60px;
+        line-height: 60px;
+        white-space: nowrap;
+        /*Свойство white-space устанавливает, как отображать пробелы между словами. В обычных условиях любое количество пробелов в коде HTML показывается на веб-странице как один. Исключением является тег <pre>, помещенный в этот контейнер текст выводится со всеми пробелами, как он был отформатирован пользователем. */
+    }
+    
+    .index {
+        position: absolute;
         width: calc(100% - 300px);
         left: 300px;
+        min-height: 100vh;
+        background: rgb(1, 76, 99);
+        transition: 0.5s;
     }
+    
+    .index.active {
+        width: calc(100% - 60px);
+        left: 60px;
+    }
+    
+    .index .topbar {
+        width: 100%;
+        background: #fff;
+        height: 60px;
+        padding: 0 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .toggle {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        cursor: pointer;
+    }
+    
+    .toggle::before {
+        content: '';
+        font-family: fontAwesome;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        line-height: 60px;
+        font-size: 24px;
+        text-align: center;
+        color: #111;
+    }
+    
+    .search_Room {
+        position: relative;
+        width: 400px;
+        margin: 0 10px;
+    }
+    
+    .search_Room label {
+        position: relative;
+        width: 100%;
+    }
+    
+    .search_Room label input {
+        width: 100%;
+        height: 40px;
+        border-radius: 40px;
+        padding: 5px 20px;
+        padding-left: 35px;
+        outline: none;
+        border: 1px solid rgba(24, 0, 0, 0.938);
+    }
+    
+    .search_Room label svg {
+        position: absolute;
+        left: 15px;
+        top: 4px;
+        color: #000;
+    }
+    
+    .users {
+        position: relative;
+        min-width: 50px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    
+    .users img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
     .cardsLobby {
-        grid-template-columns: repeat(2, 1fr);
+        position: relative;
+        width: 98%;
+        padding: 20px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        /*fr эдиница длини  */
+        grid-gap: 20px;
     }
+<<<<<<< HEAD
 
     .btn
     {
@@ -400,43 +575,178 @@ body {
 /* для телефонов */
 
 {
+=======
+    
+    .cardsLobby .card {
+        position: relative;
+        background: #fff;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        cursor: pointer;
+        color: #000;
+    }
+    
+    .cardsLobby .card .numbers {
+        position: relative;
+        font-size: 2em;
+        font-weight: 500;
+    }
+    
+    .cardsLobby .card .card_name {
+        color: #999;
+    }
+    
+    .cardsLobby .card .iconBox {
+        font-size: 2.5em;
+        color: rgb(53, 43, 43);
+    }
+    
+>>>>>>> 95139cef5268c6143faa700213a4260c0ffffc44
     .room_panel {
-        grid-template-columns: repeat(1, 1fr);
+        position: relative;
+        width: 100%;
+        padding: 20px;
+        padding-top: 0;
+        display: grid;
+        grid-gap: 20px;
+        grid-template-columns: 2fr 1fr;
+        color: #000;
     }
-    .cardHeader {
-        font-weight: 600;
-        font-size: 18px;
-    }
-}
-
-@media (max-width: 480px)
-/* для маленьких телефонов*/
-
-{
-    .cardsLobby {
-        grid-template-columns: repeat(1, 1fr);
-    }
+    
     .room_panel .ListOfRooms {
-        overflow-x: auto;
+        position: relative;
+        min-height: 530px;
+        background: #fff;
+        padding: 20px;
     }
-    .room_panel .ListOfRooms table {
-        width: 600px;
+    
+    .cardHeader {
+        display: flex;
+        justify-self: space-between;
+        align-items: flex-start;
     }
-    .navigationBar {
+    
+    .cardHeader h2 {
+        font-weight: 600;
+    }
+    
+    .btn {
+        position: absolute;
+        padding: 5px 10px;
+        background: #22bba1;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 6px;
+        right: 8px;
+    }
+    
+    .room_panel table {
         width: 100%;
-        left: -100%;
-        z-index: 1000;
+        border-collapse: collapse;
+        margin-top: 10px;
     }
-    .navigationBar.active {
-        width: 100%;
+    
+    .room_panel table thead td {
+        font-weight: 600;
+    }
+    
+    .room_panel .ListOfRooms table tr {
+        border-bottom: 1px solid rgb(0, 0, 0, 0.1);
+    }
+    
+    .room_panel .ListOfRooms table tbody tr:last-child
+    /* CSS псевдокласс :last-child находит любой элемент, являющийся последним в его родителе.*/
+    
+    {
+        border-bottom: none;
+    }
+    
+    .room_panel .ListOfRooms table tbody tr:hover {
+        background: rgb(17, 182, 141);
+        color: #fff;
+    }
+    
+    .room_panel .ListOfRooms table tr td {
+        padding: 9px 5px;
+    }
+    
+    .room_panel .ListOfRooms table thead tr td:last-child,
+    .room_panel .ListOfRooms table tbody tr td:last-child {
+        text-align: right;
+    }
+    
+    .room_panel .ListOfRooms table thead tr td:nth-child(2),
+    .room_panel .ListOfRooms table tbody tr td:nth-child(2) {
+        text-align: right;
+        padding-right: 180px;
+    }
+    
+    .room_panel .ListOfRooms table thead tr td:nth-child(3),
+    .room_panel .ListOfRooms table tbody tr td:nth-child(3) {
+        text-align: center;
+    }
+    
+    .status {
+        position: relative;
+        padding: 2px 4px;
+        background: rgba(250, 5, 5, 0.801);
+        color: #fff;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+    
+    .inviting {
+        background: rgb(57, 112, 194);
+    }
+    
+    .opened {
+        background: rgb(13, 180, 22);
+    }
+    
+    .closed {
+        background: rgba(250, 5, 5, 0.801);
+    }
+    
+    .room_panel .players_online {
+        position: relative;
+        display: grid;
+        min-height: 530px;
+        background: #fff;
+        padding: 30px;
+    }
+    
+    .room_panel .players_online .imgBx {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    
+    .room_panel .players_online .imgBx img {
+        position: absolute;
+        top: 0;
         left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* Свойство object-fit определяет, как содержимое заменяемого элемента, такого как <img> или <video>, должно заполнять контейнер относительно его высоты и ширины.*/
     }
-    .toggle.active {
-        position: fixed;
-        z-index: 10000;
-        right: 0;
-        left: initial;
+    
+    .room_panel .players_online table tr td h4 span {
+        font-size: 14px;
+        color: rgb(143, 138, 138);
     }
+    
+    .room_panel .players_online table tr:hover,
+    .room_panel .players_online table tr:hover td h4 span {
+        background: #2f8d2a;
+        color: #fff;
+    }
+<<<<<<< HEAD
 
     .toggle.active::before
     {
@@ -449,9 +759,98 @@ body {
         height: 70%;
         color: rgb(250, 250, 250);
 
+=======
+    
+    .room_panel .players_online table tr td {
+        padding: 7px 10px;
     }
-    .btn {
-        left: 20px;
+    
+    .room_panel .players_online table tr td h4 {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1.2em;
     }
+    
+    @media (max-width: 992px)
+    /* для планшетов */
+    
+    {
+        .navigationBar {
+            left: -300px;
+        }
+        .navigationBar.active {
+            left: 0;
+            width: 300px;
+        }
+        .index {
+            width: 100%;
+            left: 0;
+        }
+        .index.active {
+            width: calc(100% - 300px);
+            left: 300px;
+        }
+        .cardsLobby {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .btn {
+            right: 9px;
+        }
+>>>>>>> 95139cef5268c6143faa700213a4260c0ffffc44
+    }
+    
+    @media (max-width: 767px)
+    /* для телефонов */
+    
+    {
+        .room_panel {
+            grid-template-columns: repeat(1, 1fr);
+        }
+        .cardHeader {
+            font-weight: 600;
+            font-size: 18px;
+        }
+    }
+<<<<<<< HEAD
 }
 }
+=======
+    
+    @media (max-width: 480px)
+    /* для маленьких телефонов*/
+    
+    {
+        .cardsLobby {
+            grid-template-columns: repeat(1, 1fr);
+        }
+        .room_panel .ListOfRooms {
+            overflow-x: auto;
+        }
+        .room_panel .ListOfRooms table {
+            width: 600px;
+        }
+        .navigationBar {
+            width: 100%;
+            left: -100%;
+            z-index: 1000;
+        }
+        .navigationBar.active {
+            width: 100%;
+            left: 0;
+        }
+        .toggle.active {
+            position: fixed;
+            z-index: 10000;
+            right: 0;
+            left: initial;
+        }
+        .toggle.active::before {
+            width: 60%;
+            height: 70%;
+            color: rgb(250, 250, 250);
+        }
+        .btn {
+            left: 20px;
+        }
+    }
+>>>>>>> 95139cef5268c6143faa700213a4260c0ffffc44

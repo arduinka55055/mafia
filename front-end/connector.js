@@ -152,7 +152,7 @@ class logic extends ReceiverLogic {
     }
     async newRoom(name, count) {
         this.send(makePacket(this.me, packets.MakeRoom(name, count)));
-        return await this.get("ack");
+        return await this.get("MadeRoom");
     }
     async connect(rid) {
         this.send(makePacket(this.me, packets.ClientHello(rid)));
