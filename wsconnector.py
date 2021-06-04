@@ -47,13 +47,13 @@ basic connection:
 class ClientPacket:
     def __init__(self, data):
         data = json.loads(data)
-        self.gid = data.get("gid")         # Google ID
-        self.nick = data.get("nick")       # Nickname
-        self.ava = data.get("avatar")      # Avatar
-        self.pck = data.get("pck")         # Packet type
+        self.gid = data.get("gid")        # Google ID
+        self.nick = data.get("nick")      # Nickname
+        self.ava = data.get("avatar")     # Avatar
+        self.pck = data.get("pck")        # Packet type
         self.target = data.get("pid")     # Unique ID (not GID) of target
-        self.game = data.get("rid")   # Unique ID of game room
-        self.data = data.get("data")       # Misc data
+        self.game = data.get("rid")       # Unique ID of game room
+        self.data = data.get("data")      # Misc data
 
     def validate(self) -> bool:
         return False if self.gid == None or self.nick == None else True
@@ -91,6 +91,7 @@ class ClientPacket:
             elif self.pck == "ClientHello":
                 session=self.getRoom()
                 player=mafia.PlayerRAW(self.nick,self.gid,self.ava)
+                roomHandler.rooms.kick(player.id)
                 session.join(player)
                 conn.gameLink(session.UUID,self.gid)
                 return '{"pck":"ServerHello"}'.encode()
@@ -174,6 +175,7 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
             "rooms":len(roomHandler.rooms)
         }
         self.write_message(json.dumps(ret))
+        self.ping()
         return super().on_pong(data)
 
     def on_close(self):

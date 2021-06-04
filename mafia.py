@@ -28,11 +28,13 @@ class PlayerNotFoundError(Exception):
     def __repr__(self):
         return "Error! Player with UUID:${self.uuid} not found!"
 
-class PlayerRAW:
-    def __init__(self, name: str, gid: PLAYERID, avatar: str=None):  # на просто id мы обосремося
+class PlayerRAW(dict):
+    def __init__(self, name: str, gid: PLAYERID, avatar: str=None,*args, **kwargs):  # на просто id мы обосремося
         self.name = name
         self.id = gid  # ця штука заповнюється даними реєстрації на стороні серверу
         self.avatar = avatar #only for other players. doesnt impact logic
+    def items(self):
+        return dict()
 
 class Player(PlayerRAW):
     def __init__(self, raw: PlayerRAW, role: str):
