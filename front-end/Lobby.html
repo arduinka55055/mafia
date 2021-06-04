@@ -207,7 +207,8 @@
                         </tbody>
                         <!--Элемент <tbody> предназначен для хранения одной или нескольких строк таблицы. -->
                     </table>
-                    <div class="btn G_addroom" style="position: absolute; bottom:5px;" onclick="window.socket.newRoom(prompt(),6)">
+                    <div class="btn G_addroom" style="position: absolute; bottom:5px;" onclick="window.socket.newRoom(prompt(),6).then(data=>{
+                        window.socket.connect(data.id); window.currentRoom = data.id;})">
                         +
                     </div>
                 </div>

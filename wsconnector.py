@@ -64,8 +64,11 @@ class ClientPacket:
     async def consumePacket(self,conn:WebsocketConnector) -> Union[bytes, None]:
         try:
             if self.pck == "MakeRoom":
-                roomHandler.rooms.newRoom(self.data[0], mafia.PlayerRAW(self.nick,self.gid,self.ava), self.data[1])
-
+                # id:12345
+                roomreply = {}
+                roomreply["id"]=roomHandler.rooms.newRoom(self.data[0], mafia.PlayerRAW(self.nick,self.gid,self.ava), self.data[1])
+                roomreply["pck"]="MadeRoom"
+                return json_encode(roomreply).encode(encoding="utf-8")
             elif self.pck == "GetInfo":
                 roomreply=roomHandler.rooms.stat()
                 roomreply["pck"]="Info"
