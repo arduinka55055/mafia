@@ -72,7 +72,7 @@
                 <div class="toggle" onclick="toggleBar();">
 
 
-                   <svg xmlns="http://www.w3.org/2000/svg"  width="85%"  height: "85%" fill="#111" class="bi bi-list" viewBox="0 0 15 20">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="85%" height: "85%" fill="#111" class="bi bi-list" viewBox="0 0 15 20">
 
                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
                    </svg>
@@ -147,116 +147,56 @@
             </div>
 
 
+            <div class="room_panel">
+                <div class="ListOfRooms">
+                    <div class="cardHeader">
+                        <h2>Всі кімнати</h2>
+                        <a href="#" class="btn">Подивитися всі кімнати</a>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>Назва</td>
+                                <td>Кількість граців</td>
+                                <td>Статус</td>
+                            </tr>
+                        </thead>
+                        <tbody class="G_roomlist">
 
-         <div class="room_panel">
-             <div class="ListOfRooms">
-                <div class="cardHeader">
-                   <h2>Всі кімнати</h2>
-                   <a href="#" class="btn">Подивитися всі кімнати</a>
-               </div>
-               <table>
-                  <thead>
-                      <tr>
-                         <td>Назва</td>
-                         <td>Кількість граців</td>
-                         <td>Статус</td>
-                      </tr>
-                  </thead>
-                  <tbody>
-                        <tr>
-                           <td>ДЗЮбики</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>8/10</td>   
-          
-                        </tr>
-                        <tr>
-                           <td>Прогери</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>2/10</td>   
-                           <td><span class="status inviting">Йде набір</span></td>    <!--Здесь я Денис думаю что место замочка добавить кнопочки типо: зеленая - открыти, жёлтая - идёт набор или крсная - закрыто-->
-                        </tr>
-                          <tr>
-                           <td>Дизайнери</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>5/10</td>   
-                           <td><span class="status opened">Відкрито</span></td>    
-                        </tr>
-                          <tr>
-                           <td>ДЗЮбики</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>8/10</td>   
-                           <td><span class="status closed">Закрито</span></td>    
-                        </tr>
-                        <tr>
-                           <td>Прогери</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>2/10</td>   
-                           <td><span class="status inviting">Йде набір</span></td>    <!--Здесь я Денис думаю что место замочка добавить кнопочки типо: зеленая - открыти, жёлтая - идёт набор или крсная - закрыто-->
-                        </tr>
-                          <tr>
-                           <td>Дизайнери</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>5/10</td>   
-                           <td><span class="status opened">Відкрито</span></td>    
-                        </tr>
-                        <tr>
-                           <td>Геймери</td>   <!--Это  ты тоже запарсишь!!!!Рандомное название комнаты я придумал-->
-                           <td>0/10</td>   
-                           <td><span class="status inviting">Йде набір</span></td>    
-                        </tr>
-                      </tbody>                                     <!--Элемент <tbody> предназначен для хранения одной или нескольких строк таблицы. -->
-                   </table>
-               </div>
-                              
-     
-                
+                        </tbody>
+                        <!--Элемент <tbody> предназначен для хранения одной или нескольких строк таблицы. -->
+                    </table>
+                    <div class="btn G_addroom" style="position: absolute; bottom:5px;" onclick="window.socket.newRoom(prompt(),6).then(data=>{
+                        window.socket.connect(data.id); window.currentRoom = data.id;})">
+                        +
+                    </div>
+                </div>
                 <div class="players_online">
                     <div class="cardHeader">
                         <h2>Гравці онлайн</h2>
                     </div>
                     <table>
-                        <tbody>
-                            <tr>
-                                <td width="60px">
-                                    <div class="imgBx"><img src="img/putin.png"></div>
-                                </td>
-                                <td>
-                                   <h4>Путин<br><span>Афган</h4>                                   
-                                </td>  
+                        <tbody class="G_playerlist">
 
-                         </tr> 
-                         <tr>
-                           <td width="60px"><div class="imgBx"><img src="img/putin.png"></div></td>
-                           <td><h4>Путин<br><span>Russia</h4></td>  
-                         </tr> 
-                          <tr>
-                           <td width="60px"><div class="imgBx"><img src="img/putin.png"></div></td>
-                           <td><h4>Саня<br><span>Азербайджан</h4></td>  
-                         </tr> 
-                          <tr>
-                           <td width="60px"><div class="imgBx"><img src="img/putin.png"></div></td>
-                           <td><h4>Дзюба<br><span>Индия</h4></td>  
-                         </tr> 
-                          <tr>
-                           <td width="60px"><div class="imgBx"><img src="img/putin.png"></div></td>
-                           <td><h4>Путин<br><span>Америка</h4></td>  
-                         </tr> 
-                          <tr>
-                           <td width="60px"><div class="imgBx"><img src="img/putin.png"></div></td>
-                           <td><h4>Путин<br><span>Украина</h4></td>  
-                         </tr>   
-                     </tbody>
-                  </table>                                               <!--Это ты тоже запарсишь-->
-            </div>    
-         </div>  
-       </div> 
-    </div>    
- 
-   <script>
-   function toggleBar(){
-      let toggle = document.querySelector('.toggle');
-      let navigationBar = document.querySelector('.navigationBar');
-      let index = document.querySelector('.index');
-      toggle.classList.toggle('active'); 
-      navigationBar.classList.toggle('active'); 
-      index.classList.toggle('active'); 
-   }
-       
-   </script>
+                        </tbody>
+                    </table>
+                    <!--Это ты тоже запарсишь-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleBar() {
+            let toggle = document.querySelector('.toggle');
+            let navigationBar = document.querySelector('.navigationBar');
+            let index = document.querySelector('.index');
+            toggle.classList.toggle('active');
+            navigationBar.classList.toggle('active');
+            index.classList.toggle('active');
+        }
+    </script>
 
 </body>
+
 </html>
