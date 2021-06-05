@@ -5,7 +5,7 @@ window.pinger = null;
 function getGoogle() {
     var ret = localStorage.getItem("google");
     if (ret == null || ret == "") {
-        window.location.href = "/account";
+        //window.location.href = "/account";
     }
     return JSON.parse(ret);
 }

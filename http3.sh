@@ -1,1 +1,1 @@
-hypercorn --quic-bind localhost:4433 --certfile fakecert.pem --keyfile fakekey.pem --bind localhost:4433 fastserver:app
+hypercorn --quic-bind 0.0.0.0:443 --certfile fakecert.pem --keyfile fakekey.pem --bind 0.0.0.0:443 fastserver:app
