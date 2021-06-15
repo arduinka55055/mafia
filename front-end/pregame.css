@@ -55,6 +55,10 @@ header .logo
     text-decoration: none;
     font-size: 2em; 
 }
+header .logo:hover
+{
+    color: rgb(231, 106, 106)
+}
 header .navigationBar
 {
     position: relative;
@@ -96,10 +100,26 @@ header .navigationBar li a:hover
 .contentBox .textBox h2
 {
     color: rgb(253, 253, 253);
+    font-size: 3.8em;
+    line-height: 1.4em; /*Для блочных элементов определяет минимальную высоту строки текста. Для внедряемых строчных элементов (вроде <img>) свойство line-height не оказывает никакого эффекта. Для остальных строчных элементов line-height задаёт высоту, которая используется для расчёта высоты строки блока. */
+    font-weight: 700;
 }
 .contentBox .textBox p
 {
     color: rgb(219, 219, 219);
+    margin-top: 15px;
+}
+.contentBox .textBox a
+{
+    display: inline-block;
+    margin-top: 20px;
+    padding: 8px 20px;
+    background: #fff;
+    color: #333;
+    border-radius: 40px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-decoration: none;
 }
 .contentBox .imgBox
 {
@@ -112,4 +132,29 @@ header .navigationBar li a:hover
 .contentBox .imgBox img
 {
     max-width: 420px;
+}
+.lower_panel
+{
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    display: flex;
+}
+.lower_panel li
+{ 
+    list-style: none;
+    display: inline-block;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: 1s;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px;
+    border: 2px solid rgba(255, 255, 255, 0.25); 
+}
+.lower_panel li img
+{
+    max-width: 60px;
+
 }
