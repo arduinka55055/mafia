@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ua">
+
+<head>
+    <meta name="viewport" content="width=width-device, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>M.A.F.I.A</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css" integrity="sha384-wESLQ85D6gbsF459vf1CiZ2+rr+CsxRY0RpiF1tLlQpDnAgg6rwdsUF1+Ics2bni" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="pregame.css">
+    <script src="vue.min.js"></script>
+</head>
+<body>
+    <section>
+        <div class="background"></div>
+        <header>
+            <a href="#" class="logo">MAFIA</a>
+            <ul class="navigationBar">
+                <li><a href="#" class="active">ГРА</a></li>
+                <li><a href="#">Лоббі</a></li>
+                <li><a href="#">На головну сторінку</a></li>
+                <li><a href="#">Зв'язок з нами</a></li>
+            </ul>
+        </header>
+        <div class="contentBox">
+            <div class="textBox">
+                <h2>ПРАВИЛА ГРИ ЦІЄЮ РОЛЛЮ</h2>
+                <p>Роль Мафии — самая трудная и самая интересная в игре.
+                  Их очень мало,поэтому главное, чтобы народ не вычислил, что Мафия — именно вы.
+                  Для этого приходится  быть вдвойне настороже, чтобы ничем себя  не выдать.
+                  Ночью вам предоставляется замечательная возможность убрать с поля боямешающих вам игроков. Во-первых, это Каттани, который в любую минутуможет спросить о вас у ведущего, во-вторых, Маньяк, который заподозривнеладное, просто пришьет вас той же ночью, все остальные также само собойразумеется. Важно не попасть на Маклауда (иначе, Бессмертного), так какдрагоценный выстрел просто окажется холостым. Не менее важно помнить,что за одну ночь можно «убить» всего лишь одного горожанина, и уметьбыстро определиться с выбором — чем меньше времени это у вас займет, темменьше шансов сделать какой-нибудь неосторожный выдающий вас жест. </p>
+                <a href="#">ПОЧАТИ ГРУ</a> 
+            </div>
+            <div class="imgBox">
+                <img src="img/mafia.png">
+            </div>
+        </div>
+        <ul class="lower_panel">
+            <li data-text="Mafia"><img src="img/mafia.png"></li>
+            <li data-text="Doctor"><img src="img/doctor.png"></li>
+            <li data-text="Sheriff"><img src="img/sheriff.png"></li>
+            <li data-text="Prostitute"><img src="img/prostitute.jpg"></li>
+            <li data-text="Murder"><img src="img/murder.png"></li>
+            <li data-text="Civilian"><img src="img/civilian.jpg"></li>
+        </ul>
+    </section>
+    
+    <script>
+        let el = document.querySelector('.lower_panel li')
+        for (let t = 0; t < el.length; t++) {
+            el[t].onclick = function() {
+                var c = 0;
+                while (c < el.length) {
+                    el[c++].className = 'check';
+                }
+                el[t].className = 'check active';
+            }
+        }
+    </script>
+</body>
+</html>
+

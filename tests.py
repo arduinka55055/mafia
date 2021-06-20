@@ -50,7 +50,7 @@ class TestMafiaLogic(unittest.IsolatedAsyncioTestCase):
         self.game.do_mafkill([human.UUID])
         self.assertTrue(human.isKilled)
 
-    async def test_kkill(self):
+    async def test_kill(self):
         self.reset()
         human=self.getp("p")
         self.game.do_killer(human.UUID)
