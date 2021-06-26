@@ -58,10 +58,10 @@ class Rooms(set):
         self.add(room)
         return str(room.UUID)
 
-    def stat(self:Set[Room]):
+    def stat(self:Set[Room],gid):
         data={"pck":"RoomData","rooms":[]}
         for room in self:
-            data["rooms"].append(room.stat())
+            data["rooms"].append(room.stat(gid))
         return data
 
     def purgeIter(self):
@@ -141,34 +141,52 @@ class Room:
         return self.__started
 
     def join(self, player: mafia.PlayerRAW):
-        if not self.hasPlayer(player.id):
-            self.players.add(player)
+        if self.isStarted:
+            if self.hasPlayer(player.id):
+                self.players.add(player)
+                print("reconnected player!",len(self.players))
+        else:
+            if not self.hasPlayer(player.id):
+                self.players.add(player)
 
     def leave(self, gid:mafia.PLAYERID):
         self.players.remove(self.playerByGid(gid))
-        if self.ownergid == gid:
-            rooms.remove(self)
-            
+        if not self.isStarted:
+            if self.ownergid == gid:
+                if len(self.players)>=1:
+                    self.ownergid=next(iter(self.players)).id
+                else:
+                    rooms.remove(self)
+        
+        
 
     def playerByGid(self, gid:mafia.PLAYERID)->mafia.PlayerRAW:
         for player in self.players:
             if player.id == gid:
                 return player
+        if self.isStarted:
+            for player in self.gamers:
+                if player.id == gid:
+                    return mafia.PlayerRAW(player.name,player.id,player.avatar)
         raise mafia.PlayerNotFoundError(gid)
 
-    def stat(self):
+    def stat(self,gid):
         return {
             "rid":str(self.UUID),
             "name":self.name,
             "isStarted":self.isStarted,
             "maxplayers":self.playersLimit,
+            "areyouowner":self.ownergid==gid,
             "players":[[x.name,x.avatar] for x in self.players]}
         
+    async def checkConnectivity(self):
+        pass
     async def start(self, gid:mafia.PLAYERID):
         if self.ownergid == gid:
             if len(self.players) >= mafia.playersMin:
                 self.__started=True
                 self.__game=mafia.Game(self.players)
+                #self.__players=set()
                 asyncio.ensure_future(self.__game.startMainloop(self))
                 await wsconnector.clients.broadcast({"pck": "GameStarted", "rid": str(self.UUID)})
                 return

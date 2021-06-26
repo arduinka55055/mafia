@@ -52,6 +52,7 @@ function updateRooms() {
             `;
             newrooms += htmltext;
         });
+        var v = 42
         console.log(newrooms);
         document.querySelector(".G_roomlist").innerHTML = newrooms;
 
@@ -86,8 +87,10 @@ function loadEssentials() {
     document.querySelector(".G_nick").innerHTML = getGoogle().name;
     //http://ip-api.com/json
     getGeoIP().then(region => { document.querySelector(".G_geo").innerHTML = region; });
-    window.socket = new logic(new WebSocket("ws://" + location.host + "/pool"), new MeRAW(getGoogle().id, getGoogle().name, getGoogle().picture));
+    window.rnd = Math.random()
+    window.socket = new logic(new WebSocket("ws://" + location.host + "/pool"), new MeRAW(window.rnd + "", getGoogle().name, getGoogle().picture));
     window.socket.onping = OnPingFunc;
+    window.socket.onnewgame = rid => { if (rid == window.currentRoom) { window.location.href = "game.html?id=" + window.rnd + "&rd=" + window.currentRoom } };
 
     setInterval(updateRooms, 3000);
 }

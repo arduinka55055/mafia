@@ -1,7 +1,5 @@
-
 @import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
-*
-{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -243,6 +241,7 @@ body {
 .cardHeader h2 {
     font-weight: 600;
 }
+
 .btn {
     position: absolute;
     padding: 5px 10px;
@@ -324,7 +323,7 @@ body {
 
 .room_panel .players_online {
     position: relative;
-    display: grid;
+    /*display: grid;*/
     min-height: 530px;
     background: #fff;
     padding: 30px;
@@ -376,86 +375,85 @@ body {
     .navigationBar {
         left: -300px;
     }
-    .navigationBar.active
-    {
+    .navigationBar.active {
         left: 0;
         width: 300px;
     }
-    .index
-    {
+    .index {
         width: 100%;
         left: 0;
     }
-    .index.active
-    {
+    .index.active {
         width: calc(100% - 300px);
         left: 300px;
     }
-    .cardsLobby
-    {
-        grid-template-columns: repeat(2,1fr);
+    .cardsLobby {
+        grid-template-columns: repeat(2, 1fr);
     }
-    .btn
-    {
+    .btn {
         right: 10px;
     }
 }
-@media (max-width: 767px)  /* для телефонов */
+
+@media (max-width: 767px)
+/* для телефонов */
+
 {
-    .room_panel
-    {
-        grid-template-columns: repeat(1,1fr);
+    .room_panel {
+        grid-template-columns: repeat(1, 1fr);
     }
-    .cardHeader
-    {
+    .cardHeader {
         font-weight: 600;
         font-size: 18px;
     }
-    .btn
-    {
+    .btn {
         right: 10px;
     }
 }
-@media (max-width: 480px)  /* для маленьких телефонов*/
+
+@media (max-width: 480px)
+/* для маленьких телефонов*/
+
 {
-    .cardsLobby
-    {
-        grid-template-columns: repeat(1,1fr);
+    .cardsLobby {
+        grid-template-columns: repeat(1, 1fr);
     }
-    .room_panel .ListOfRooms 
-    {
+    .room_panel .ListOfRooms {
         overflow-x: auto;
     }
-    .room_panel .ListOfRooms table
-    { 
+    .room_panel .ListOfRooms table {
         width: 600px;
     }
-    .navigationBar
-    {
+    .navigationBar {
         width: 100%;
-        left: -100%;  
+        left: -100%;
         z-index: 1000;
     }
-    .navigationBar.active
-    {
+    .navigationBar.active {
         width: 100%;
-        left: 0; 
+        left: 0;
     }
-    .toggle.active
-    { 
+    .toggle.active {
         position: fixed;
         z-index: 10000;
-        right: 0;   
+        right: 0;
         left: initial;
     }
-    .toggle.active::before
-    {
+    .toggle.active::before {
         width: 60%;
         height: 70%;
         color: rgb(250, 250, 250);
     }
-    .btn
-    {
+    .btn {
         right: 30px;
     }
+}
+
+.startgame {
+    position: absolute;
+    bottom: 1%;
+}
+
+.btn {
+    cursor: pointer !important;
 }

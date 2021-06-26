@@ -55,7 +55,7 @@ class MeRAW {
         this.avatar = avatar;
     }
 }
-let packets = {
+const packets = {
     //RoomID PlayerID GoogleID
     "GidInject": (meraw) => { return { gid: meraw.gid, nick: meraw.name, avatar: meraw.avatar } },
     "GetInfo": () => { return { pck: "GetInfo" } },
@@ -130,18 +130,35 @@ class ReceiverLogic extends connector {
     constructor(sock, meraw) {
         super(sock, meraw);
     }
+    onnewgame(e) {
+        console.warn("Not Implemented GameStarted!");
+        console.log(e);
+    }
     onping(e) {
         console.warn("Not Implemented Ping!");
+        console.log(e);
+    }
+    onperform(e) {
+        console.warn("Not Implemented Perform!");
+        console.log(e);
+    }
+    onplayercheck(e) {
+        console.warn("Not Implemented GameCheckDone!");
         console.log(e);
     }
     _consume(data) {
         if (data.pck == "GameStarted") {
             console.log("Почалася нова гра за айді:", data.rid);
+            this.onnewgame(data.rid);
         } else if (data.pck == "Ping") {
             this.onping(data);
         } else if (data.pck == "GameCast") {
             if (data.type == "DoPerform") {
                 console.log("Треба ходити!");
+                this.onperform();
+            }
+            if (data.type == "GameCheckDone") {
+                this.onplayercheck();
             }
         }
     }
@@ -231,6 +248,7 @@ async function unittest() {
 }
 /*
 var socket = new logic(new WebSocket("ws://localhost:8000/pool"), new MeRAW(Math.random(), "gamer", "http://example.com"))
+socket.
 socket.onload = () => {
     unittest();
 }

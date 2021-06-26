@@ -25,11 +25,11 @@ import mafia
 """
 basic connection:
 
-+-----ROOM-------+    +---------+
-|   room UUID    | <- | players |
-|   maxPlayers   |    |  (raw)  |
-| optional rules | -> | gid+nick|
-+================+    +=========+ 
++-----ROOM-------+    +---------+    +===========+
+|   room UUID    | <- | players | <- |  connect  |
+|   maxPlayers   |    |  (raw)  |    |  manager  |
+| optional rules | -> | gid+nick| -> |(framework)|
++================+    +=========+    +===========+
        \\//
  +----PLAYER-----+    +---------+
  |   nickname    |    |  role   |   mainloop
@@ -70,7 +70,7 @@ class ClientPacket:
                 roomreply["pck"]="MadeRoom"
                 return json_encode(roomreply).encode(encoding="utf-8")
             elif self.pck == "GetInfo":
-                roomreply=roomHandler.rooms.stat()
+                roomreply=roomHandler.rooms.stat(self.gid)
                 roomreply["pck"]="Info"
                 return json_encode(roomreply).encode(encoding="utf-8")
 
@@ -96,6 +96,11 @@ class ClientPacket:
                 conn.gameLink(session.UUID,self.gid)
                 return '{"pck":"ServerHello"}'.encode()
 
+            elif self.pck == "Reconnect":
+                session=self.getRoom()
+                conn.gameLink(session.UUID,self.gid)
+                return '{"pck":"Success"}'.encode()
+                
             elif self.pck == "StartGame":
                 room = self.getRoom()
                 await room.start(self.gid)
@@ -130,7 +135,10 @@ class Clients(set):
 
     async def broadcast(self, message:Union[dict,str]):
         for client in self:
-            client.write_message(json.dumps(message))
+            try:
+                client.write_message(json.dumps(message))
+            except:
+                pass
 
     async def multicast(self, message:Union[dict,str], rid:mafia.ROOMID):
         for client in self:
@@ -151,17 +159,18 @@ clients = Clients()
 class WebsocketConnector(tornado.websocket.WebSocketHandler):
     def open(self):
         clients.add(self)
+        self.ping()
         print("WebSocket opened")
 
     async def on_message(self, message):
         self.write_message('{"pck":"conn_succ"}')
-        print(message)
+        #print(message) TODO:normal debug
         data = ClientPacket(message)
         if not data.validate():
             self.close(reason="['Invalid data, relogin!']")
             return
         ret = await data.consumePacket(self)
-        print(ret)
+        #print(ret)
         if ret:
             self.write_message(ret)
         else:
@@ -175,7 +184,7 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
             "rooms":len(roomHandler.rooms)
         }
         self.write_message(json.dumps(ret))
-        self.ping()
+        #self.ping()
         return super().on_pong(data)
 
     def on_close(self):
@@ -192,7 +201,6 @@ class WebsocketConnector(tornado.websocket.WebSocketHandler):
         if self.gameuuid and self.gamegid:
             roomHandler.rooms.fromUUID(self.gameuuid).leave(self.gamegid)
         clients.remove(self)
-
     @property
     def gameuuid(self)->Union[mafia.ROOMID,None]:
         if hasattr(self,"_gameuuid"):

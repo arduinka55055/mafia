@@ -301,7 +301,7 @@ class Game(Doings):
     async def startMainloop(self,room:Room):
         self.__room=room
         self.result=PerformResult()
-        #room.checkConnectivity()
+        await room.checkConnectivity()
         super(Game,self).__init__(self.__room.players)
         #room.познакомитьИгроков()
         while self.isFinished==None:
@@ -313,7 +313,7 @@ class Game(Doings):
             result = await self.getPerformData()
             print(result)
             self.parseVote()
-'''0xDEADCODE
+'''0xDEADC0DE
 class Game:
     def __init__(self,players):#    m мафия p житель s шериф k маньяк d доктор g любовница
         self.players=players

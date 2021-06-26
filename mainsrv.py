@@ -20,6 +20,7 @@ import random
 import urllib
 import asyncio
 import datetime
+import uuid
 from wsconnector import WebsocketConnector
 import aiomysql
 #from wsconnector import WebsocketHandler
@@ -68,6 +69,10 @@ class Mainframe():
                     scope=['openid','profile'],
                     response_type='code',
                     extra_params={'approval_prompt': 'auto'})
+    class fakelogon(tornado.web.RequestHandler,tornado.auth.GoogleOAuth2Mixin):
+        async def get(self):
+            user='{"id": "%s", "name": "Gameplayer 55055", "given_name": "Gameplayer", "family_name": "55055", "picture": "https://lh3.googleusercontent.com/a-/AOh14GjubdFKBR3eLD6pIteIIUdCOTSFF6qbC2XaFUVB=s96-c", "locale": "uk"}' % str(uuid.uuid4())
+            self.write('''<script>localStorage.setItem('google',`%s`);window.location.href="/";</script>%s''' % (user,user))#костылиус
 
     class unlogin(tornado.web.RequestHandler):
         def get(self):
@@ -84,6 +89,7 @@ def app()->tornado.web.Application:
     return tornado.web.Application([
         (r"/", Mainframe.index),
         (r"/account", Mainframe.account),
+        (r"/fake", Mainframe.fakelogon),
         (r"/pool", WebsocketConnector),
         (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': root_path + "/static/"}),
         (r'/img/(.*)', tornado.web.StaticFileHandler, {'path': root_path + "/front-end/img/"}),
