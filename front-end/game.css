@@ -26,20 +26,52 @@ header .logo img
 {
     max-width: 150px;
 }
-.navіgationBar
+.navіgation_bar
 {
     display: flex;
 }
-.navіgationBar li a
+.navіgation_bar li
+{
+    list-style: none;
+    margin: 0 10px;
+}
+.navіgation_bar li a
 { 
     color: #fff;
     text-decoration: none;
     font-weight: 500;
     letter-spacing: 1px;
 }
-.navіgationBar li:hover a
+.navіgation_bar li:hover a
 {
     color: #de0611;
+}
+.navіgation_bar#blur.active li a:last-child(2)
+{
+    filter: blur(20px); /* Свойство filter предназначено для применения художественных эффектов к элементам. Обычно используется для изображений, чтобы размыть их, увеличить контрастность, преобразовать в чёрно-белую картинку и др.*/
+    pointer-events: none; /* Не реагирует на мышь */
+    user-select: none; /* Пользователю запрещено выделять элемент.*/
+}
+#popup
+{
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    padding: 50px;
+    box-sizing: 0 5px 30px rgba(0,0,0,.30);
+    background: #fff;
+    visibility: hidden;
+    opacity: 0;
+    transition: 500ms;
+}
+#popup.active
+{
+    top: 50%;
+    visibility: visible;
+    opacity: 1;
+    transition: 500ms;
 }
 .banner
 {
@@ -51,18 +83,9 @@ header .logo img
     justify-content: center;
     align-items: center;
 }
-.banner .bg
-{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Элемент увеличивается или уменьшается, чтобы целиком заполнить заданную область с сохранением пропорций.*/
-}
 .G_gameContainer {
     background-color: cadetblue;
-    width: 100%;
+    width: 100%;    
     height: 100%;
 }
 
@@ -96,7 +119,7 @@ header .logo img
     position: absolute;
     bottom: 0;
     left: 0;
-    color: red;
+    color: rgb(153, 69, 69);
     z-index: 12;
     width: 100%;
 }
