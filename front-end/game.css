@@ -46,43 +46,60 @@ header .logo img
 {
     color: #de0611;
 }
-.navіgation_bar#blur.active li a:last-child(2)
-{
-    filter: blur(20px); /* Свойство filter предназначено для применения художественных эффектов к элементам. Обычно используется для изображений, чтобы размыть их, увеличить контрастность, преобразовать в чёрно-белую картинку и др.*/
-    pointer-events: none; /* Не реагирует на мышь */
-    user-select: none; /* Пользователю запрещено выделять элемент.*/
-}
-#popup
+
+.popup .overlay
 {
     position: fixed;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 600px;
-    padding: 50px;
-    box-sizing: 0 5px 30px rgba(0,0,0,.30);
-    background: #fff;
-    visibility: hidden;
-    opacity: 0;
-    transition: 500ms;
-}
-#popup.active
-{
-    top: 50%;
-    visibility: visible;
-    opacity: 1;
-    transition: 500ms;
-}
-.banner
-{
-    position: relative;
     width: 100%;
-    min-height: 100vh;
-    padding: 0 100px;   
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    top: 0;
+    left: 0;
+    z-index: 1;
+    display: none;
+} 
+.popup .content
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: #fff;
+    width: 450px;
+    height: 220px;
+    z-index: 2;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
 }
+.popup .close-btn
+{
+    cursor: pointer;
+    position: absolute;
+    background-position: center;
+    right: -10px;
+    top: -10px;
+    width: 30px;
+    height: 30px;
+    background: #222;
+    color: #fff;
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 50%;
+}
+.popup.active .overlay 
+{
+    display: block;
+
+} 
+.popup.active .content
+{
+    transition: all 500ms ease-in-out;
+    transform: translate(-50%, -50%) scale(1);
+}
+
 .G_gameContainer {
     background-color: cadetblue;
     width: 100%;    

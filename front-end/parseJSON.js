@@ -2,7 +2,7 @@ let data = `{
     "нік": "Max",
     "емеіл": "maksikos973@gmail.com"
 }`;
-
+//у тебя ровно карточки отображаются? Щас чекну
 let jsonToObj = document.querySelector('#btn-jsonToObj');
 let objToJson = document.querySelector('#btn-objToJson');
 let username = document.querySelector('#username');  
