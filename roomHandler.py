@@ -180,7 +180,10 @@ class Room:
             "players":[[x.name,x.avatar] for x in self.players]}
         
     async def checkConnectivity(self):
-        pass
+        while 1:
+            if len(self.players)==len(self.game.players):
+                return
+            await asyncio.sleep(1)
     async def start(self, gid:mafia.PLAYERID):
         if self.ownergid == gid:
             if len(self.players) >= mafia.playersMin:
