@@ -15,13 +15,12 @@ class RoomNotFoundError(Exception):
         return "Error! Room with RID:${self.uuid} not found!"
 
 class PermissionDeniedError(Exception):
-    def __init__(self,UUID:mafia.PLAYERID,role=None):
-        self.uuid=UUID
+    def __init__(self,role=None):
         self.role=role
-        super().__init__("Error! Player ${self.uuid} can't do that!")
+        super().__init__("Error! Player can't do that!")
 
     def __repr__(self):
-        return "Error! Player ${self.uuid} can't do that!"
+        return "Error! Player can't do that!"
 
 class NoEnoughPlayersError(Exception):
     def __init__(self,UUID,count):
@@ -80,7 +79,7 @@ class Rooms(set):
                     player=p
                     room=x
                     break
-        if player!=None:
+        if player!=None and room!=None:
             room.players.remove(player)
 
                     
@@ -130,7 +129,7 @@ class Room:
         for x in self.players:
             if x.id==id:
                 return True
-        if self.__started:
+        if self.gamers!=None:
             for x in self.gamers:
                 if x.id==id:
                     return True
@@ -164,7 +163,7 @@ class Room:
         for player in self.players:
             if player.id == gid:
                 return player
-        if self.isStarted:
+        if self.gamers!=None:
             for player in self.gamers:
                 if player.id == gid:
                     return mafia.PlayerRAW(player.name,player.id,player.avatar)
@@ -180,10 +179,12 @@ class Room:
             "players":[[x.name,x.avatar] for x in self.players]}
         
     async def checkConnectivity(self):
+        await asyncio.sleep(2)
         while 1:
             if len(self.players)==len(self.game.players):
                 return
             await asyncio.sleep(1)
+        #TODO:
     async def start(self, gid:mafia.PLAYERID):
         if self.ownergid == gid:
             if len(self.players) >= mafia.playersMin:
@@ -195,8 +196,12 @@ class Room:
                 return
             else:
                 raise NoEnoughPlayersError(self.UUID,len(self.players))    
-        raise PermissionDeniedError(gid)
-
+        raise PermissionDeniedError()
+    def finish(self,data):
+        self.__game=None
+        self.__started=False
+        asyncio.ensure_future(self.send({"msg": "GameFinished", "data": [
+                                  data, mafia.LOC["mafwin" if False else "mafdefeat"]]}))
     async def send(self,data:dict):
         data["pck"]="GameCast"
         await wsconnector.clients.multicast(data,self.UUID)
@@ -209,13 +214,27 @@ class Room:
         if self.game.getByGID(gid).isPerformable:
             if not self.game.getByGID(gid).isKilled:
                 if not self.game.getByTID(pid).isKilled:
-                    self.game.performData(gid,pid)
+                    ret=self.game.performData(gid,pid)
+                    if ret:
+                        data={"msg": "Sheriff", "data": [ret, mafia.ROLES[ret]]}
+                        await self.sendto(data, gid)
                 else:
-                    data={"pck":"GameCast","msg":"Error","spec":"Пж не насилуйте труп!"}
-                    await wsconnector.clients.anycast(data,gid)
+                    data={"msg":"Error","spec":"Пж не насилуйте труп!"}
+                    await self.sendto(data,gid)
             else:
-                data={"pck":"GameCast","msg":"Error","spec":"You're dead!"}
-                await wsconnector.clients.anycast(data,gid)
+                data={"msg":"Error","spec":"You're dead!"}
+                await self.sendto(data,gid)
         else:
-            data={"pck":"GameCast","msg":"Error","spec":"PermissionDenied"}
-            await wsconnector.clients.anycast(data,gid)
+            data={"msg":"Error","spec":"PermissionDenied"}
+            await self.sendto(data,gid)
+
+    async def doVote(self,gid:mafia.PLAYERID,pid:mafia.TARGETID):
+        if not self.game.getByGID(gid).isKilled:
+            if not self.game.getByTID(pid).isKilled:
+                ret=self.game.voteData(gid,pid)
+            else:
+                data={"msg":"Error","spec":"Пж не насилуйте труп!"}
+                await self.sendto(data,gid)
+        else:
+            data={"msg":"Error","spec":"You're dead!"}
+            await self.sendto(data,gid)

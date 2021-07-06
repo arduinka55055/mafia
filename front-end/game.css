@@ -1,71 +1,66 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
-*
-{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
 
-body
-{
-    background: #000;
+body {
+    background: rgb(1, 76, 99);
     display: -ms-flexbox;
     align-items: center;
-    padding-bottom: 30px; /* Устанавливает значение поля от нижнего края содержимого элемента. Полем называется расстояние от внутреннего края рамки элемента до воображаемого прямоугольника, ограничивающего его содержимое*/
-   
-}   
+    padding-bottom: 30px;
+    overflow: hidden;
+    /* Устанавливает значение поля от нижнего края содержимого элемента. Полем называется расстояние от внутреннего края рамки элемента до воображаемого прямоугольника, ограничивающего его содержимое*/
+}
 
-header
-{
+header {
     position: absolute;
     top: 0;
-    left: 0;
+    left: 1%;
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 30px 100px;
-    
 }
-header .logo img
-{
+
+header .logo img {
     max-width: 150px;
 }
-.navіgation_bar
-{
+
+.navіgation_bar {
     display: flex;
 }
-.navіgation_bar li
-{
+
+.navіgation_bar li {
     list-style: none;
     margin: 0 10px;
 }
-.navіgation_bar li a
-{ 
+
+.navіgation_bar li a {
     color: #fff;
     text-decoration: none;
     font-weight: 500;
     letter-spacing: 1px;
 }
-.navіgation_bar li:hover a
-{
+
+.navіgation_bar li:hover a {
     color: #de0611;
 }
 
-.popup .overlay
-{
+.popup .overlay {
     position: fixed;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0, 0, 0, 0.6);
     top: 0;
     left: 0;
     z-index: 1;
     display: none;
-} 
-.popup .content
-{
+}
+
+.popup .content {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -73,13 +68,13 @@ header .logo img
     background: #fff;
     width: 450px;
     height: 220px;
-    z-index: 2;
+    z-index: 100500;
     text-align: center;
     padding: 20px;
     box-sizing: border-box;
 }
-.popup .close-btn
-{
+
+.popup .close-btn {
     cursor: pointer;
     position: absolute;
     background-position: center;
@@ -95,93 +90,153 @@ header .logo img
     text-align: center;
     border-radius: 50%;
 }
-.popup.active .overlay 
-{
-    display: block;
 
-} 
-.popup.active .content
-{
+.popup.active .overlay {
+    display: block;
+}
+
+.popup.active .content {
     transition: all 500ms ease-in-out;
     transform: translate(-50%, -50%) scale(1);
 }
 
 .G_gameContainer {
     background-color: cadetblue;
-    width: 100%;    
+    width: 100%;
     height: 100%;
 }
 
-.G_gameContainer div {
+.G_gameContainer>div {
     color: aqua;
-    background-color: darksalmon;
+    background-color: #3f741b;
     position: absolute;
     width: 9%;
     height: 22%;
     z-index: 10;
     text-overflow: clip;
     overflow: hidden;
+    font-size: 2.3vh;
+}
+
+.blurred {
+    position: absolute;
+    filter: blur(10px);
+}
+
+.G_gameContainer div .cbg {
+    z-index: 10;
 }
 
 .G_gameContainer div .name {
     position: absolute;
-    top: 0;
-    left: 0;
-    color: red;
     z-index: 12;
-    width: 100%;
+    top: -1%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, 0%);
+    color: white;
+    backdrop-filter: blur(2px);
 }
 
-.G_gameContainer div img {
-    width: 90%;
-    height: 90%;
+.G_gameContainer div .ava {
+    width: 50%;
+    height: 50%;
     z-index: 11;
+    position: absolute;
+    left: 25%;
+    top: 25%;
 }
 
 .G_gameContainer div .role {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    color: rgb(153, 69, 69);
     z-index: 12;
-    width: 100%;
+    bottom: -1%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, 0%);
+    color: white;
+    backdrop-filter: blur(2px);
 }
-.chat_window 
-{
+
+.chat_window {
     position: fixed;
+    /*
     width: 100%;
     top: 50;
     bottom: 50;
     left: 10;
-    right: 0;
+    right: 0;*/
     margin: auto;
-    min-height: 90vh;
+    /*min-height: 90vh;*/
     padding: 0 100px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.chat_window textarea 
-{
+
+.chat_window textarea {
     resize: none;
 }
-.chat_window input
-{
-    position: absolute;
-    top: 50%;
-	bottom: 0;
-	left: 0;
-    right: 50px;
-    margin: auto;
 
+.chat_window input {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 15%;
+    width: 90%;
 }
-.chat_window button
-{
+
+.chat_window button {
     position: relative;
     top: 160px;
-	bottom: 0;
-	left: 10px;
+    bottom: 0;
+    left: 10px;
     right: 0;
-    margin: 0;  
+    margin: 0;
 }
 
+#chat {
+    position: absolute;
+    background-color: white;
+    top: 0;
+    left: 0;
+    bottom: -20px;
+    right: 0;
+    height: 85%;
+    width: 100%;
+}
+
+#send {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 10%;
+    height: 15%;
+    margin: 0px;
+    padding: 0px;
+    top: 85%;
+    left: 90%;
+}
+
+.exit {
+    position: absolute;
+    bottom: 1%;
+    right: 1%;
+    width: 4%;
+    height: auto;
+}
+
+.exit img {
+    width: 100%;
+    height: 100%;
+}
+
+.cbg {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+}

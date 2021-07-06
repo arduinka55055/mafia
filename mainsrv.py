@@ -21,7 +21,7 @@ import urllib
 import asyncio
 import datetime
 import uuid
-from wsconnector import WebsocketConnector
+import wsconnector
 import aiomysql
 #from wsconnector import WebsocketHandler
 import tornado.ioloop
@@ -31,6 +31,7 @@ import tornado.auth
 import tornado.template
 import tornado.httpserver
 import tornado.httputil
+import tornado.websocket
 import user_agents
 import sys
 print(os.getcwd())
@@ -78,6 +79,34 @@ class Mainframe():
         def get(self):
             self.clear_cookie("logintoken")
             self.redirect("/")
+
+#tornado support is deprecated. but it works great because of OOP.
+#better to use FastAPI, but u can use tornado as well
+class WebsocketConnector(tornado.websocket.WebSocketHandler):
+    def open(self) -> None:#TODO: abstract websocket
+        print("WebSocket opened")
+        wsconnector.clients.add(self)
+        self.session=dict()
+        super().open()
+
+    async def on_message(self, message:str):
+        data = wsconnector.ClientPacket(message)
+        if not data.validate():
+            self.close()#wrong data, go away spammer
+            return
+        ret = await data.consumePacket(self)#duck typing
+        print(ret)
+        if ret:
+            await self.send_json(ret)
+        else:
+            await self.send_json({"pck":"ack"})
+
+    def on_close(self) -> None:
+        wsconnector.clients.remove(self)
+        return super().on_close()
+    async def send_json(self,data):
+        self.write_message(json.dumps(data))
+
 
 
 cookie_secret = "qidjjowkpojepqweiumvcowytojoiefjreoifjewpfj[woxpowejxfiwjfxwijefxpw"

@@ -39,6 +39,7 @@ class TestMafiaLogic(unittest.IsolatedAsyncioTestCase):
         for x in self.game.players:
             if x.role==role:
                 return x
+        raise mafia.PlayerNotFoundError(role)
     async def test_rolecheck(self):
         for x in self.game.getMafias():
             self.assertTrue(x.checkUser(x.id, "m"))     

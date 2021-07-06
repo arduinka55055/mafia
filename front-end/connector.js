@@ -57,29 +57,29 @@ class MeRAW {
 }
 const packets = {
     //RoomID PlayerID GoogleID
-    "GidInject": (meraw) => { return { gid: meraw.gid, nick: meraw.name, avatar: meraw.avatar } },
-    "GetInfo": () => { return { pck: "GetInfo" } },
-    "GetTargets": (rid) => { return { pck: "GetTargets", rid: rid } },
-    "Getme": (rid) => { return { pck: "Me", rid: rid } },
-    "ClientHello": (rid) => { return { pck: "ClientHello", rid: rid } },
-    "MakeRoom": (roomName, count) => { return { pck: "MakeRoom", data: [roomName, count] } },
-    "StartGame": (rid) => { return { pck: "StartGame", rid: rid } },
-    "Perform": (rid, pid) => { return { pck: "Perform", rid: rid, pid: pid } },
-    "Vote": (rid, pid) => { return { pck: "Vote", rid: rid, pid: pid } }
-}
+    "GidInject": (meraw) => { return { gid: meraw.gid, nick: meraw.name, avatar: meraw.avatar }; },
+    "GetInfo": () => { return { pck: "GetInfo" }; },
+    "GetTargets": (rid) => { return { pck: "GetTargets", rid: rid }; },
+    "Getme": (rid) => { return { pck: "Me", rid: rid }; },
+    "ClientHello": (rid) => { return { pck: "ClientHello", rid: rid }; },
+    "MakeRoom": (roomName, count) => { return { pck: "MakeRoom", data: [roomName, count] }; },
+    "StartGame": (rid) => { return { pck: "StartGame", rid: rid }; },
+    "Perform": (rid, pid) => { return { pck: "Perform", rid: rid, pid: pid }; },
+    "Vote": (rid, pid) => { return { pck: "Vote", rid: rid, pid: pid }; }
+};
 
 function makePacket(meraw, type) {
     return {...packets.GidInject(meraw), ...type };
 }
 class connector { //this class is more like abstract + WS logic
     constructor(sock, meraw) {
-        this.sock = sock
+        this.sock = sock;
         this.me = meraw;
 
         this.sock.onopen = (e) => {
             this.sock.send(JSON.stringify(makePacket(this.me)));
             this.onload();
-        }
+        };
         this.sock.onmessage = (event) => {
             this._consume(JSON.parse(event.data));
         };
@@ -134,31 +134,54 @@ class ReceiverLogic extends connector {
         console.warn("Not Implemented GameStarted!");
         console.log(e);
     }
-    onping(e) {
-        console.warn("Not Implemented Ping!");
-        console.log(e);
-    }
     onperform(e) {
         console.warn("Not Implemented Perform!");
+        console.log(e);
+    }
+    onvote(e) {
+        console.warn("Not Implemented Vote!");
+        console.log(e);
+    }
+    onupdate(e) {
+        console.warn("Not Implemented Update!");
         console.log(e);
     }
     onplayercheck(e) {
         console.warn("Not Implemented GameCheckDone!");
         console.log(e);
     }
+    ongameend(e) {
+        alert("гра завершена\n" + e);
+    }
+    onping(e) {
+        console.info("Ping: " + e);
+    }
     _consume(data) {
+        if (data.timestamp) this.onping(Date.now() - data.timestamp * 1000);
+
         if (data.pck == "GameStarted") {
             console.log("Почалася нова гра за айді:", data.rid);
             this.onnewgame(data.rid);
-        } else if (data.pck == "Ping") {
-            this.onping(data);
         } else if (data.pck == "GameCast") {
-            if (data.type == "DoPerform") {
+            if (data.msg == "DoPerform") {
                 console.log("Треба ходити!");
                 this.onperform();
             }
-            if (data.type == "GameCheckDone") {
+            if (data.msg == "DoVote") {
+                console.log("Треба ходити!");
+                this.onvote();
+            }
+            if (data.msg == "GameCheckDone") {
                 this.onplayercheck();
+            }
+            if (data.msg == "Error") {
+                alert(data.spec);
+            }
+            if (data.msg == "Update") {
+                this.onupdate();
+            }
+            if (data.msg == "GameFinished") {
+                this.ongameend(data.data);
             }
         }
     }
@@ -174,32 +197,33 @@ class logic extends ReceiverLogic {
     async connect(rid) {
         this.send(makePacket(this.me, packets.ClientHello(rid)));
         var result = await this.get("ServerHello", "RoomNotFound");
-        return result
+        return result;
     }
     async getInfo() {
         this.send(makePacket(this.me, packets.GetInfo()));
         var result = await this.get("Info");
-        return result
+        return result;
     }
     async getTargetInfo(rid) {
         this.send(makePacket(this.me, packets.GetTargets(rid)));
         var result = await this.get("InfoT");
-        return result
+        return result;
     }
     async getme(rid) {
         this.send(makePacket(this.me, packets.Getme(rid)));
         var result = await this.get("You");
-        return result
+        return result;
     }
     async start(rid) {
         this.send(makePacket(this.me, packets.StartGame(rid)));
         var result = await this.get("GameStartSuccess", "GameStartError"); //too few players or denied
-        return result
+        return result;
     }
     async perform(rid, pid) {
         this.send(makePacket(this.me, packets.Perform(rid, pid)));
-        var result = await this.get("PerformACK", "PerformError"); //wrong role or player is dead
-        return result
+    }
+    async vote(rid, pid) {
+        this.send(makePacket(this.me, packets.Vote(rid, pid)));
     }
 }
 
@@ -207,41 +231,47 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function GetWS() {
+    var url = window.location.protocol.replace("http", "ws") + "//";
+    url += window.location.host;
+    url += "/pool";
+    return url;
+}
 
 async function unittest() {
     console.log("Загрузилися!");
-    var d = await socket.getInfo()
+    var d = await socket.getInfo();
     if (d.rooms.length == 0) {
-        var e = await socket.newRoom("foo", 100)
+        var e = await socket.newRoom("foo", 100);
         console.log("Створили кімнату!", e);
     }
-    var f = await socket.getInfo()
+    var f = await socket.getInfo();
     console.log("Отримали інфу!", f);
 
-    var g = await socket.connect(f.rooms[0].rid)
+    var g = await socket.connect(f.rooms[0].rid);
     console.log("Зайшли в кімнату!", g);
     while (d.rooms.length == 0) {
-        var ff = await socket.getInfo()
-        var a = ff.rooms.length != 0 && ff.rooms[0].players.length >= 6
+        var ff = await socket.getInfo();
+        var a = ff.rooms.length != 0 && ff.rooms[0].players.length >= 6;
         if (a) {
             break;
         }
         await new Promise(r => setTimeout(r, 2000));
-        console.log("waiting...")
+        console.log("waiting...");
     }
     console.log("вихід з циклу");
     if (d.rooms.length == 0) {
         var h = await socket.start(f.rooms[0].rid);
-        console.log("Отримали", h)
+        console.log("Отримали", h);
     }
-    await socket.get("GameCast")
+    await socket.get("GameCast");
     var me = await socket.getme(f.rooms[0].rid);
     console.warn(me);
 
     var i = await socket.getTargetInfo(f.rooms[0].rid);
     console.log(i);
     socket.perform(f.rooms[0].rid, i.data[0].id).then((k) => {
-        console.log("тип походилось", k)
+        console.log("тип походилось", k);
     }).catch((h) => {
         console.log("Сука, їбана помилка", k);
     });

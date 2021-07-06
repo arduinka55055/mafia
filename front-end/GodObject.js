@@ -24,12 +24,6 @@ function getGeoIP() {
     });
 }
 
-function OnPingFunc(data) {
-    var time = Math.round(Date.now() / 1000 - data.timestamp);
-    document.querySelector(".G_ping").innerHTML = time + " ms";
-    document.querySelector(".G_players").innerHTML = data.players;
-    document.querySelector(".G_rooms").innerHTML = data.rooms;
-}
 
 function updateRooms() {
     /*
@@ -38,8 +32,10 @@ function updateRooms() {
     isStarted: false
     name: "shit"
     players: Array []
-    rid: "1b3e2f48-4cba-432b-86a6-23d8d32cd004" */
-
+    rid: "1b3e2f48-4cba-432b-86a6-23d8d32cd004" 
+    timestamp: 1625064372.792588
+    players:12
+    */
     window.socket.getInfo().then(data => {
         var newrooms = "";
         data.rooms.forEach(room => {
@@ -52,8 +48,9 @@ function updateRooms() {
             `;
             newrooms += htmltext;
         });
-        var v = 42
-        console.log(newrooms);
+
+        document.querySelector(".G_rooms").innerHTML = data.rooms.length;
+        document.querySelector(".G_players").innerHTML = data.players;
         document.querySelector(".G_roomlist").innerHTML = newrooms;
 
         var newplayers = "";
@@ -69,7 +66,7 @@ function updateRooms() {
                         </tr> 
                         `;
                         newplayers += htmltext;
-                    })
+                    });
 
                 }
             });
@@ -87,11 +84,11 @@ function loadEssentials() {
     document.querySelector(".G_nick").innerHTML = getGoogle().name;
     //http://ip-api.com/json
     getGeoIP().then(region => { document.querySelector(".G_geo").innerHTML = region; });
-    window.rnd = Math.random()
-    window.socket = new logic(new WebSocket("ws://" + location.host + "/pool"), new MeRAW(window.rnd + "", getGoogle().name, getGoogle().picture));
-    window.socket.onping = OnPingFunc;
-    window.socket.onnewgame = rid => { if (rid == window.currentRoom) { window.location.href = "game.html?id=" + window.rnd + "&rd=" + window.currentRoom } };
-
+    window.rnd = Math.random();
+    window.socket = new logic(new WebSocket(GetWS()), new MeRAW(window.rnd + "", getGoogle().name, getGoogle().picture));
+    window.socket.onnewgame = rid => { if (rid == window.currentRoom) { window.location.href = "game.html?id=" + window.rnd + "&rd=" + window.currentRoom; } };
+    window.socket.onping = e => { document.querySelector(".G_ping").innerHTML = Math.round(e) + " ms"; };
+    updateRooms();
     setInterval(updateRooms, 3000);
 }
 

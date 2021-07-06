@@ -1,1 +1,0 @@
-python mainsrv.py
