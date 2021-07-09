@@ -210,6 +210,11 @@ class Room:
         data["pck"]="GameCast"
         await wsconnector.clients.anycast(data,player)
 
+    async def sendchat(self,player:mafia.PlayerRAW,txt:str):
+        await self.send({
+            "pck":"GameCast","msg":"Chat","data":txt,
+            "nick":player.name,"ava":player.avatar
+        })
     async def performRole(self,gid:mafia.PLAYERID,pid:mafia.TARGETID):
         if self.game.getByGID(gid).isPerformable:
             if not self.game.getByGID(gid).isKilled:

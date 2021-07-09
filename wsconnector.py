@@ -123,6 +123,10 @@ class ClientPacket:
                 room = self.getRoom()
                 await room.doVote(self.gid,self.target)
 
+            elif self.pck == "Chat":
+                room = self.getRoom()
+                await room.sendchat(mafia.PlayerRAW(self.nick,self.gid,self.ava),self.data)
+
         except mafia.PlayerNotFoundError:
             return {"pck":"Error","id":self.target,"msg":"PlayerNotFound"}
 
@@ -163,6 +167,10 @@ class Clients(set):
                 await client.send_json(json.dumps(message))
                 return        
         raise mafia.PlayerNotFoundError(gid)
+    def remove(self, ws: WebSocket) -> None:
+        #roomHandler.rooms.kick(ws.session["gid"])
+        #roomHandler.rooms.purgeIter()
+        return super().remove(ws)
     
 
 clients = Clients()

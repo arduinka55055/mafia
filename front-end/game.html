@@ -37,9 +37,9 @@
     </div>
 
     <div class="G_chat chat_window">
-        <div id="chat" cols="38" rows="10" placeholder="Напиши щось першим."></div><br><br>
-        <input type="text" id="text" size="43" placeholder="Напишіть своє повідомлення тута">
-        <button type="button" id="send" class="btn btn-primary">Send</button><br /><br />
+        <div id="chat"></div>
+        <input type="text" id="text" onkeydown="event.key=='Enter'?chat():null" placeholder="Напишіть своє повідомлення тута">
+        <button type="button" id="send" onclick="chat()" class="btn btn-primary">Send</button>
 
 
     </div>

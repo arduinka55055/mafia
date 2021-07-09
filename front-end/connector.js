@@ -65,7 +65,8 @@ const packets = {
     "MakeRoom": (roomName, count) => { return { pck: "MakeRoom", data: [roomName, count] }; },
     "StartGame": (rid) => { return { pck: "StartGame", rid: rid }; },
     "Perform": (rid, pid) => { return { pck: "Perform", rid: rid, pid: pid }; },
-    "Vote": (rid, pid) => { return { pck: "Vote", rid: rid, pid: pid }; }
+    "Vote": (rid, pid) => { return { pck: "Vote", rid: rid, pid: pid }; },
+    "Chat": (rid, msg) => { return { pck: "Chat", rid: rid, data: msg }; }
 };
 
 function makePacket(meraw, type) {
@@ -156,6 +157,9 @@ class ReceiverLogic extends connector {
     onping(e) {
         console.info("Ping: " + e);
     }
+    onchat(e) {
+        console.log("Someone said: " + e.data);
+    }
     _consume(data) {
         if (data.timestamp) this.onping(Date.now() - data.timestamp * 1000);
 
@@ -179,6 +183,9 @@ class ReceiverLogic extends connector {
             }
             if (data.msg == "Update") {
                 this.onupdate();
+            }
+            if (data.msg == "Chat") {
+                this.onchat(data);
             }
             if (data.msg == "GameFinished") {
                 this.ongameend(data.data);
@@ -219,11 +226,14 @@ class logic extends ReceiverLogic {
         var result = await this.get("GameStartSuccess", "GameStartError"); //too few players or denied
         return result;
     }
-    async perform(rid, pid) {
+    perform(rid, pid) {
         this.send(makePacket(this.me, packets.Perform(rid, pid)));
     }
-    async vote(rid, pid) {
+    vote(rid, pid) {
         this.send(makePacket(this.me, packets.Vote(rid, pid)));
+    }
+    sendChat(rid, msg) {
+        this.send(makePacket(this.me, packets.Chat(rid, msg)));
     }
 }
 

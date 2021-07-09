@@ -79,13 +79,24 @@ function distribute4() {
     el.style.bottom = y + "%";
 }
 
+function chat() {
+    socket.sendChat(window.rid, document.querySelector('#text').value);
+    document.querySelector('#text').value = '';
+}
 
-
+function onchat(data) {
+    document.querySelector('#chat').innerHTML += /*html*/ `
+    <span>
+    <img src="${data.ava}"/> ${data.nick}: ${data.data}
+    </span>`;
+    document.querySelector("#chat").scrollTo(0, document.querySelector("#chat").scrollTop);
+}
 window.addEventListener("DOMContentLoaded", () => {
     test(); //DEBUG:\
     distribute4();
     const gid = window.location.href.slice(window.location.href.indexOf("?") + 4, window.location.href.indexOf("&"));
     const rid = window.location.href.slice(window.location.href.indexOf("&") + 4);
+    window.rid = rid;
     var ws = new WebSocket(GetWS());
     window.socket = new logic(ws, new MeRAW(gid + "", getGoogle().name, getGoogle().picture));
     window.socket.onperform = _ => { console.log("треба ходити"); };
@@ -93,6 +104,7 @@ window.addEventListener("DOMContentLoaded", () => {
     window.socket.onplayercheck = _ => { alert("DONE"); };
     var connflag = true;
     window.socket.onupdate = _ => { loadEssentials(rid); };
+    window.socket.onchat = onchat;
     window.socket.onload = () => {
         window.socket.connect(rid).then(() => {
             loadEssentials(rid);
@@ -119,7 +131,7 @@ async function loadEssentials(rid) {
 function test() { //DEBUG:
     var fakedata = {
         data: [
-            { avatar: "/img/doctor.png", id: "123", isKilled: false, name: "gameplayer55" },
+            { avatar: "https://lh3.googleusercontent.com/a-/AOh14GjubdFKBR3eLD6pIteIIUdCOTSFF6qbC2XaFUVB=s96-c", id: "123", isKilled: false, name: "gameplayer55" },
             { avatar: "/img/doctor.png", id: "123", isKilled: false, name: "Admin" },
             { avatar: "/img/doctor.png", id: "123", isKilled: false, name: "maksikos" },
             { avatar: "/img/doctor.png", id: "123", isKilled: false, name: "Test4" },

@@ -204,6 +204,18 @@ header .logo img {
     right: 0;
     height: 85%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    overflow-y: scroll;
+}
+
+#chat>span {
+    margin-bottom: 1%;
+}
+
+#chat>span>img {
+    width: 5%;
 }
 
 #send {
