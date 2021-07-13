@@ -1,14 +1,12 @@
-$(window).on("hashchange", function(){
+const signInBtn = document.querySelector("#signin-btn");
+const signUpBtn = document.querySelector("#signup-btn");
+const pidorskiyContainer = document.querySelector(".container");
 
-	if(location.hash.slice(1)=="register"){
-		$(".card").addClass("extend");
-		$("#login").removeClass("selected");
-		$("#register").addClass("selected");
-	} 
-    else {
-		$(".card").removeClass("extend");
-		$("#login").addClass("selected");
-		$("#register").removeClass("selected");
-	}
+
+signUpBtn.addEventListener('click', () => {
+	pidorskiyContainer.classList.add("signup-mode")
 });
-$(window).trigger("hashchange");
+
+signInBtn.addEventListener('click', () => {
+	pidorskiyContainer.classList.remove("signup-mode")
+});

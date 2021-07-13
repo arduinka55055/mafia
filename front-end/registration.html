@@ -4,58 +4,84 @@
   <meta charset="UTF-8">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="registration.css">
-	<title>Реєстрація</title>
+	<script src="https://kit.fontawesome.com/64d58efce2.js" crossorigin="anonymous"></script>
+	<title>Авторизація</title>
 </head>
     <body>
-       <div class="main">
-	        <img class="logo" src="img/logo.svg">
-                 <div class="card">
-			      <div class="head">
-			     	<div></div>
-				    <a id="login" class="selected" href="#login">Увійти</a>
-			      	<a id="register" href="#register">Зареєструватися</a>
-					  <div></div>
-			         </div>
-			          <div class="tabs">
-			      	<form>
-					    <div class="inputs">
-						<div class="input">
-							<input placeholder="Нік" type="text">
-							<img src="img/user.svg">
+		<div class="container">
+			<div class="container__forms">
+				<div class="signin-signup">
+					<form action="" class="sign-in__form">
+						<h2 class="title">Увійти</h2>
+						<div class="input-field">
+							<i class="fas fa-user"></i>
+							<input type="text" placeholder="Нік">
+						</div>	
+						<div class="input-field">
+							<i class="fas fa-lock"></i>
+							<input type="password" placeholder="Пароль">
+						</div>	
+						<input type="submit" value="Увійти" class="btn solid">
+						
+						<p class="social__text">Чи увійти іншим шляхом?</p>
+						<div class="social-media">
+							<a href="#" class="social-icon"><i class="fab fa-google"></i></a>
+							<a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+							<a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
+							
+						</div>    
+					</form>
+
+
+					<form action="" class="sign-up__form">
+						<h2 class="title">Зареєструватися</h2>
+						<div class="input-field">
+							<i class="fas fa-user"></i>
+							<input type="text" placeholder="Нік">
+						</div>	
+						<div class="input-field">
+							<i class="fas fa-envelope"></i>
+							<input type="text" placeholder="Емеіл">
 						</div>
-						<div class="input">
-							<input placeholder="Пароль" type="password">
-							<img src="img/pass.svg">
-						</div>
-						<label class="checkbox">
-							<input type="checkbox">
-							<span>Запам'ятати пароль</span>
-						</label>
-					</div>
-					<button>Увійти</button>
-				</form>
-				<form>
-					<div class="inputs">
-						<div class="input">
-							<input placeholder="Емеіл" type="text">
-							<img src="img/mail.svg">
-						</div>
-						<div class="input">
-							<input placeholder="Нік" type="text">
-							<img src="img/user.svg">
-						</div>
-						<div class="input">
-							<input placeholder="Пароль" type="password">
-							<img src="img/pass.svg">
-						</div>
-					</div>
-					<div class="login">
-			      <button>Зареєструватися</button>
-				</form>
+						<div class="input-field">
+							<i class="fas fa-lock"></i>
+							<input type="password" placeholder="Пароль">
+						</div>	
+						<input type="submit" value="Зареєструватися" class="btn solid">
+						
+						<p class="social__text">Чи зареєструватися іншим шляхом?</p>
+						<div class="social-media">
+							<a href="#" class="social-icon"><i class="fab fa-google"></i></a>
+							<a href="#" class="social-icon"><i class="fab fa-telegram"></i></a>
+							<a href="#" class="social-icon"><i class="fab fa-discord"></i></a>
+							
+						</div>    
+					</form>
+				</div>
 			</div>
-		</div>
-	</div>
-	<script src="jquery-3.3.1.min.js"></script>
-	<script src="registration.js"></script>
-</body>
+
+			<div class="container__panels">
+				<div class="panel left-panel">
+					<div class="content">
+						<h3>Граєш в Мафію перший раз?</h3>
+						<p>Наша команда dzuba-ops розробила цю гру і т.д.</p>
+						<button class="btn transparent"	 id="signup-btn">Зареєструватися</button>
+					</div>
+
+					<img src="img/mafia.png" class="image" alt="">
+				</div>
+
+				<div class="panel right-panel">
+					<div class="content">
+						<h3>Один із нас?</h3>
+						<p>Наша команда dzuba-ops розробила цю гру і т.д.</p>
+						<button class="btn transparent"	 id="signin-btn">Увійти</button>
+					</div>
+
+					<img src="img/mafia.png" class="image" alt="">
+				</div>
+			</div>
+			<script src="registration.js"></script>
+		</div>	
+    </body>       
 </html>
