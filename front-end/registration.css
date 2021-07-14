@@ -305,7 +305,7 @@ form.sign-up__form
 }	
 
 
-@media (max-width: 871px)
+@media (max-width: 870px) /* Тут я короче сделал что-то средние между планшами и большими мобилами*/
 {
 	.container
 	{
@@ -314,7 +314,14 @@ form.sign-up__form
 	}
 	.container:before
 	{
-		display: none;
+		width: 1500px;
+		height: 1500px;
+		left: 30%;
+		bottom: 60%;
+		transform: translateX(-50%);
+		right: initial;
+		top: initial; /*установка исходного значения свойства */
+		transition: 3s ease-in-out;
 	} 
 
 	.signin-signup
@@ -323,6 +330,7 @@ form.sign-up__form
 		left: 50%;
 		top: 95%;
 		transform: translate(-50%, -100%);
+		transition: 1s 0.8s ease-in-out;
 	}
 
 
@@ -340,9 +348,34 @@ form.sign-up__form
 		padding: 2.5rem 8%;
 	}
 
+	.panel .content
+	{
+		padding-right: 15%;
+		transition: 0.9s 0.8s ease-in-out;
+	}
+
+	.panel h3
+	{
+	    font-size: 19.2px;
+	}
+
+	.panel p
+	{
+		font-size: 0.7rem;
+		padding: 8px 0;
+	}
+
+	.btn.transparent
+	{
+		width: 120px;
+		height: 40px;
+		font-size: 0.7rem;
+	}
+
 	.image
 	{
 		width: 200px;
+		transition: 0.9s 0.6s ease-in-out;
 	}
 
 	.left-panel
@@ -357,6 +390,59 @@ form.sign-up__form
 
 	.right-panel .content, .right-panel .image
     {
-		transform: translateX(0px);
+		transform: translateY(300px);
     }
+
+	.container.signup-mode:before
+	{
+		transform: translate(-50%, 100%);
+		bottom: 32%;
+		right: initial;
+	}
+
+	.container.signup-mode .left-panel .image,
+	.container.signup-mode .left-panel .content
+	{
+		transform: translateY(-300px);
+	}
+
+
+	.container.signup-mode .signin-signup
+	{
+		top: 5%;
+		transform: translate(-50%, 0);
+		left: 50%;
+	}
+}
+
+
+@media (max-width: 569px) /* тут я так-же сделал среднее между большими мобилами и маленькими мобилами */
+{
+	form
+	{
+		padding: 0 24px;
+	}
+
+	.image
+	{
+		display: none;
+	}
+
+
+	.panel .content
+	{
+		padding: 0.5rem 1rem;
+    
+	}
+	.container:before
+	{
+		bottom: 72%;
+		left: 50%;
+	}
+
+	.container.signup-mode:before
+	{
+		bottom: 28%;
+		left: 50%;
+	}
 }
