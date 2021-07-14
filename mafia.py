@@ -102,12 +102,15 @@ class Player(PlayerRAW):
 
     @property
     def jsonable(self) -> dict:  # TODO: добавить role если игрок сдох
-        return {
+        ret={
             "name": self.name,
             "avatar": self.avatar,
             "id": str(self.UUID),
             "isKilled": self.isKilled
         }
+        if self.isKilled:
+            ret["role"]=self.roleNameFull
+        return ret
 
     @property
     def jsonableP(self) -> dict:
@@ -176,38 +179,35 @@ class Players(object):
     def getMafias(self) -> Generator[Player, None, None]:
         for player in self.players:
             if player.isKilled:pass
-            if player.role == "m":
+            elif player.role == "m":
                 yield player
 
     def getMafiasCount(self) -> int:
-        counter = 0
-        for _ in self.getMafias():
-            counter += 1
-        return counter
+        return len(list(self.getMafias()))
 
     def getGood(self) -> Generator[Player, None, None]:
         for player in self.players:
             if player.isKilled:pass
-            if player.role in ["p", "s", "d", "g"]:
+            elif player.role in ["p", "s", "d", "g"]:
                 yield player
-
+    def getAlive(self) -> Generator[Player, None, None]:
+        for player in self.players:
+            if not player.isKilled:
+                yield player
+    def getAliveCount(self) -> int:
+        return len(list(self.getAlive()))
+    
     def getGoodCount(self) -> int:
-        counter = 0
-        for _ in self.getGood():
-            counter += 1
-        return counter
+        return len(list(self.getGood()))
 
     def getPerformable(self) -> Generator[Player, None, None]:
         for player in self.players:
             if player.isKilled:pass
-            if player.role in ['m', 's', 'k', 'd', 'g']:
+            elif player.role in ['m', 's', 'k', 'd', 'g']:
                 yield player
 
     def getPerformableCount(self) -> int:
-        counter = 0
-        for _ in self.getPerformable():
-            counter += 1
-        return counter
+        return len(list(self.getPerformable()))
 
     def getByTID(self, UUID: TARGETID) -> Player:
         for player in self.players:
@@ -365,9 +365,9 @@ class Game(Doings):
 
     async def getVoteData(self):
         self.__vote = dict()
-        while len(self.vote.values()) < len(self.players):
+        while len(self.vote.values()) < self.getAliveCount():
             await asyncio.sleep(1)  # TODO: зафигачить таймер
-        return self.result
+        return self.vote
 
     def parsePerform(self):
         data: PerformResult = self.result
@@ -395,10 +395,11 @@ class Game(Doings):
     async def startMainloop(self, room: Room):
         self.__room = room
 
-        await room.checkConnectivity()
+        
         super(Game, self).__init__(self.__room.players)
         # room.познакомитьИгроков()
         while self.isFinished == None:
+            await room.checkConnectivity()
             await room.send({"msg": "DoPerform"})
             result = await self.getPerformData()
             print(result)

@@ -151,11 +151,17 @@ class ReceiverLogic extends connector {
         console.warn("Not Implemented GameCheckDone!");
         console.log(e);
     }
+    errorDialog(e) {
+        alert(`помилка ${e}`);
+    }
     ongameend(e) {
         alert("гра завершена\n" + e);
     }
     onping(e) {
         console.info("Ping: " + e);
+    }
+    onsheriff(e) {
+        alert(e);
     }
     onchat(e) {
         console.log("Someone said: " + e.data);
@@ -178,8 +184,11 @@ class ReceiverLogic extends connector {
             if (data.msg == "GameCheckDone") {
                 this.onplayercheck();
             }
+            if (data.msg == "Sheriff") {
+                this.onsheriff(data);
+            }
             if (data.msg == "Error") {
-                alert(data.spec);
+                this.errorDialog(data.spec);
             }
             if (data.msg == "Update") {
                 this.onupdate();

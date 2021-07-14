@@ -2,12 +2,31 @@
 window.gdata = null;
 window.pinger = null;
 
-function getGoogle() {
-    var ret = localStorage.getItem("google");
-    if (ret == null || ret == "") {
-        //window.location.href = "/account";
+function getCookie(name) {
+    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+    return r ? r[1] : undefined;
+}
+
+function noescape(val) {
+    if (val.indexOf('\\') === -1) {
+        return val; // not encoded
     }
-    return JSON.parse(ret);
+    val = val.slice(1, -1).replace(/\\"/g, '"');
+    val = val.replace(/\\(\d{3})/g, function(match, octal) {
+        return String.fromCharCode(parseInt(octal, 8));
+    });
+    return val.replace(/\\\\/g, '\\');
+}
+
+function getGoogle() {
+    try {
+
+        var ret = noescape(getCookie("google").substr(0)) + '"}';
+        localStorage.setItem("google", ret);
+        return JSON.parse(ret);
+    } catch (e) {
+        window.location.href = "/login";
+    }
 }
 
 function getGeoIP() {
@@ -80,12 +99,12 @@ function loadEssentials() {
     //я заебусь настраивать гугл, да и на серве тоже нужен гугл айди
     //получу их из хитровыебанного костыля
     console.log(getGoogle());
-    document.querySelector(".G_ava").src = getGoogle().picture;
+    document.querySelector(".G_ava").src = getGoogle().avatar;
     document.querySelector(".G_nick").innerHTML = getGoogle().name;
     //http://ip-api.com/json
     getGeoIP().then(region => { document.querySelector(".G_geo").innerHTML = region; });
     window.rnd = Math.random();
-    window.socket = new logic(new WebSocket(GetWS()), new MeRAW(window.rnd + "", getGoogle().name, getGoogle().picture));
+    window.socket = new logic(new WebSocket(GetWS()), new MeRAW(window.rnd + "", getGoogle().name, getGoogle().avatar));
     window.socket.onnewgame = rid => { if (rid == window.currentRoom) { window.location.href = "game.html?id=" + window.rnd + "&rd=" + window.currentRoom; } };
     window.socket.onping = e => { document.querySelector(".G_ping").innerHTML = Math.round(e) + " ms"; };
     updateRooms();

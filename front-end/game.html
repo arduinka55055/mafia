@@ -21,14 +21,14 @@
         </svg></a>
     </header>
     <div class="exit">
-        <img src="/img/close.svg" onclick="toggle()" />
+        <img src="/img/close.svg" onclick="modal('Ви точно хочете покинути гру?')">
     </div>
     <div class="popup" id="popup-1">
         <div class="overlay"></div>
         <div class="content">
-            <div class="close-btn" onclick="toggle()">&times;</div>
-            <h1>Ви точно хочете покинути гру?</h1>
-            <button type="button" class="btn btn-danger btn-lg">Так</button>
+            <div class="close-btn">&times;</div>
+            <h1></h1>
+            <button type="button" class="btn btn-danger btn-lg">ОК</button>
         </div>
     </div>
 
@@ -39,22 +39,10 @@
     <div class="G_chat chat_window">
         <div id="chat"></div>
         <input type="text" id="text" onkeydown="event.key=='Enter'?chat():null" placeholder="Напишіть своє повідомлення тута">
-        <button type="button" id="send" onclick="chat()" class="btn btn-primary">Send</button>
+        <button type="button" id="send" onclick="chat()" class="btn btn-success">Send</button>
 
 
     </div>
-
-
-    <script type="text/javascript">
-        function toggle() {
-            document.getElementById("popup-1").classList.toggle("active");
-            document.querySelector(".G_gameContainer").classList.toggle("blurred");
-            document.querySelector(".chat_window").classList.toggle("blurred");
-        }
-    </script>
-
-
-
 
 </body>
 
