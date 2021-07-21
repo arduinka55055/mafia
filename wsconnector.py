@@ -129,6 +129,10 @@ class ClientPacket:
                 room = self.getRoom()
                 await room.sendchat(mafia.PlayerRAW(self.nick,self.gid,self.ava),self.data)
 
+            elif self.pck == "GameStat":
+                room = self.getRoom()
+                return {"pck":"GameStat", "state":mafia.LOC[room.game.status[0]],"timer":room.game.status[1]}
+
         except mafia.PlayerNotFoundError:
             return {"pck":"Error","id":self.target,"msg":"PlayerNotFound"}
 

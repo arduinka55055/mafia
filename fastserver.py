@@ -127,7 +127,7 @@ class WebsocketConnector(WebSocketEndpoint):
             await client.send_json({"pck":"ack"})
 
     async def on_disconnect(self, websocket: WebSocket, close_code: int) -> None:
-        wsconnector.disconnect(websocket.session["gid"])
+        wsconnector.disconnect(websocket.session.get("gid",""))
         wsconnector.clients.remove(websocket)
         return await super().on_disconnect(websocket, close_code)
     

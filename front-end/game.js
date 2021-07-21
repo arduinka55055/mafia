@@ -1,7 +1,11 @@
 const $$ = (selector, node = document) => [...node.querySelectorAll(selector)];
+const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; //TODO:
+
 
 const w = 9; //width (брать со стайлщита)
 const h = 22; //height
+
+var sheriffArray = [];
 
 function getGoogle() {
     var ret = localStorage.getItem("google");
@@ -27,6 +31,7 @@ data: [
 а больше вам знать не положено
 */
 function genPlayers(t) {
+    document.querySelector(".G_gameContainer").innerHTML = "";
     t.data.forEach(player => {
         console.warn(player);
         var user = document.createElement('div');
@@ -80,10 +85,16 @@ function distribute4() {
     el.style.bottom = y + "%";
 }
 
+function tid2el(tid) {
+    for (let e of $$(".G_gameContainer>div")) {
+        if (e.children[0].value == tid) return e;
+    }
+    return null;
+}
+
 function select(tid) {
-    $$(".G_gameContainer>div").forEach(e => {
-        e.children[0].value == tid ? e.classList.add("selected") : null;
-    });
+    $$(".G_gameContainer>div").forEach(e => e.classList.remove("selected"));
+    tid2el(tid).classList.add("selected");
     sendtarget(tid);
 }
 
@@ -99,7 +110,7 @@ function onchat(data) {
     <span>
     <img src="${data.ava}"/> ${data.nick}: ${data.data}
     </span>`;
-    /*document.querySelector("#chat").scrollTo(0, document.querySelector("#chat").scrollHeight);*/
+    document.querySelector("#chat").scrollTo(0, document.querySelector("#chat").scrollTopMax);
 }
 window.addEventListener("DOMContentLoaded", () => {
     test(); //DEBUG:\
@@ -120,15 +131,13 @@ window.addEventListener("DOMContentLoaded", () => {
     };
 
     window.socket.onsheriff = data => {
-        $$(".G_gameContainer>div").forEach(el => {
-            if (el.children[0].value == data.player) {
-                el.children[3].innerHTML = data.data[1]; //FIXME:
-                el.classList.add("spy");
-            }
-        });
-    }
-    window.socket.onplayercheck = _ => { alert("DONE"); };
-    window.socket.onupdate = _ => { loadEssentials(rid); };
+        var el = tid2el(data.player);
+        el.children[3].innerHTML = data.data[1];
+        el.classList.add("spy");
+        sheriffArray.push([data.player, data.data[1]]);
+    };
+    window.socket.onplayercheck = () => console.log("DONE"); //DEBUG:
+    window.socket.onupdate = () => loadEssentials(rid);
     window.socket.errorDialog = modal;
     window.socket.onchat = onchat;
     window.socket.onload = () => {
@@ -137,25 +146,27 @@ window.addEventListener("DOMContentLoaded", () => {
 
         });
     };
+    setInterval(() => document.querySelector(".status").innerHTML = window.timer.state + ": " + Math.round(window.timer.timer - Date.now() / 1000) + 'с <span><img src="/img/timer.gif"></div></span>', 500);
 });
 async function loadEssentials(rid) {
     var targets = await window.socket.getTargetInfo(rid);
     genPlayers(targets);
     distribute(targets.data.length);
-
+    sheriffArray.forEach(data => {
+        tid2el(data[0]).children[3].innerHTML = data[1];
+        tid2el(data[0]).classList.add("spy");
+    });
 
     //FIXME: запрашувати у сервака статус
 
-
     /*{id, role, desc, isKilled} */
     var me = await window.socket.getme(rid);
-    console.log(me);
-    $$(".G_gameContainer>div").forEach(el => {
-        if (el.children[0].value == me.id) {
-            el.children[3].innerHTML = me.desc; //FIXME:
-            el.classList.add("you");
-        }
-    });
+    var el = tid2el(me.id);
+    el.children[3].innerHTML = me.desc; //FIXME:
+    el.classList.add("you");
+
+    window.timer = await window.socket.getstatus(rid);
+    document.querySelector(".status").innerHTML = window.timer.state + ": " + Math.round(window.timer.timer - Date.now() / 1000) + 'с <span><img src="/img/timer.gif"></div></span>';
 }
 
 async function modal(msg) {

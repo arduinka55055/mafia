@@ -1,7 +1,7 @@
 ﻿from __future__ import annotations
 import asyncio
 from roomHandler import PermissionDeniedError
-from typing import Callable, Dict, Generator, Iterable, List, Literal, Union
+from typing import Callable, Dict, Generator, Iterable, List, Literal, Tuple, Union
 from dataclasses import dataclass
 import datetime
 import random
@@ -21,10 +21,17 @@ ROLES = {
     "s": "Шериф",
     "g": "Путана"
 }
-# TODO:
+TIMINGS = {
+    "perform":20,
+    "vote":20,
+    "connect":20
+} 
+
 LOC = {
     "mafwin": "Мафія виграла",
-    "mafdefeat": "Мирні перемогли мафію"
+    "mafdefeat": "Мирні перемогли мафію",
+    "perform": "Ніч",
+    "vote": "Голосування"
 }
 playersMin = 6
 
@@ -318,9 +325,12 @@ class Timer:
         self.begin = self.currtime()
         self.duration = duration
         return self
-
+    @property
+    def expiredate(self):
+        return self.begin+self.duration
+    @property
     def isExpired(self) -> bool:
-        if self.currtime()-self.begin >= self.duration:
+        if self.currtime() >= self.expiredate:
             return True
         return False
 
@@ -335,6 +345,11 @@ class Timer:
 class Game(Doings):
     __result:Union[PerformResult,None]
     __vote:Union[Dict,None]
+    __timer:Timer
+    __status:Union[Literal["perform"],Literal["vote"],Literal["pause"]]
+    @property
+    def status(self)->Tuple[Union[Literal["perform"],Literal["vote"],Literal["pause"]],int]:
+        return self.__status,int(self.__timer.expiredate)
     @property
     def result(self)->PerformResult:
         if self.__result==None:
@@ -357,15 +372,21 @@ class Game(Doings):
         self.vote[gid] = pid
 
     async def getPerformData(self):
+        self.__status="perform"
+        self.__timer=Timer().start(TIMINGS["perform"])
+        await self.__room.send({"msg": "Update"})
         self.__result = PerformResult()
         pc = self.getPerformableCount()
-        while len(self.result) < pc:
+        while len(self.result) < pc and not self.__timer.isExpired:
             await asyncio.sleep(1)  # TODO: зафигачить таймер
         return self.result
 
     async def getVoteData(self):
+        self.__status="vote"
+        self.__timer=Timer().start(TIMINGS["vote"])
+        await self.__room.send({"msg": "Update"})
         self.__vote = dict()
-        while len(self.vote.values()) < self.getAliveCount():
+        while len(self.vote.values()) < self.getAliveCount() and not self.__timer.isExpired:
             await asyncio.sleep(1)  # TODO: зафигачить таймер
         return self.vote
 
@@ -381,12 +402,12 @@ class Game(Doings):
             self.do_mafkill(mafias)
         if data["d"]:
             self.do_doctor(data["d"][0])
-        asyncio.ensure_future(self.__room.send({"msg": "Update"}))
 
     def parseVote(self):
         values_list = list(self.vote.values())
+        if len(values_list)<=0:
+            return
         self.kill(self.getByTID(max(set(values_list), key=values_list.count)))
-        asyncio.ensure_future(self.__room.send({"msg": "Update"}))
 
     def finishCheck(self):
         if self.isFinished != None:

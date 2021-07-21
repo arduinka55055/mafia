@@ -66,7 +66,8 @@ const packets = {
     "StartGame": (rid) => { return { pck: "StartGame", rid: rid }; },
     "Perform": (rid, pid) => { return { pck: "Perform", rid: rid, pid: pid }; },
     "Vote": (rid, pid) => { return { pck: "Vote", rid: rid, pid: pid }; },
-    "Chat": (rid, msg) => { return { pck: "Chat", rid: rid, data: msg }; }
+    "Chat": (rid, msg) => { return { pck: "Chat", rid: rid, data: msg }; },
+    "GameStat": (rid) => { return { pck: "GameStat", rid: rid }; }
 };
 
 function makePacket(meraw, type) {
@@ -228,6 +229,11 @@ class logic extends ReceiverLogic {
     async getme(rid) {
         this.send(makePacket(this.me, packets.Getme(rid)));
         var result = await this.get("You");
+        return result;
+    }
+    async getstatus(rid) {
+        this.send(makePacket(this.me, packets.GameStat(rid)));
+        var result = await this.get("GameStat");
         return result;
     }
     async start(rid) {
