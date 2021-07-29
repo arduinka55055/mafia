@@ -368,6 +368,49 @@ body {
     line-height: 1.2em;
 }
 
+ @media (min-width: 1920px)
+ /* для больщих компов */
+{
+    .navigationBar {
+        left: -100px;
+    }
+    .navigationBar.active {
+        left: 0;
+        width: 300px;
+    }
+    .index {
+        width: 100%;
+        left: 0;
+    }
+    .index.active {
+        width: calc(100% - 300px);
+        left: 300px;
+    }
+    .cardsLobby {
+        grid-template-columns: repeat(2fr, 1);
+    }
+    .cardsLobby .card 
+    {
+        width: 90%;
+    }
+    .room_panel .ListOfRooms
+    {
+        width: 95%;
+        height: 95%;
+    }
+    .room_panel .players_online
+    {
+        width: 95%;
+       
+    }
+    .btn {
+        right: 10px;
+    }
+} 
+
+
+
+
 @media (max-width: 992px)
 /* для планшетов */
 
