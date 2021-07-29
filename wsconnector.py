@@ -58,10 +58,12 @@ class ClientPacket:
         self.data = data.get("data")      # Misc data
         
     def validate(self) -> bool:
-        self.nick=html.escape(self.nick)
-        self.ava=html.escape(self.ava)
-        return False if self.gid == None or self.nick == None else (self.ava[0:8]=="https://" )
-        
+        try:
+            self.nick=html.escape(self.nick)
+            self.ava=html.escape(self.ava)
+            return False if self.gid == None or self.nick == None else (self.ava[0:8]=="https://" )
+        except:
+            return False
     def getRoom(self)->roomHandler.Room:
         return roomHandler.rooms.fromUUID(self.game)
 
@@ -117,15 +119,19 @@ class ClientPacket:
 
             elif self.pck == "Perform":
                 room = self.getRoom()
-                await room.performRole(self.gid,self.target)
+                return  await room.performRole(self.gid,self.target)
 
             elif self.pck == "Vote":
                 room = self.getRoom()
-                await room.doVote(self.gid,self.target)
+                return await room.doVote(self.gid,self.target)
 
             elif self.pck == "Chat":
                 room = self.getRoom()
                 await room.sendchat(mafia.PlayerRAW(self.nick,self.gid,self.ava),self.data)
+
+            elif self.pck == "GameStat":
+                room = self.getRoom()
+                return {"pck":"GameStat", "state":mafia.LOC[room.game.status[0]],"timer":room.game.status[1]}
 
         except mafia.PlayerNotFoundError:
             return {"pck":"Error","id":self.target,"msg":"PlayerNotFound"}
@@ -157,7 +163,7 @@ class Clients(set):
     async def multicast(self:Set[WebSocket], message:Union[dict,str], rid:mafia.ROOMID):
         input_coroutines=[]
         for client in self:
-            if client.session["rid"] == rid:#from GameLink
+            if client.session.get("rid","") == rid:#from GameLink
                 input_coroutines.append(client.send_json(message))
         await asyncio.gather(*input_coroutines, return_exceptions=True)
 
@@ -172,5 +178,7 @@ class Clients(set):
         #roomHandler.rooms.purgeIter()
         return super().remove(ws)
     
-
+def disconnect(gid:mafia.PLAYERID):
+    roomHandler.rooms.kick(gid)
+    roomHandler.rooms.purgeIter()
 clients = Clients()

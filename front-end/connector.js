@@ -66,7 +66,8 @@ const packets = {
     "StartGame": (rid) => { return { pck: "StartGame", rid: rid }; },
     "Perform": (rid, pid) => { return { pck: "Perform", rid: rid, pid: pid }; },
     "Vote": (rid, pid) => { return { pck: "Vote", rid: rid, pid: pid }; },
-    "Chat": (rid, msg) => { return { pck: "Chat", rid: rid, data: msg }; }
+    "Chat": (rid, msg) => { return { pck: "Chat", rid: rid, data: msg }; },
+    "GameStat": (rid) => { return { pck: "GameStat", rid: rid }; }
 };
 
 function makePacket(meraw, type) {
@@ -151,11 +152,17 @@ class ReceiverLogic extends connector {
         console.warn("Not Implemented GameCheckDone!");
         console.log(e);
     }
+    errorDialog(e) {
+        alert(`помилка ${e}`);
+    }
     ongameend(e) {
         alert("гра завершена\n" + e);
     }
     onping(e) {
         console.info("Ping: " + e);
+    }
+    onsheriff(e) {
+        alert(e);
     }
     onchat(e) {
         console.log("Someone said: " + e.data);
@@ -178,8 +185,11 @@ class ReceiverLogic extends connector {
             if (data.msg == "GameCheckDone") {
                 this.onplayercheck();
             }
+            if (data.msg == "Sheriff") {
+                this.onsheriff(data);
+            }
             if (data.msg == "Error") {
-                alert(data.spec);
+                this.errorDialog(data.spec);
             }
             if (data.msg == "Update") {
                 this.onupdate();
@@ -219,6 +229,11 @@ class logic extends ReceiverLogic {
     async getme(rid) {
         this.send(makePacket(this.me, packets.Getme(rid)));
         var result = await this.get("You");
+        return result;
+    }
+    async getstatus(rid) {
+        this.send(makePacket(this.me, packets.GameStat(rid)));
+        var result = await this.get("GameStat");
         return result;
     }
     async start(rid) {

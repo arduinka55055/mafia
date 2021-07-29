@@ -66,7 +66,7 @@ class Rooms(set):
     def purgeIter(self):
         removed=[]
         for x in self:
-            if len(x.players)<=0:
+            if len(x.players)<=0 and not x.isStarted:
                 removed.append(x)
         for x in removed:
             self.remove(x)
@@ -180,6 +180,7 @@ class Room:
         
     async def checkConnectivity(self):
         await asyncio.sleep(2)
+        self._players=set()
         while 1:
             if len(self.players)==len(self.game.players):
                 return
@@ -216,30 +217,29 @@ class Room:
             "nick":player.name,"ava":player.avatar
         })
     async def performRole(self,gid:mafia.PLAYERID,pid:mafia.TARGETID):
+        data={"msg":"Error","spec":"PermissionDenied"}
         if self.game.getByGID(gid).isPerformable:
             if not self.game.getByGID(gid).isKilled:
                 if not self.game.getByTID(pid).isKilled:
                     ret=self.game.performData(gid,pid)
                     if ret:
-                        data={"msg": "Sheriff", "data": [ret, mafia.ROLES[ret]]}
-                        await self.sendto(data, gid)
+                        data={"msg": "Sheriff", "player":pid,"data": [ret, mafia.ROLES[ret]]}
+                    else:
+                        return None
                 else:
                     data={"msg":"Error","spec":"Пж не насилуйте труп!"}
-                    await self.sendto(data,gid)
             else:
                 data={"msg":"Error","spec":"You're dead!"}
-                await self.sendto(data,gid)
-        else:
-            data={"msg":"Error","spec":"PermissionDenied"}
-            await self.sendto(data,gid)
+        data["pck"]="GameCast"
+        return data
 
     async def doVote(self,gid:mafia.PLAYERID,pid:mafia.TARGETID):
+        data={"msg":"Error","spec":"You're dead!"}
         if not self.game.getByGID(gid).isKilled:
             if not self.game.getByTID(pid).isKilled:
-                ret=self.game.voteData(gid,pid)
+                self.game.voteData(gid,pid)
+                return None
             else:
                 data={"msg":"Error","spec":"Пж не насилуйте труп!"}
-                await self.sendto(data,gid)
-        else:
-            data={"msg":"Error","spec":"You're dead!"}
-            await self.sendto(data,gid)
+        data["pck"]="GameCast"
+        return data

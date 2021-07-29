@@ -4,10 +4,17 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
+    --color-bg: #026CBD;
+    --color-card: #277507;
+    --color-card-hover: #48DE0D;
+    --color-you: #750D6D;
+    --color-dead: #0B2102;
+    --color-select: #DE8602;
+    --color-select-bg: #756A01;
 }
 
 body {
-    background: rgb(1, 76, 99);
+    background: var(--color-bg);
     display: -ms-flexbox;
     align-items: center;
     padding-bottom: 30px;
@@ -108,7 +115,7 @@ header .logo img {
 
 .G_gameContainer>div {
     color: aqua;
-    background-color: #3f741b;
+    background-color: var(--color-card);
     position: absolute;
     width: 9%;
     height: 22%;
@@ -116,6 +123,12 @@ header .logo img {
     text-overflow: clip;
     overflow: hidden;
     font-size: 2.3vh;
+    transition: all cubic-bezier(.22, .61, .36, 1) 0.4s;
+}
+
+.G_gameContainer>div:hover {
+    background-color: var(--color-card-hover);
+    box-shadow: 0 0 20px 10px var(--color-card);
 }
 
 .blurred {
@@ -160,15 +173,7 @@ header .logo img {
 
 .chat_window {
     position: fixed;
-    /*
-    width: 100%;
-    top: 50;
-    bottom: 50;
-    left: 10;
-    right: 0;*/
-    margin: auto;
-    /*min-height: 90vh;*/
-    padding: 0 100px;
+    margin: 1%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -230,6 +235,30 @@ header .logo img {
     left: 90%;
 }
 
+.status {
+    background-color: var(--color-card-hover);
+    border-radius: 5vw;
+    position: absolute;
+    width: min-content;
+    right: 1%;
+    top: 1%;
+    font-size: 4.2vh;
+    text-align: right;
+    display: inline-block;
+    white-space: nowrap;
+    padding-left: 0.5%;
+    padding-right: 0.5%;
+}
+
+.status img {
+    width: 100%;
+}
+
+.status span {
+    display: inline-block;
+    width: 5vh;
+}
+
 .exit {
     position: absolute;
     bottom: 1%;
@@ -251,4 +280,17 @@ header .logo img {
     right: 0;
     width: 100%;
     height: 100%;
+}
+
+.you {
+    background-color: var(--color-you) !important;
+}
+
+.dead {
+    background-color: var(--color-dead) !important;
+}
+
+.selected {
+    background-color: var(--color-select) !important;
+    box-shadow: 0 0 20px 10px var(--color-select-bg);
 }

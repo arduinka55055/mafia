@@ -1,65 +1,54 @@
 <!DOCTYPE html>
 <html lang="ua">
+
 <head>
-     <meta name="viewport" content="width=width-device, initial-scale=1.0">
-     <meta charset="UTF-8">
-     <title>M.A.F.I.A</title>
-     <link rel="stylesheet" href="landingPage.css">
-     <script src="vue.min.js"></script>
-   
+    <meta name="viewport" content="width=width-device, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>M.A.F.I.A</title>
+    <link rel="stylesheet" href="landingPage.css">
+    <script src="vue.min.js"></script>
+
 </head>
+
 <body>
-      <section class="banner" id="sec">
-          <header>
+    <section class="banner" id="sec">
+        <header>
             <a href="#" class="logo"><img src="img/logo.svg"></a>
             <div id="toggle" onclick="toggle()"></div>
-          </header>
-          <div class="rules">
+        </header>
+        <div class="rules">
             <h2>ПРАВИЛА ГРИ<br><span>МАФІЇ</span></h2>
-             <p>#MAFIA server
-             #Copyright (C) 2021 Vitiaz D., Chernikov M.
-             #This program is free software: you can redistribute it and/or modify it under
-             #the terms of the GNU General Public License as published by the Free Software.</p>
-             <a href="#"><span></span>Грати</a>
+            <p>#MAFIA server #Copyright (C) 2021 Vitiaz D., Chernikov M. #This program is free software: you can redistribute it and/or modify it under #the terms of the GNU General Public License as published by the Free Software.</p>
+            <a href="#"><span></span>Грати</a>
             <!-- <a href="img/gamerules.mp4" class="playvideo" onclick="toggle();"><img src="img/play.svg">Подивитися як-->
-         </div>
-          <ul class="media">
-             <li><a href="#"><img src="img/ds.png"></a></li>
-             <li><a href="#"><img src="img/Google.png"></a></li>
-          </ul>   
-      </section>
-      <div id="navigation">
-         <ul>
+        </div>
+        <ul class="media">
+            <li>
+                <a href="#"><img src="img/ds.png"></a>
+            </li>
+            <li>
+                <a href="#"><img src="img/Google.png"></a>
+            </li>
+        </ul>
+    </section>
+    <div id="navigation">
+        <ul>
             <li><a href="#">Технічні проблеми</a></li>
             <li><a href="#">Розробники</a></li>
             <li><a href="#">Правила гри</a></li>
-        </ul> 
-     </div>  
-      
-     <script type="text/javascript">
-       function toggle(){
-          var sec = document.getElementById('sec');
-          var nav = document.getElementById('navigation');
-          sec.classList.toggle('active');
-          nav.classList.toggle('active');
+        </ul>
+    </div>
+
+    <script type="text/javascript">
+        function toggle() {
+            var sec = document.getElementById('sec');
+            var nav = document.getElementById('navigation');
+            sec.classList.toggle('active');
+            nav.classList.toggle('active');
         }
-     </script>
-     <script src="main.js"></script>
-     <script src="404.css"></script>
-     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-     <script>
-       $(document).ready(function(f){
-          $('.media').on('mouseenter', function(f){
-             x = f.pageX - $(this).offset().left;
-             y = f.pageY - $(this).offset().top;
-             $(this).find('span').css({top:y, left:x})
-          })
-          $('.media').on('mouseenter', function(f){
-             x = f.pageX - $(this).offset().left;
-             y = f.pageY - $(this).offset().top;
-             $(this).find('span').css({top:y, left:x})
-          })
-       })
-     </script>
+    </script>
+    <script src="main.js"></script>
+    <script src="404.css"></script>
 </body>
+
 </html>

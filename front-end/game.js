@@ -1,12 +1,11 @@
 const $$ = (selector, node = document) => [...node.querySelectorAll(selector)];
+const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; //TODO:
+
 
 const w = 9; //width (брать со стайлщита)
 const h = 22; //height
 
-function getCookie(name) {
-    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
-    return r ? r[1] : undefined;
-}
+var sheriffArray = [];
 
 function getGoogle() {
     var ret = localStorage.getItem("google");
@@ -32,7 +31,9 @@ data: [
 а больше вам знать не положено
 */
 function genPlayers(t) {
+    document.querySelector(".G_gameContainer").innerHTML = "";
     t.data.forEach(player => {
+        console.warn(player);
         var user = document.createElement('div');
         //FIXME: аватаркой можно провести xss атаку*html*/ 
         if (player.role === undefined) player.role = "";
@@ -43,7 +44,13 @@ function genPlayers(t) {
         <div class="role">${player.role}</div>
         <img class="cbg" src="/img/card-back.svg"> 
         `;
+        user.onclick = e => { select(`${player.id}`); };
         document.querySelector(".G_gameContainer").appendChild(user);
+
+        if (player.isKilled) {
+            user.classList.add("dead");
+            user.onclick = null;
+        }
     });
 }
 
@@ -61,8 +68,7 @@ function distribute(count) {
 }
 
 function pisinus(t, aa = 1) {
-    var MATH = Math;
-    return t + (((aa ** 2) / 8) + ((aa ** 4) / 16) + ((71 * (aa ** 6)) / 2048)) * MATH.sin(2 * t) + ((5 * (aa ** 4)) / 256 + (5 * (aa ** 6)) / 256) * MATH.sin(4 * t) + ((29 * (aa ** 6)) / 6144) * MATH.sin(6 * t);
+    return t + (((aa ** 2) / 8) + ((aa ** 4) / 16) + ((71 * (aa ** 6)) / 2048)) * Math.sin(2 * t) + ((5 * (aa ** 4)) / 256 + (5 * (aa ** 6)) / 256) * Math.sin(4 * t) + ((29 * (aa ** 6)) / 6144) * Math.sin(6 * t);
 }
 
 
@@ -79,6 +85,21 @@ function distribute4() {
     el.style.bottom = y + "%";
 }
 
+function tid2el(tid) {
+    for (let e of $$(".G_gameContainer>div")) {
+        if (e.children[0].value == tid) return e;
+    }
+    return null;
+}
+
+function select(tid) {
+    $$(".G_gameContainer>div").forEach(e => e.classList.remove("selected"));
+    tid2el(tid).classList.add("selected");
+    sendtarget(tid);
+}
+
+
+
 function chat() {
     socket.sendChat(window.rid, document.querySelector('#text').value);
     document.querySelector('#text').value = '';
@@ -89,7 +110,7 @@ function onchat(data) {
     <span>
     <img src="${data.ava}"/> ${data.nick}: ${data.data}
     </span>`;
-    document.querySelector("#chat").scrollTo(0, document.querySelector("#chat").scrollTop);
+    document.querySelector("#chat").scrollTo(0, document.querySelector("#chat").scrollTopMax);
 }
 window.addEventListener("DOMContentLoaded", () => {
     test(); //DEBUG:\
@@ -98,33 +119,76 @@ window.addEventListener("DOMContentLoaded", () => {
     const rid = window.location.href.slice(window.location.href.indexOf("&") + 4);
     window.rid = rid;
     var ws = new WebSocket(GetWS());
-    window.socket = new logic(ws, new MeRAW(gid + "", getGoogle().name, getGoogle().picture));
-    window.socket.onperform = _ => { console.log("треба ходити"); };
+    window.socket = new logic(ws, new MeRAW(gid + "", getGoogle().name, getGoogle().avatar));
 
-    window.socket.onplayercheck = _ => { alert("DONE"); };
-    var connflag = true;
-    window.socket.onupdate = _ => { loadEssentials(rid); };
+    sendtarget = tid => window.socket.perform(rid, tid); //FIXME:
+
+    window.socket.onperform = _ => {
+        sendtarget = tid => window.socket.perform(rid, tid);
+    };
+    window.socket.onvote = _ => {
+        sendtarget = tid => window.socket.vote(rid, tid);
+    };
+
+    window.socket.onsheriff = data => {
+        var el = tid2el(data.player);
+        el.children[3].innerHTML = data.data[1];
+        el.classList.add("spy");
+        sheriffArray.push([data.player, data.data[1]]);
+    };
+    window.socket.onplayercheck = () => console.log("DONE"); //DEBUG:
+    window.socket.onupdate = () => loadEssentials(rid);
+    window.socket.errorDialog = modal;
     window.socket.onchat = onchat;
     window.socket.onload = () => {
         window.socket.connect(rid).then(() => {
             loadEssentials(rid);
 
         });
-        connflag = false;
     };
+    setInterval(() => document.querySelector(".status").innerHTML = window.timer.state + ": " + Math.round(window.timer.timer - Date.now() / 1000) + 'с <span><img src="/img/timer.gif"></div></span>', 500);
 });
 async function loadEssentials(rid) {
     var targets = await window.socket.getTargetInfo(rid);
     genPlayers(targets);
     distribute(targets.data.length);
+    sheriffArray.forEach(data => {
+        tid2el(data[0]).children[3].innerHTML = data[1];
+        tid2el(data[0]).classList.add("spy");
+    });
+
+    //FIXME: запрашувати у сервака статус
+
     /*{id, role, desc, isKilled} */
     var me = await window.socket.getme(rid);
-    console.log(me);
-    $$(".G_gameContainer>div").forEach(el => {
-        if (el.children[0].value == me.id) {
-            el.children[3].innerHTML = me.desc; //FIXME:
-            el.classList.add("you");
-        }
+    var el = tid2el(me.id);
+    el.children[3].innerHTML = me.desc; //FIXME:
+    el.classList.add("you");
+
+    window.timer = await window.socket.getstatus(rid);
+    document.querySelector(".status").innerHTML = window.timer.state + ": " + Math.round(window.timer.timer - Date.now() / 1000) + 'с <span><img src="/img/timer.gif"></div></span>';
+}
+
+async function modal(msg) {
+    let toggle = state => {
+        document.querySelector("#popup-1").classList.toggle("active", state);
+        document.querySelector(".G_gameContainer").classList.toggle("blurred", state);
+        document.querySelector(".chat_window").classList.toggle("blurred", state);
+    };
+    toggle(true);
+    document.querySelector("#popup-1 h1").innerHTML = msg;
+
+    return new Promise((resolve, reject) => {
+        document.querySelector("#popup-1 .close-btn").addEventListener('click', function shit(e) {
+            resolve(false);
+            toggle(false);
+            this.removeEventListener('click', shit, false);
+        });
+        document.querySelector("#popup-1 button").addEventListener('click', function shit(e) {
+            resolve(true);
+            toggle(false);
+            this.removeEventListener('click', shit, false);
+        });
     });
 }
 
@@ -132,23 +196,31 @@ function test() { //DEBUG:
     var fakedata = {
         data: [
             { avatar: "https://lh3.googleusercontent.com/a-/AOh14GjubdFKBR3eLD6pIteIIUdCOTSFF6qbC2XaFUVB=s96-c", id: "123", isKilled: false, name: "gameplayer55" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Admin" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "maksikos" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test4" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test5" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test6" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test1" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test2" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test3" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test4" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test5" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test1" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test2" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test3" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test4" },
-            { avatar: "img/doctor.png", id: "123", isKilled: false, name: "Test5" },
+            { avatar: "/img/doctor.png", id: "1", isKilled: false, name: "Admin" },
+            { avatar: "/img/doctor.png", id: "2", isKilled: false, name: "maksikos" },
+            { avatar: "/img/doctor.png", id: "3", isKilled: false, name: "Test4" },
+            { avatar: "/img/doctor.png", id: "4", isKilled: false, name: "Test5" },
+            { avatar: "/img/doctor.png", id: "5", isKilled: false, name: "Test6" },
+            { avatar: "/img/doctor.png", id: "6", isKilled: false, name: "Test1" },
+            { avatar: "/img/doctor.png", id: "7", isKilled: false, name: "Test2" },
+            { avatar: "/img/doctor.png", id: "8", isKilled: false, name: "Test3" },
+            { avatar: "/img/doctor.png", id: "9", isKilled: false, name: "Test4" },
+            { avatar: "/img/doctor.png", id: "10", isKilled: false, name: "Test5" },
+            { avatar: "/img/doctor.png", id: "11", isKilled: false, name: "Test1" },
+            { avatar: "/img/doctor.png", id: "12", isKilled: false, name: "Test2" },
+            { avatar: "/img/doctor.png", id: "13", isKilled: false, name: "Test3" },
+            { avatar: "/img/doctor.png", id: "14", isKilled: false, name: "Test4" },
+            { avatar: "/img/doctor.png", id: "15", isKilled: false, name: "Test5" },
         ]
     };
     genPlayers(fakedata);
     distribute(fakedata.data.length);
+    var el = $$(".G_gameContainer>div")[0];
+    el.children[3].innerHTML = "мафія"; //FIXME:
+    el.classList.add("you");
+    el.onclick = e => { e.preventDefault(); };
+    el = $$(".G_gameContainer>div")[1];
+    el.children[3].innerHTML = "шериф"; //FIXME:
+    el.classList.add("dead");
+    el.onclick = e => { e.preventDefault(); };
 }

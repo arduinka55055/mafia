@@ -1,7 +1,7 @@
 ﻿from __future__ import annotations
 import asyncio
 from roomHandler import PermissionDeniedError
-from typing import Callable, Dict, Generator, Iterable, List, Literal, Union
+from typing import Callable, Dict, Generator, Iterable, List, Literal, Tuple, Union
 from dataclasses import dataclass
 import datetime
 import random
@@ -21,10 +21,17 @@ ROLES = {
     "s": "Шериф",
     "g": "Путана"
 }
-# TODO:
+TIMINGS = {
+    "perform":20,
+    "vote":20,
+    "connect":20
+} 
+
 LOC = {
     "mafwin": "Мафія виграла",
-    "mafdefeat": "Мирні перемогли мафію"
+    "mafdefeat": "Мирні перемогли мафію",
+    "perform": "Ніч",
+    "vote": "Голосування"
 }
 playersMin = 6
 
@@ -102,12 +109,15 @@ class Player(PlayerRAW):
 
     @property
     def jsonable(self) -> dict:  # TODO: добавить role если игрок сдох
-        return {
+        ret={
             "name": self.name,
             "avatar": self.avatar,
             "id": str(self.UUID),
             "isKilled": self.isKilled
         }
+        if self.isKilled:
+            ret["role"]=self.roleNameFull
+        return ret
 
     @property
     def jsonableP(self) -> dict:
@@ -176,38 +186,35 @@ class Players(object):
     def getMafias(self) -> Generator[Player, None, None]:
         for player in self.players:
             if player.isKilled:pass
-            if player.role == "m":
+            elif player.role == "m":
                 yield player
 
     def getMafiasCount(self) -> int:
-        counter = 0
-        for _ in self.getMafias():
-            counter += 1
-        return counter
+        return len(list(self.getMafias()))
 
     def getGood(self) -> Generator[Player, None, None]:
         for player in self.players:
             if player.isKilled:pass
-            if player.role in ["p", "s", "d", "g"]:
+            elif player.role in ["p", "s", "d", "g"]:
                 yield player
-
+    def getAlive(self) -> Generator[Player, None, None]:
+        for player in self.players:
+            if not player.isKilled:
+                yield player
+    def getAliveCount(self) -> int:
+        return len(list(self.getAlive()))
+    
     def getGoodCount(self) -> int:
-        counter = 0
-        for _ in self.getGood():
-            counter += 1
-        return counter
+        return len(list(self.getGood()))
 
     def getPerformable(self) -> Generator[Player, None, None]:
         for player in self.players:
             if player.isKilled:pass
-            if player.role in ['m', 's', 'k', 'd', 'g']:
+            elif player.role in ['m', 's', 'k', 'd', 'g']:
                 yield player
 
     def getPerformableCount(self) -> int:
-        counter = 0
-        for _ in self.getPerformable():
-            counter += 1
-        return counter
+        return len(list(self.getPerformable()))
 
     def getByTID(self, UUID: TARGETID) -> Player:
         for player in self.players:
@@ -318,9 +325,12 @@ class Timer:
         self.begin = self.currtime()
         self.duration = duration
         return self
-
+    @property
+    def expiredate(self):
+        return self.begin+self.duration
+    @property
     def isExpired(self) -> bool:
-        if self.currtime()-self.begin >= self.duration:
+        if self.currtime() >= self.expiredate:
             return True
         return False
 
@@ -335,6 +345,11 @@ class Timer:
 class Game(Doings):
     __result:Union[PerformResult,None]
     __vote:Union[Dict,None]
+    __timer:Timer
+    __status:Union[Literal["perform"],Literal["vote"],Literal["pause"]]
+    @property
+    def status(self)->Tuple[Union[Literal["perform"],Literal["vote"],Literal["pause"]],int]:
+        return self.__status,int(self.__timer.expiredate)
     @property
     def result(self)->PerformResult:
         if self.__result==None:
@@ -357,17 +372,23 @@ class Game(Doings):
         self.vote[gid] = pid
 
     async def getPerformData(self):
+        self.__status="perform"
+        self.__timer=Timer().start(TIMINGS["perform"])
+        await self.__room.send({"msg": "Update"})
         self.__result = PerformResult()
         pc = self.getPerformableCount()
-        while len(self.result) < pc:
+        while len(self.result) < pc and not self.__timer.isExpired:
             await asyncio.sleep(1)  # TODO: зафигачить таймер
         return self.result
 
     async def getVoteData(self):
+        self.__status="vote"
+        self.__timer=Timer().start(TIMINGS["vote"])
+        await self.__room.send({"msg": "Update"})
         self.__vote = dict()
-        while len(self.vote.values()) < len(self.players):
+        while len(self.vote.values()) < self.getAliveCount() and not self.__timer.isExpired:
             await asyncio.sleep(1)  # TODO: зафигачить таймер
-        return self.result
+        return self.vote
 
     def parsePerform(self):
         data: PerformResult = self.result
@@ -381,12 +402,12 @@ class Game(Doings):
             self.do_mafkill(mafias)
         if data["d"]:
             self.do_doctor(data["d"][0])
-        asyncio.ensure_future(self.__room.send({"msg": "Update"}))
 
     def parseVote(self):
         values_list = list(self.vote.values())
+        if len(values_list)<=0:
+            return
         self.kill(self.getByTID(max(set(values_list), key=values_list.count)))
-        asyncio.ensure_future(self.__room.send({"msg": "Update"}))
 
     def finishCheck(self):
         if self.isFinished != None:
@@ -395,10 +416,11 @@ class Game(Doings):
     async def startMainloop(self, room: Room):
         self.__room = room
 
-        await room.checkConnectivity()
+        
         super(Game, self).__init__(self.__room.players)
         # room.познакомитьИгроков()
         while self.isFinished == None:
+            await room.checkConnectivity()
             await room.send({"msg": "DoPerform"})
             result = await self.getPerformData()
             print(result)

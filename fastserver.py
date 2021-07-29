@@ -1,4 +1,7 @@
-from typing import Dict, List
+from os import replace
+from typing import Any, Dict, List
+
+from starlette.datastructures import URL
 from mafia import PlayerRAW
 
 from starlette.websockets import WebSocket, WebSocketDisconnect
@@ -22,6 +25,7 @@ from authlib.integrations.starlette_client import OAuth
 from pydantic import BaseModel
 import wsconnector
 import time
+import json
 app = FastAPI()
 app.add_middleware(SessionMiddleware, secret_key='!secret')
 config = Config('.env')
@@ -61,7 +65,10 @@ async def index():
 
 @app.get('/login', tags=['authentication'])
 async def login(request: Request):
-    redirect_uri = request.url_for('auth')
+    print(request.headers.get("X-Forwarded-Host"))
+    print(request.url_for('auth'))
+    if request.headers.get("X-Forwarded-Host",None):
+        redirect_uri = "https://"+request.headers.get("X-Forwarded-Host")+"/account"
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
@@ -74,7 +81,10 @@ async def auth(request: Request):
     #запихиваем все в PlayerRAW
     data=PlayerRAW(gid=user.sub,name=user.name,avatar=user.picture)
     response=RedirectResponse('/')
-    response.set_cookie(key="google",value=jsonable_encoder(vars(data)))
+    print(vars(data))
+    print("\n\n\n")
+    print(json.dumps(vars(data)))
+    response.set_cookie(key="google",value=json.dumps(vars(data)))
     return response
 
 
@@ -117,6 +127,7 @@ class WebsocketConnector(WebSocketEndpoint):
             await client.send_json({"pck":"ack"})
 
     async def on_disconnect(self, websocket: WebSocket, close_code: int) -> None:
+        wsconnector.disconnect(websocket.session.get("gid",""))
         wsconnector.clients.remove(websocket)
         return await super().on_disconnect(websocket, close_code)
     
