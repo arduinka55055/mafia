@@ -87,14 +87,14 @@ header #toggle:after
 {
       position: fixed;
       top: 0;
-      right: -200px;
+      right: -300px;
       width: 200px;
       height: 100vh;
       background: #10be3b;
       z-index: 1;
       display: grid;
       place-items: center;
-      transition: 0.5s;     
+      transition: 0.7s;     
 }
 #navigation.active
 {
@@ -109,15 +109,23 @@ header #toggle:after
 #navigation ul li
 {
       list-style: none; 
+      position: relative;
+      margin: 5px 12px;
 }
 #navigation ul li a
 {
       color: #fff;
       text-decoration: none;
-      display: inline-block;
-      font-size: 1.7em;
-      font-weight: 500;
+      display: block;
+      font-size: 1.5em;
+      margin: 5px 0;
+      font-weight: 700;
       text-transform: uppercase;
+}
+#navigation ul li a:hover
+{
+      color: #fc0909;
+     
 }
 .rules
 {
@@ -143,7 +151,7 @@ header #toggle:after
 {
       position: relative;
       display: inline-block;
-      margin-top: 20px;
+      margin-top: 30px;
       border: 2px solid rgb(66, 184, 51);
       color: #fff;
       text-decoration: none;
