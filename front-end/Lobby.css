@@ -79,11 +79,13 @@ body {
     left: 10px;
 }
 
-.navigationBar ul li a .icon .svg {
+.navigationBar ul li a .icon  {
     color: #fff;
     font-size: 25px;
     right: 9px;
 }
+
+
 
 .navigationBar ul li a .title {
     position: relative;
@@ -113,6 +115,7 @@ body {
     width: 100%;
     background: #fff;
     height: 60px;
+    opacity: 0.95;
     padding: 0 10px;
     display: flex;
     justify-content: space-between;
@@ -210,14 +213,79 @@ body {
     font-weight: 600;
 }
 
-.btn {
+.startgame {
     position: absolute;
     padding: 5px 10px;
     background: #22bba1;
     color: #fff;
     text-decoration: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.5s;
     border-radius: 6px;
     right: 9px;
+}
+.repository#change.active
+{
+    filter: blur(20px);
+    pointer-events: none;
+    user-select: none;
+}
+
+.startgame:hover
+{
+    letter-spacing: 2px;
+}
+
+#pop__up
+{
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 586px;
+    height: 200px;  
+    padding: 50px;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.30);
+    background: #fff;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.5s;
+}
+
+#pop__up h2
+{
+    text-transform: uppercase;
+}
+
+#pop__up a
+{
+    position: relative;
+    padding: 5px 22px;
+    display: inline-block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #fff;
+    background: rgb(7, 63, 7);
+}
+#pop__up a.btn
+{
+    position: relative;
+    padding: 5px 30px;
+    display: inline-block;
+    margin-top: 20px;
+    left: 335px;
+    text-decoration: none;
+    color: #fff;
+    background: rgb(100, 5, 5);
+}
+
+#pop__up.active
+{
+    top: 50%;
+    visibility: visible;
+    opacity: 1;
+    transition: 0.5s;
 }
 
 .room_panel table {
@@ -336,6 +404,7 @@ body {
     line-height: 1.2em;
 }
 
+
 @media (min-width: 1920px)
  /* для больщих компов */
 {
@@ -363,7 +432,7 @@ body {
     }
     .room_panel .ListOfRooms
     {
-        width: 96%;
+        width: 95%;
         height: 95%;
     }
     .room_panel .players_online
@@ -447,7 +516,7 @@ body {
     .toggle.active {
        position: relative;
        z-index: 10000;
-       right: -42px;
+       right: 0;
        left: initial;
        color: rgb(231, 228, 228);
     }
