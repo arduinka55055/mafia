@@ -50,7 +50,7 @@ async def add_process_time_header(request: Request, call_next):
 '''
 Site navigation plan:
 
-Landing -> oauth2login - | set cookie uuid
+registration -> oauth2login - | set cookie uuid
    \\----> email login - |
                          |
         lobby selector<--#

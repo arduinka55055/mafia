@@ -4,9 +4,9 @@ const pidorskiyContainer = document.querySelector(".container");
 
 
 signUpBtn.addEventListener('click', () => {
-	pidorskiyContainer.classList.add("signup-mode")
+	pidorskiyContainer.classList.add("signup-mode");
 });
 
 signInBtn.addEventListener('click', () => {
-	pidorskiyContainer.classList.remove("signup-mode")
+	pidorskiyContainer.classList.remove("signup-mode");
 });

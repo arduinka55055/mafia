@@ -189,6 +189,7 @@ header .logo img {
     left: 0;
     height: 15%;
     width: 90%;
+    border-radius: 15px;
 }
 
 .chat_window button {
@@ -213,7 +214,9 @@ header .logo img {
     flex-direction: column;
     padding: 1%;
     overflow-y: scroll;
+    border-radius: 18px;
 }
+
 
 #chat>span {
     margin-bottom: 1%;
@@ -233,6 +236,7 @@ header .logo img {
     padding: 0px;
     top: 85%;
     left: 90%;
+    border-radius: 10px;
 }
 
 .status {
@@ -243,7 +247,7 @@ header .logo img {
     right: 1%;
     top: 1%;
     font-size: 4.2vh;
-    text-align: right;
+    text-align: center;
     display: inline-block;
     white-space: nowrap;
     padding-left: 0.5%;
@@ -293,4 +297,73 @@ header .logo img {
 .selected {
     background-color: var(--color-select) !important;
     box-shadow: 0 0 20px 10px var(--color-select-bg);
+}
+
+
+@media (max-width: 1244px) 
+{
+    .status
+    {
+       width: 170px;
+       right: 10px;
+       font-size: 15px;
+    }
+
+}
+
+@media (max-width: 902px)
+{
+    #send
+    {
+        border-radius: 6px;
+        font-size: 10px;
+    }
+    .exit img
+    {
+        width: 40px;
+        
+    }
+} 
+
+@media (max-width: 849px)
+{
+    .status
+    {
+        right: -3px;
+    }
+    .exit img
+    {
+        width: 40px;
+    
+    }
+}
+
+@media (max-width: 770px)
+{
+    .status
+    {
+        font-size: 13px;
+        
+        right: -20px;
+    }
+    .exit img
+    {
+        width: 30px;
+        left: -80px;
+    }
+}
+
+@media (max-width: 640px)
+{
+    .status
+    {
+        font-size: 13px;
+        width: 140px;
+        right: -10px;
+    }
+    .exit img
+    {
+        width: 26px;
+        left: -90px;
+    }
 }

@@ -42,7 +42,7 @@ function genPlayers(t) {
         <div class="name">${player.name}</div>
         <img class="ava" src="${player.avatar}"> 
         <div class="role">${player.role}</div>
-        <img class="cbg" src="/img/card-back.svg"> 
+        <img class="cbg" src="img/card-back.svg"> 
         `;
         user.onclick = e => { select(`${player.id}`); };
         document.querySelector(".G_gameContainer").appendChild(user);
@@ -146,8 +146,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
         });
     };
-    setInterval(() => document.querySelector(".status").innerHTML = window.timer.state + ": " + Math.round(window.timer.timer - Date.now() / 1000) + 'с <span><img src="/img/timer.gif"></div></span>', 500);
+    setInterval(() => document.querySelector(".status").innerHTML = window.timer.state + ": " + Math.round(window.timer.timer - Date.now() / 1000) + 'с <span><img src="img/timer.gif"></div></span>', 500);
 });
+
+
 async function loadEssentials(rid) {
     var targets = await window.socket.getTargetInfo(rid);
     genPlayers(targets);
@@ -166,7 +168,7 @@ async function loadEssentials(rid) {
     el.classList.add("you");
 
     window.timer = await window.socket.getstatus(rid);
-    document.querySelector(".status").innerHTML = window.timer.state + ": " + Math.round(window.timer.timer - Date.now() / 1000) + 'с <span><img src="/img/timer.gif"></div></span>';
+    document.querySelector(".status").innerHTML = window.timer.state + ": " + Math.round(window.timer.timer - Date.now() / 1000) + 'с <span><img src="img/timer.gif"></div></span>';
 }
 
 async function modal(msg) {
@@ -196,21 +198,21 @@ function test() { //DEBUG:
     var fakedata = {
         data: [
             { avatar: "https://lh3.googleusercontent.com/a-/AOh14GjubdFKBR3eLD6pIteIIUdCOTSFF6qbC2XaFUVB=s96-c", id: "123", isKilled: false, name: "gameplayer55" },
-            { avatar: "/img/doctor.png", id: "1", isKilled: false, name: "Admin" },
-            { avatar: "/img/doctor.png", id: "2", isKilled: false, name: "maksikos" },
-            { avatar: "/img/doctor.png", id: "3", isKilled: false, name: "Test4" },
-            { avatar: "/img/doctor.png", id: "4", isKilled: false, name: "Test5" },
-            { avatar: "/img/doctor.png", id: "5", isKilled: false, name: "Test6" },
-            { avatar: "/img/doctor.png", id: "6", isKilled: false, name: "Test1" },
-            { avatar: "/img/doctor.png", id: "7", isKilled: false, name: "Test2" },
-            { avatar: "/img/doctor.png", id: "8", isKilled: false, name: "Test3" },
-            { avatar: "/img/doctor.png", id: "9", isKilled: false, name: "Test4" },
-            { avatar: "/img/doctor.png", id: "10", isKilled: false, name: "Test5" },
-            { avatar: "/img/doctor.png", id: "11", isKilled: false, name: "Test1" },
-            { avatar: "/img/doctor.png", id: "12", isKilled: false, name: "Test2" },
-            { avatar: "/img/doctor.png", id: "13", isKilled: false, name: "Test3" },
-            { avatar: "/img/doctor.png", id: "14", isKilled: false, name: "Test4" },
-            { avatar: "/img/doctor.png", id: "15", isKilled: false, name: "Test5" },
+            { avatar: "img/doctor.png", id: "1", isKilled: false, name: "Admin" },
+            { avatar: "img/doctor.png", id: "2", isKilled: false, name: "maksikos" },
+            { avatar: "img/doctor.png", id: "3", isKilled: false, name: "Test4" },
+            { avatar: "img/doctor.png", id: "4", isKilled: false, name: "Test5" },
+            { avatar: "img/doctor.png", id: "5", isKilled: false, name: "Test6" },
+            { avatar: "img/doctor.png", id: "6", isKilled: false, name: "Test1" },
+            { avatar: "img/doctor.png", id: "7", isKilled: false, name: "Test2" },
+            { avatar: "img/doctor.png", id: "8", isKilled: false, name: "Test3" },
+            { avatar: "img/doctor.png", id: "9", isKilled: false, name: "Test4" },
+            { avatar: "img/doctor.png", id: "10", isKilled: false, name: "Test5" },
+            { avatar: "img/doctor.png", id: "11", isKilled: false, name: "Test1" },
+            { avatar: "img/doctor.png", id: "12", isKilled: false, name: "Test2" },
+            { avatar: "img/doctor.png", id: "13", isKilled: false, name: "Test3" },
+            { avatar: "img/doctor.png", id: "14", isKilled: false, name: "Test4" },
+            { avatar: "img/doctor.png", id: "15", isKilled: false, name: "Test5" },
         ]
     };
     genPlayers(fakedata);
