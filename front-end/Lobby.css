@@ -115,7 +115,7 @@ body {
     width: 100%;
     background: #fff;
     height: 60px;
-    opacity: 0.95;
+    /* opacity: 0.95; */
     padding: 0 10px;
     display: flex;
     justify-content: space-between;
@@ -130,6 +130,17 @@ body {
     font-size: 40px;
     cursor: pointer;
 }
+
+.toggle::before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    line-height: 60px;
+    font-size: 24px;
+    text-align: center;
+    color: #111;
+}
+
 
 
 .users {
@@ -225,7 +236,7 @@ body {
     border-radius: 6px;
     right: 9px;
 }
-.repository#change.active
+.repository#change.show
 {
     filter: blur(20px);
     pointer-events: none;
@@ -280,7 +291,7 @@ body {
     background: rgb(100, 5, 5);
 }
 
-#pop__up.active
+#pop__up.show
 {
     top: 50%;
     visibility: visible;
@@ -489,6 +500,8 @@ body {
     .btn {
         right: 10px;
     }
+   
+
 }
 
 @media (max-width: 480px)
@@ -514,12 +527,24 @@ body {
         left: 0;
     }
     .toggle.active {
-       position: relative;
-       z-index: 10000;
-       right: 0;
-       left: initial;
-       color: rgb(231, 228, 228);
+        position: relative;
+        z-index: 10000;
+        right: 30px;
+        left: initial;
+        color: rgb(231, 228, 228);
     }
+    #pop__up h2
+    {
+        font-size: 18px;
+    }
+    #pop__up {
+        width: 300px;
+        height: 200px;
+    }
+    #pop__up a.btn {
+        left: 66px;
+    }
+    
     .btn {
         right: 30px;
     }

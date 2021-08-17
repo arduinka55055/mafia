@@ -2,14 +2,24 @@
 
 :root
 {
-    --main: #fc0909;
+    --main: #cc1111;
     --bg: #030302;
     --bg-accent: #191919;
+    --font-color: #fff;
 }
 
 *
 {
     font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+    text-decoration: none;
+    padding: 0;
+    list-style-type: none;
+}
+
+a
+{
+    color: var(--font-color);
 }
 
 body
@@ -28,7 +38,7 @@ header
 {
     display: flex;
     justify-content: space-between;
-    padding: 1rem 0rem;
+    height: 70px;
     align-items: center;
     
 }
@@ -37,4 +47,172 @@ header h3
 {
     font-size: 1.5rem;
     color: #fff;
+}
+
+header h3 small 
+{
+    color: var(--main);
+    font-size: 0.8rem;
+}
+
+header ul
+{
+    display: flex;
+    align-items: center;
+}
+
+header li
+{
+    margin-left: 1.6rem;
+
+}
+
+header li:first-child
+{
+    margin-left: 0rem;
+
+}
+header li a
+{
+    font-size: 0.85rem;
+     
+}
+header li:last-child a
+{
+    border: 3px solid var(--main);
+    color: var(--main);
+    text-transform: uppercase;
+    padding: 4px 16px;
+}
+
+header li:last-child a span
+{
+   margin-right: 0.4rem;
+}
+
+.Greeting
+{
+    min-height: 70vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    
+}
+
+.Greeting h1
+{
+    color: var(--main);
+    font-weight: 800;
+    font-size: 4.3rem;
+    line-height: 5.5rem; /* определяет расстояние текста от другого */
+    margin-bottom: 2rem;
+}
+
+.Greeting a 
+{
+    display: inline;
+    border: 3px solid var(--main);
+    padding: 0.45rem 1rem;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.Greeting img
+{
+    width: 30%;
+    height: 80%;
+    position: absolute;
+    bottom: 0rem;
+    right: -140px;
+}
+
+.Greeting a span
+{
+    font-size: 1.1rem;
+}
+
+
+
+.divider__page
+{
+    position: relative;
+    height: 80px;
+    display: grid;
+    place-items: center;
+    margin: 1rem 0rem;
+}
+
+.divide
+{
+    width: 5px;
+    height: 80px;
+    background: var(--main);
+}
+
+.divide__line
+{
+    position: absolute;
+    width: 50%;
+    border-bottom: 0.6px solid #ccc;
+}
+
+.divide__line.left
+{
+    left: 0;
+}
+.divide__line.right
+{
+    right: 0;
+}
+
+section
+{
+    padding: 1rem 0rem;
+    margin-bottom: 2rem;
+}
+
+
+.section__title
+{
+    text-align: center;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+}
+
+.section__title h1
+{
+    color: var(--font-color);
+    letter-spacing: 2px;
+    font-size: 3rem;
+    line-height: 2rem;
+}
+
+.section__title small
+{
+    font-size: 0.8rem;
+    color: #888;
+}
+
+.video__content
+{
+    width: 100%;
+    max-width: 700px;
+    margin: auto;
+    height: 58vh; /*  355.5px */
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.video__content div
+{
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: grid;
+    place-items: center;
+}    
+
+.video__content div span 
+{
+    font-size: 10rem;
+    color: var(--main);
 }

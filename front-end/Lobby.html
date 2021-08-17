@@ -142,7 +142,7 @@
                         </tbody>
                         <!--Элемент <tbody> предназначен для хранения одной или нескольких строк таблицы. -->
                     </table>
-                    <div class="btn G_addroom" style="position: absolute; bottom:5px;" onclick="window.socket.newRoom(prompt(),6).then(data=>{
+                    <div class="btn G_addroom startgame" style="position: absolute; bottom:5px;" onclick="window.socket.newRoom(prompt(),6).then(data=>{
                         window.socket.connect(data.id); window.currentRoom = data.id;})">
                         +
                     </div>
@@ -185,9 +185,19 @@
 
         function popUp() {
             let change = document.getElementById('change');
-            change.classList.toggle('active');
+            change.classList.toggle('show');
             let popUp = document.getElementById('pop__up');
-            popUp.classList.toggle('active');
+            popUp.classList.toggle('show');
+
+            // document.addEventListener('keydown', (e) => {
+            //     const code = e.code;
+
+            //     if (code === "Escape" && popUp.classList.contains("active")) {
+            //         popUp.classList.toggle('active');
+            //         popUp.body.style.visibility = 'hidden';
+            //         popUp.body.style.filter = 'none';
+            //     }
+            // })
         }
     </script>
 
