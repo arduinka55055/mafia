@@ -80,7 +80,7 @@ class Rooms(set):
                     room=x
                     break
         if player!=None and room!=None:
-            room.players.remove(player)
+            room.leave(player)
 
                     
         
@@ -146,16 +146,22 @@ class Room:
                 print("reconnected player!",len(self.players))
         else:
             if not self.hasPlayer(player.id):
+                rooms.kick(player.id)
+                rooms.purgeIter()
                 self.players.add(player)
 
-    def leave(self, gid:mafia.PLAYERID):
-        self.players.remove(self.playerByGid(gid))
+    def leave(self, player:mafia.PlayerRAW):
+        self.players.remove(player)
         if not self.isStarted:
-            if self.ownergid == gid:
+            if self.ownergid == player.id:
                 if len(self.players)>=1:
                     self.ownergid=next(iter(self.players)).id
                 else:
                     rooms.remove(self)
+            try:
+                self.playerByGid(self.ownergid)
+            except mafia.PlayerNotFoundError:
+                self.ownergid=next(iter(self.players)).id
         
         
 
@@ -176,7 +182,7 @@ class Room:
             "isStarted":self.isStarted,
             "maxplayers":self.playersLimit,
             "areyouowner":self.ownergid==gid,
-            "players":[[x.name,x.avatar] for x in self.players]}
+            "players":[[x.name,x.avatar,self.ownergid==x.id,x.id==gid] for x in self.players]}
         
     async def checkConnectivity(self):
         await asyncio.sleep(2)

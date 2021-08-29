@@ -79,14 +79,15 @@ function updateRooms() {
                 if (room.rid + "" == window.currentRoom + "") {
                     room.players.forEach(player => {
                         var htmltext = `
-                        <tr>
+                        <tr class="${player[3]?'you':''}">
+                        ${player[2]?'<td class="lead">*</td>':""}
                         <td width="60px"><div class="imgBx"><img src="${player[1]}"></div></td>
                         <td><h4>${player[0]}</h4></td>  
                         </tr> 
                         `;
                         newplayers += htmltext;
                     });
-
+                    document.querySelector(".startgame").style.display = room.areyouowner ? "" : "None";
                 }
             });
         }
@@ -103,7 +104,7 @@ function loadEssentials() {
     document.querySelector(".G_nick").innerHTML = getGoogle().name;
     //http://ip-api.com/json
     getGeoIP().then(region => { document.querySelector(".G_geo").innerHTML = region; });
-    window.rnd = Math.random();
+    window.rnd = getGoogle().id; //переходимо на прод Math.random();
     window.socket = new logic(new WebSocket(GetWS()), new MeRAW(window.rnd + "", getGoogle().name, getGoogle().avatar));
     window.socket.onnewgame = rid => { if (rid == window.currentRoom) { window.location.href = "game.html?id=" + window.rnd + "&rd=" + window.currentRoom; } };
     window.socket.onping = e => { document.querySelector(".G_ping").innerHTML = Math.round(e) + " ms"; };

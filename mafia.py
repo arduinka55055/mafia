@@ -22,8 +22,8 @@ ROLES = {
     "g": "Путана"
 }
 TIMINGS = {
-    "perform":20,
-    "vote":20,
+    "perform":40,
+    "vote":40,
     "connect":20
 } 
 
@@ -39,10 +39,10 @@ playersMin = 6
 class PlayerNotFoundError(Exception):
     def __init__(self, UUID):
         self.uuid = UUID
-        super().__init__("Error! Player with UUID:${self.uuid} not found!")
+        super().__init__(f"Error! Player with UUID:${self.uuid} not found!")
 
     def __repr__(self):
-        return "Error! Player with UUID:${self.uuid} not found!"
+        return f"Error! Player with UUID:${self.uuid} not found!"
 
 
 class PlayerRAW:
@@ -51,7 +51,8 @@ class PlayerRAW:
         self.name = name
         self.id = gid  # ця штука заповнюється даними реєстрації на стороні серверу
         self.avatar = avatar  # only for other players. doesnt impact logic
-
+    def __repr__(self):
+        return "Player %s,id: %s" % (self.name,self.id)
     def __hash__(self):
         return hash(self.id)
 
@@ -159,9 +160,9 @@ class Players(object):
 
     def __init__(self, data: set[PlayerRAW]):
         cardlist = [
-            # ['m','p','s','k','d','m','g'],#debug only!
             ['m', 'p', 'p', 'p', 'p', 's'],  # 6
-            ['m', 'm', 'p', 'p', 'p', 'p', 's'],
+            ['m','p','s','k','d','m','g'],#debug only!
+            #['m', 'm', 'p', 'p', 'p', 'p', 's'],
             ['m', 'm', 'p', 'p', 'p', 'p', 'p', 's'],
             ['m', 'm', 'p', 'p', 'p', 'p', 'p', 's', 'k'],
             ['m', 'm', 'p', 'p', 'p', 'p', 'p', 'p', 's', 'k'],  # 10
@@ -207,14 +208,14 @@ class Players(object):
     def getGoodCount(self) -> int:
         return len(list(self.getGood()))
 
-    def getPerformable(self) -> Generator[Player, None, None]:
+    def getPerformable(self,countKilled=False) -> Generator[Player, None, None]:
         for player in self.players:
-            if player.isKilled:pass
+            if player.isKilled and not countKilled:pass
             elif player.role in ['m', 's', 'k', 'd', 'g']:
                 yield player
 
-    def getPerformableCount(self) -> int:
-        return len(list(self.getPerformable()))
+    def getPerformableCount(self,countKilled=False) -> int:
+        return len(list(self.getPerformable(countKilled)))
 
     def getByTID(self, UUID: TARGETID) -> Player:
         for player in self.players:
@@ -229,7 +230,7 @@ class Players(object):
         raise PlayerNotFoundError(UUID)
 
     def getByRole(self, role: str) -> Player:
-        for player in self.getPerformable():
+        for player in self.getPerformable(countKilled=True):
             if player.role == role:
                 return player
         raise PlayerNotFoundError(role)
