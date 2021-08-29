@@ -87,7 +87,7 @@ function updateRooms() {
                         `;
                         newplayers += htmltext;
                     });
-                    document.querySelector(".startgame").style.display = room.areyouowner ? "" : "None";
+                    document.querySelector(".G_startgame").style.display = room.areyouowner ? "" : "None";
                 }
             });
         }
