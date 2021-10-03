@@ -100,7 +100,6 @@ class ClientPacket:
             elif self.pck == "ClientHello":
                 session=self.getRoom()
                 player=mafia.PlayerRAW(self.nick,self.gid,self.ava)
-                roomHandler.rooms.kick(player.id)
                 session.join(player)
                 ws.session["rid"]=session.UUID
                 ws.session["gid"]=self.gid

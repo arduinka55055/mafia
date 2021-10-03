@@ -146,7 +146,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         });
     };
-    setInterval(() => document.querySelector(".status").innerHTML = window.timer.state + ": " + Math.round(window.timer.timer - Date.now() / 1000) + 'с <span><img src="img/timer.gif"></div></span>', 500);
+    setInterval(() => document.querySelector(".status").innerHTML = window.timer.state + ": " + Math.max(0, Math.round(window.timer.timer - Date.now() / 1000)) + 'с <span><img src="/img/timer.gif"></div></span>', 500);
 });
 
 
@@ -166,6 +166,9 @@ async function loadEssentials(rid) {
     var el = tid2el(me.id);
     el.children[3].innerHTML = me.desc; //FIXME:
     el.classList.add("you");
+    if (me.isKilled) {
+        document.body.style.backgroundColor = "black";
+    }
 
     window.timer = await window.socket.getstatus(rid);
     document.querySelector(".status").innerHTML = window.timer.state + ": " + Math.round(window.timer.timer - Date.now() / 1000) + 'с <span><img src="img/timer.gif"></div></span>';

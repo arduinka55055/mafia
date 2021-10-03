@@ -67,6 +67,7 @@ async def index():
 async def login(request: Request):
     print(request.headers.get("X-Forwarded-Host"))
     print(request.url_for('auth'))
+    redirect_uri = "https://mafia.umilitary.ml/account"
     if request.headers.get("X-Forwarded-Host",None):
         redirect_uri = "https://"+request.headers.get("X-Forwarded-Host")+"/account"
     return await oauth.google.authorize_redirect(request, redirect_uri)

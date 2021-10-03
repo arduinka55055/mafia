@@ -1,13 +1,10 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:200,300,400,500,600,700,800,900&display=swap');
-
-*
-{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
-
 
 body {
     overflow-x: hidden;
@@ -79,13 +76,11 @@ body {
     left: 10px;
 }
 
-.navigationBar ul li a .icon  {
+.navigationBar ul li a .icon {
     color: #fff;
     font-size: 25px;
     right: 9px;
 }
-
-
 
 .navigationBar ul li a .title {
     position: relative;
@@ -140,8 +135,6 @@ body {
     text-align: center;
     color: #111;
 }
-
-
 
 .users {
     position: relative;
@@ -236,26 +229,24 @@ body {
     border-radius: 6px;
     right: 9px;
 }
-.repository#change.show
-{
+
+.repository#change.show {
     filter: blur(20px);
     pointer-events: none;
     user-select: none;
 }
 
-.startgame:hover
-{
+.startgame:hover {
     letter-spacing: 2px;
 }
 
-#pop__up
-{
+#pop__up {
     position: fixed;
     top: 40%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 586px;
-    height: 200px;  
+    height: 200px;
     padding: 50px;
     box-shadow: 0 5px 30px rgba(0, 0, 0, 0.30);
     background: #fff;
@@ -264,13 +255,11 @@ body {
     transition: 0.5s;
 }
 
-#pop__up h2
-{
+#pop__up h2 {
     text-transform: uppercase;
 }
 
-#pop__up a
-{
+#pop__up a {
     position: relative;
     padding: 5px 22px;
     display: inline-block;
@@ -279,8 +268,8 @@ body {
     color: #fff;
     background: rgb(7, 63, 7);
 }
-#pop__up a.btn
-{
+
+#pop__up a.btn {
     position: relative;
     padding: 5px 30px;
     display: inline-block;
@@ -291,8 +280,7 @@ body {
     background: rgb(100, 5, 5);
 }
 
-#pop__up.show
-{
+#pop__up.show {
     top: 50%;
     visibility: visible;
     opacity: 1;
@@ -415,9 +403,9 @@ body {
     line-height: 1.2em;
 }
 
-
 @media (min-width: 1920px)
- /* для больщих компов */
+/* для больщих компов */
+
 {
     .navigationBar {
         left: -100px;
@@ -437,27 +425,20 @@ body {
     .cardsLobby {
         grid-template-columns: repeat(2fr, 1);
     }
-    .cardsLobby .card 
-    {
+    .cardsLobby .card {
         width: 90%;
     }
-    .room_panel .ListOfRooms
-    {
+    .room_panel .ListOfRooms {
         width: 95%;
         height: 95%;
     }
-    .room_panel .players_online
-    {
+    .room_panel .players_online {
         width: 95%;
-       
     }
     .btn {
         right: 10px;
     }
-} 
-
-
-
+}
 
 @media (max-width: 992px)
 /* для планшетов */
@@ -500,8 +481,6 @@ body {
     .btn {
         right: 10px;
     }
-   
-
 }
 
 @media (max-width: 480px)
@@ -533,8 +512,7 @@ body {
         left: initial;
         color: rgb(231, 228, 228);
     }
-    #pop__up h2
-    {
+    #pop__up h2 {
         font-size: 18px;
     }
     #pop__up {
@@ -544,7 +522,6 @@ body {
     #pop__up a.btn {
         left: 66px;
     }
-    
     .btn {
         right: 30px;
     }
@@ -557,4 +534,8 @@ body {
 
 .btn {
     cursor: pointer !important;
+}
+
+.you {
+    background-color: #22bba180;
 }
