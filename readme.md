@@ -10,6 +10,10 @@ Use the git clone [git](https://git-scm.com/) to run it on your PC.
 https://github.com/arduinka55055/mafia.git 
 ```
 
+## How it looks like
+
+![Знімок екрана (166)](https://user-images.githubusercontent.com/69985852/135764976-a3430f8c-24e0-487f-bec5-0fc06c40cf7a.png)
+
 ## Rules of the game
 
 ```
