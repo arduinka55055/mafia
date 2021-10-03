@@ -1,1 +1,1 @@
-hypercorn --quic-bind 0.0.0.0:4433 --certfile .deploycrt.pem --keyfile .deploykey.pem --bind 0.0.0.0:4433 fastserver:app --reload
+hypercorn --bind 0.0.0.0:8001 fastserver:app
